@@ -56,8 +56,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--cmap",
         type=str,
-        default="hot",
-        help="Matplotlib colormap (default: hot)"
+        default="viridis",
+        help="Matplotlib colormap (default: viridis)"
     )
     parser.add_argument(
         "--bins",

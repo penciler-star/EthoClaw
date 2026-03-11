@@ -125,7 +125,7 @@ Pattern: First segment before underscore `_` or hyphen `-`
 | `--list-parts`           | -       | List available body parts and exit                                |
 | `--confidence-threshold` | `0.6`   | Minimum confidence (0.0-1.0). Points below threshold are excluded |
 | `--output-dir`           | `auto`  | Output directory (auto-detected based on input structure)         |
-| `--cmap`                 | `hot`   | Matplotlib colormap                                               |
+| `--cmap`                 | `viridis` | Matplotlib colormap (blue-green-yellow)                           |
 | `--bins`                 | `50`    | Number of bins for 2D histogram                                   |
 | `--sigma`                | `2.0`   | Gaussian smoothing sigma (pixels)                                 |
 | `--arena-size`           | `auto`  | Arena dimensions in pixels (format: `width,height`)               |
