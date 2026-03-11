@@ -361,13 +361,19 @@ def generate_trajectory_heatmap_figure(
     confidence_threshold: float,
     title: str,
     cmap: str,
-    body_part: str
+    body_part: str,
+    vmax: Optional[float] = None
 ) -> plt.Figure:
     """Generate trajectory heatmap visualization."""
     
     fig, axes = plt.subplots(1, 2, figsize=(16, 7))
     
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    
+    # Determine color scale
+    if vmax is None:
+        vmax = np.percentile(heatmap[heatmap > 0], 99) if np.any(heatmap > 0) else 1.0
+    vmax = max(vmax, 0.001)
     
     # Left panel: Heatmap only
     ax1 = axes[0]
@@ -377,7 +383,9 @@ def generate_trajectory_heatmap_figure(
         origin='lower',
         extent=extent,
         cmap=cmap,
-        aspect='auto'
+        aspect='auto',
+        vmin=0,
+        vmax=vmax
     )
     ax1.set_xlabel('X Position (pixels)')
     ax1.set_ylabel('Y Position (pixels)')
@@ -395,7 +403,9 @@ def generate_trajectory_heatmap_figure(
         extent=extent,
         cmap=cmap,
         aspect='auto',
-        alpha=0.7
+        alpha=0.7,
+        vmin=0,
+        vmax=vmax
     )
     
     # Overlay trajectory line
@@ -492,7 +502,8 @@ def process_single_file(
     sigma: float,
     arena_size: Optional[Tuple[int, int]],
     outlier_threshold: float,
-    list_only: bool = False
+    list_only: bool = False,
+    vmax: Optional[float] = None
 ) -> Optional[List[str]]:
     """Process a single tracking file."""
     
@@ -583,7 +594,7 @@ def process_single_file(
     try:
         fig = generate_trajectory_heatmap_figure(
             heatmap, xedges, yedges, x.values, y.values, confidence.values,
-            confidence_threshold, title, cmap, body_part
+            confidence_threshold, title, cmap, body_part, vmax
         )
     except Exception as e:
         print(f"  Error generating plot: {e}")
@@ -610,6 +621,71 @@ def process_single_file(
     print(f"    Arena coverage: {coverage:.1f}%")
     
     return available_parts
+
+
+def calculate_file_heatmap(
+    input_file: Path,
+    body_part: str,
+    confidence_threshold: float,
+    bins: int,
+    sigma: float,
+    arena_size: Optional[Tuple[int, int]],
+    outlier_threshold: float
+) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[str]]:
+    """Calculate heatmap for a single file without generating visualization.
+    Returns (heatmap, xedges, yedges, selected_body_part) or (None, None, None, None) on error.
+    """
+    try:
+        df = load_tracking_data(input_file)
+    except Exception as e:
+        print(f"  Error loading file: {e}")
+        return None, None, None, None
+    
+    # Detect body parts
+    available_parts = detect_body_parts(df)
+    if not available_parts:
+        return None, None, None, None
+    
+    # Select body part
+    if body_part == "auto":
+        preferred = ['center', 'body', 'back', 'midpoint', 'nose', 'head']
+        selected = None
+        for pref in preferred:
+            matches = [p for p in available_parts if pref in p.lower()]
+            if matches:
+                selected = matches[0]
+                break
+        if not selected:
+            selected = available_parts[0]
+        selected_body_part = selected
+    else:
+        matches = [p for p in available_parts if p.lower() == body_part.lower()]
+        if not matches:
+            selected_body_part = available_parts[0]
+        else:
+            selected_body_part = matches[0]
+    
+    # Get column names
+    col_names = get_column_names(df, selected_body_part)
+    if not col_names or 'x' not in col_names or 'y' not in col_names:
+        return None, None, None, None
+    
+    # Clean data
+    x, y, confidence = clean_data(df, col_names['x'], col_names['y'], col_names.get('confidence'), outlier_threshold)
+    
+    valid_count = (~x.isna() & ~y.isna() & (confidence >= confidence_threshold)).sum()
+    if valid_count < 10:
+        return None, None, None, None
+    
+    # Calculate heatmap
+    try:
+        heatmap, xedges, yedges = calculate_trajectory_heatmap(
+            x.values, y.values, confidence.values,
+            confidence_threshold, bins, sigma, arena_size
+        )
+        return heatmap, xedges, yedges, selected_body_part
+    except Exception as e:
+        return None, None, None, None
 
 
 def main():
@@ -648,13 +724,63 @@ def main():
         print(f"Found {len(files)} files to process")
         print("-" * 50)
         
+        # First pass: calculate all heatmaps and find global max for unified colorbar
+        print("\n[Pass 1/2] Calculating heatmaps to determine unified colorbar range...")
+        all_heatmaps = []
+        global_max = 0.0
+        
         for i, file_path in enumerate(files, 1):
-            print(f"\n[{i}/{len(files)}]")
-            process_single_file(
+            print(f"  [{i}/{len(files)}] {file_path.name}")
+            heatmap, xedges, yedges, selected_body_part = calculate_file_heatmap(
                 file_path, args.body_part, args.confidence_threshold,
-                output_dir, args.cmap, args.bins, args.sigma,
-                arena_size, args.outlier_threshold
+                args.bins, args.sigma, arena_size, args.outlier_threshold
             )
+            if heatmap is not None:
+                all_heatmaps.append((file_path, heatmap, xedges, yedges, selected_body_part))
+                if np.any(heatmap > 0):
+                    file_max = np.percentile(heatmap[heatmap > 0], 99)
+                    global_max = max(global_max, file_max)
+        
+        if not all_heatmaps:
+            print("No valid heatmaps could be calculated.")
+            sys.exit(1)
+        
+        global_max = max(global_max, 0.001)
+        print(f"\nUnified colorbar range: 0 to {global_max:.4f}")
+        print("-" * 50)
+        
+        # Second pass: generate visualizations with unified colorbar
+        print("\n[Pass 2/2] Generating visualizations with unified colorbar...")
+        
+        for i, (file_path, heatmap, xedges, yedges, selected_body_part) in enumerate(all_heatmaps, 1):
+            print(f"\n[{i}/{len(all_heatmaps)}] {file_path.name}")
+            
+            # Reload data for visualization
+            try:
+                df = load_tracking_data(file_path)
+                col_names = get_column_names(df, selected_body_part)
+                if not col_names:
+                    continue
+                x, y, confidence = clean_data(df, col_names['x'], col_names['y'], 
+                                              col_names.get('confidence'), args.outlier_threshold)
+                
+                group = detect_group(file_path.stem)
+                title = f"{file_path.stem} ({group})"
+                
+                fig = generate_trajectory_heatmap_figure(
+                    heatmap, xedges, yedges, x.values, y.values, confidence.values,
+                    args.confidence_threshold, title, args.cmap, selected_body_part, global_max
+                )
+                
+                output_dir.mkdir(parents=True, exist_ok=True)
+                output_file = output_dir / f"{file_path.stem}_trajectory.png"
+                fig.savefig(output_file, dpi=150, bbox_inches='tight')
+                plt.close(fig)
+                print(f"  Saved: {output_file}")
+                
+            except Exception as e:
+                print(f"  Error: {e}")
+                continue
         
         print("\n" + "=" * 50)
         print(f"All done! Results saved to: {output_dir}")

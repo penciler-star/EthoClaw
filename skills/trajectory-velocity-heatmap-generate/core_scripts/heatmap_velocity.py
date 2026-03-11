@@ -683,6 +683,74 @@ def process_single_file(
     return available_parts
 
 
+def calculate_file_heatmap(
+    input_file: Path,
+    body_part: str,
+    confidence_threshold: float,
+    fps: float,
+    bins: int,
+    sigma: float,
+    arena_size: Optional[Tuple[int, int]],
+    outlier_threshold: float
+) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[str]]:
+    """Calculate velocity heatmap for a single file without generating visualization.
+    Returns (heatmap, xedges, yedges, selected_body_part) or (None, None, None, None) on error.
+    """
+    try:
+        df = load_tracking_data(input_file)
+    except Exception as e:
+        print(f"  Error loading file: {e}")
+        return None, None, None, None
+    
+    # Detect body parts
+    available_parts = detect_body_parts(df)
+    if not available_parts:
+        return None, None, None, None
+    
+    # Select body part
+    if body_part == "auto":
+        preferred = ['center', 'body', 'back', 'midpoint', 'nose', 'head']
+        selected = None
+        for pref in preferred:
+            matches = [p for p in available_parts if pref in p.lower()]
+            if matches:
+                selected = matches[0]
+                break
+        if not selected:
+            selected = available_parts[0]
+        selected_body_part = selected
+    else:
+        matches = [p for p in available_parts if p.lower() == body_part.lower()]
+        if not matches:
+            selected_body_part = available_parts[0]
+        else:
+            selected_body_part = matches[0]
+    
+    # Get column names
+    col_names = get_column_names(df, selected_body_part)
+    if not col_names or 'x' not in col_names or 'y' not in col_names:
+        return None, None, None, None
+    
+    # Clean data
+    x, y, confidence = clean_data(df, col_names['x'], col_names['y'], 
+                                  col_names.get('confidence'), outlier_threshold)
+    
+    valid_count = (~x.isna() & ~y.isna() & (confidence >= confidence_threshold)).sum()
+    if valid_count < 10:
+        return None, None, None, None
+    
+    # Calculate velocity and heatmap
+    try:
+        velocity = calculate_velocity(x, y, fps)
+        heatmap, xedges, yedges = calculate_velocity_heatmap(
+            x.values, y.values, velocity.values, confidence.values,
+            confidence_threshold, bins, sigma, arena_size
+        )
+        return heatmap, xedges, yedges, selected_body_part
+    except Exception as e:
+        return None, None, None, None
+
+
 def main():
     args = parse_args()
     input_path = Path(args.input_path)
@@ -719,13 +787,65 @@ def main():
         print(f"Found {len(files)} files to process")
         print("-" * 50)
         
+        # First pass: calculate all heatmaps and find global max for unified colorbar
+        print("\n[Pass 1/2] Calculating velocity heatmaps to determine unified colorbar range...")
+        all_heatmaps = []
+        global_max = 0.0
+        
         for i, file_path in enumerate(files, 1):
-            print(f"\n[{i}/{len(files)}]")
-            process_single_file(
-                file_path, args.body_part, args.confidence_threshold,
-                args.fps, output_dir, args.cmap, args.bins, args.sigma,
-                arena_size, args.outlier_threshold, args.velocity_max
+            print(f"  [{i}/{len(files)}] {file_path.name}")
+            heatmap, xedges, yedges, selected_body_part = calculate_file_heatmap(
+                file_path, args.body_part, args.confidence_threshold, args.fps,
+                args.bins, args.sigma, arena_size, args.outlier_threshold
             )
+            if heatmap is not None:
+                all_heatmaps.append((file_path, heatmap, xedges, yedges, selected_body_part))
+                if np.any(heatmap > 0):
+                    file_max = np.percentile(heatmap[heatmap > 0], 99)
+                    global_max = max(global_max, file_max)
+        
+        if not all_heatmaps:
+            print("No valid heatmaps could be calculated.")
+            sys.exit(1)
+        
+        global_max = max(global_max, 0.1)
+        print(f"\nUnified colorbar range: 0 to {global_max:.4f}")
+        print("-" * 50)
+        
+        # Second pass: generate visualizations with unified colorbar
+        print("\n[Pass 2/2] Generating visualizations with unified colorbar...")
+        
+        for i, (file_path, heatmap, xedges, yedges, selected_body_part) in enumerate(all_heatmaps, 1):
+            print(f"\n[{i}/{len(all_heatmaps)}] {file_path.name}")
+            
+            # Reload data for visualization
+            try:
+                df = load_tracking_data(file_path)
+                col_names = get_column_names(df, selected_body_part)
+                if not col_names:
+                    continue
+                x, y, confidence = clean_data(df, col_names['x'], col_names['y'],
+                                              col_names.get('confidence'), args.outlier_threshold)
+                
+                velocity = calculate_velocity(x, y, args.fps)
+                
+                group = detect_group(file_path.stem)
+                title = f"{file_path.stem} ({group})"
+                
+                fig = generate_velocity_heatmap_figure(
+                    heatmap, xedges, yedges, x.values, y.values, velocity.values, confidence.values,
+                    args.confidence_threshold, title, args.cmap, selected_body_part, global_max
+                )
+                
+                output_dir.mkdir(parents=True, exist_ok=True)
+                output_file = output_dir / f"{file_path.stem}_velocity.png"
+                fig.savefig(output_file, dpi=150, bbox_inches='tight')
+                plt.close(fig)
+                print(f"  Saved: {output_file}")
+                
+            except Exception as e:
+                print(f"  Error: {e}")
+                continue
         
         print("\n" + "=" * 50)
         print(f"All done! Results saved to: {output_dir}")

@@ -119,17 +119,17 @@ Pattern: First segment before underscore `_` or hyphen `-`
 
 ### Common Parameters
 
-| Parameter                | Default | Description                                                       |
-| ------------------------ | ------- | ----------------------------------------------------------------- |
-| `--body-part`            | `auto`  | Body part to analyze (auto-detects if not specified)              |
-| `--list-parts`           | -       | List available body parts and exit                                |
-| `--confidence-threshold` | `0.6`   | Minimum confidence (0.0-1.0). Points below threshold are excluded |
-| `--output-dir`           | `auto`  | Output directory (auto-detected based on input structure)         |
+| Parameter                | Default   | Description                                                       |
+| ------------------------ | --------- | ----------------------------------------------------------------- |
+| `--body-part`            | `auto`    | Body part to analyze (auto-detects if not specified)              |
+| `--list-parts`           | -         | List available body parts and exit                                |
+| `--confidence-threshold` | `0.6`     | Minimum confidence (0.0-1.0). Points below threshold are excluded |
+| `--output-dir`           | `auto`    | Output directory (auto-detected based on input structure)         |
 | `--cmap`                 | `viridis` | Matplotlib colormap (blue-green-yellow)                           |
-| `--bins`                 | `50`    | Number of bins for 2D histogram                                   |
-| `--sigma`                | `2.0`   | Gaussian smoothing sigma (pixels)                                 |
-| `--arena-size`           | `auto`  | Arena dimensions in pixels (format: `width,height`)               |
-| `--outlier-threshold`    | `10`    | Outlier multiplier (IQR method). Set to 0 to disable              |
+| `--bins`                 | `50`      | Number of bins for 2D histogram                                   |
+| `--sigma`                | `2.0`     | Gaussian smoothing sigma (pixels)                                 |
+| `--arena-size`           | `auto`    | Arena dimensions in pixels (format: `width,height`)               |
+| `--outlier-threshold`    | `10`      | Outlier multiplier (IQR method). Set to 0 to disable              |
 
 ### Velocity-Specific Parameters
 
@@ -259,9 +259,22 @@ The trajectory heatmap shows:
 - **Right panel**: Density heatmap with trajectory overlay (trajectory shown in cyan)
 - Color intensity represents time spent in that spatial region
 
+### Unified Colorbar for Batch Processing
+
+When processing a folder with multiple files, both heatmap scripts automatically calculate a unified colorbar range:
+
+1. **Pass 1**: Calculate heatmaps for all files and find the global maximum (99th percentile)
+2. **Pass 2**: Generate all visualizations using the same colorbar range
+
+This ensures that heatmaps from different samples are directly comparable.
+
+- **Trajectory heatmaps** use a unified density scale across all samples
+- **Velocity heatmaps** use a unified velocity scale across all samples
+
 Console output includes:
 
 - Detected body parts
 - Valid data percentage
 - Velocity statistics (mean, median, max)
 - Velocity hotspot location (region with highest average velocity)
+- Unified colorbar range (for batch processing)
