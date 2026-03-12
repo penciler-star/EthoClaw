@@ -22,7 +22,7 @@
 - **网络搜索**：
   1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv论文。
 - **注**：
-  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能。
+  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件。
 
 ## 计划支持的功能
 

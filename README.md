@@ -22,7 +22,7 @@ In behavioral analysis, EthoClaw can help researchers automate tedious processes
 - **Network Search:**
   1. Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv papers.
 - **Note:**
-  Since EthoClaw is built on OpenClaw, it inherits all the features of OpenClaw.
+  Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins.
 
 ## Planned Features
 
