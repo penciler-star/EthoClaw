@@ -33,6 +33,8 @@ In behavioral analysis, EthoClaw can help researchers automate tedious processes
 
 This project is built on OpenClaw, and its configuration and installation methods are similar to or the same as OpenClaw.
 
+### Installation
+
 ```bash
 # Download and install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -60,4 +62,8 @@ pnpm openclaw onboard --install-daemon
 pnpm gateway:watch
 ```
 
-## Project Effects
+### Usage
+
+```
+
+```

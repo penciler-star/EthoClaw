@@ -31,6 +31,8 @@
 
 ## 快速开始
 
+### 安装
+
 本项目基于OpenClaw构建，配置和安装方式与OpenClaw类似或相同。
 
 ```bash
@@ -60,4 +62,10 @@ pnpm openclaw onboard --install-daemon
 pnpm gateway:watch
 ```
 
-## 项目效果
+### 使用示例
+
+```
+
+
+
+```
