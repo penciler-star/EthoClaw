@@ -1,59 +1,63 @@
 # EthoClaw
 
-基于OpenClaw构建，成为Ethology领域内的具备强大智能体和实用Skills的开源项目。
+[中文版本 (Chinese Version)](README-zh.md)
 
-# 为什么要开发EthoClaw
+An open-source project in the field of Ethology built on top of OpenClaw.
 
-行为学分析中，预处理、数据转换、格式匹配、环境配置等繁琐的流程，EthoClaw不仅可以帮助研究人员自动完成这些操作，还能搜索网络信息、生成分析报告、结果图、解读本地文献等，从而让研究人员更专注于解决科学问题，提高科研效率。
+## Why Develop EthoClaw
 
-# 已支持的功能
+In behavioral analysis, EthoClaw can help researchers automate tedious processes such as preprocessing, data conversion, format matching, and environment configuration. It can also search for network information, generate analysis reports, result graphs, and interpret local literature, allowing researchers to focus more on solving scientific problems and improving research efficiency.
 
-- **图表/报告生成**：
-  1. 基于追踪数据生成速度热图、轨迹热图；
-  2. 支持多组数据的小提琴图、聚类图、雷达图等；自动排版实验流程图和分析图；
-  3. 支持CSV/Excel格式转换；
-  4. 生成包含实验背景、样本信息、分析内容和总结的PDF分析报告。
-- **教程辅助**：
-  1. 为初学者提供参数计算方法、图表数据来源、聚类方法及参数等详细说明，便于论文方法部分撰写。
-- **本地知识库**：
-  1. 读取本地PDF论文和报告，总结并输出，形成本地研究日志。
-- **网络搜索**：
-  1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv论文。
-- **注**：
-  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能。
+## Supported Features
 
-# 计划支持的功能
+- **Chart/Report Generation:**
+  1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
+  2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
+  3. Support CSV/Excel format conversion;
+  4. Generate PDF analysis reports including experiment background, sample information, analysis content, and summaries.
+- **Tutorial Assistance:**
+  1. Provide detailed explanations for beginners on parameter calculation methods, chart data sources, clustering methods and parameters, etc., to facilitate writing the methods section of papers.
+- **Local Knowledge Base:**
+  1. Read local PDF papers and reports, summarize and output them, forming local research logs.
+- **Network Search:**
+  1. Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv papers.
+- **Note:**
+  Since EthoClaw is built on OpenClaw, it inherits all the features of OpenClaw.
 
-- 支持目标定位：基于图像识别技术，自动定位实验目标（如动物、环境元素等）。
-- 支持姿态估计：可接入开源的姿态估计模型/项目，自动估计实验目标的姿态（如头部、背部、尾部等）。
+## Planned Features
 
-# 快速开始
+- Support target localization: Based on image recognition technology, automatically locate experimental targets (such as animals, environmental elements, etc.).
+- Support pose estimation: Can access open-source pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.).
 
-本项目基于OpenClaw构建，配置和安装方式与OpenClaw类似或相同。
+## Quick Start
+
+This project is built on OpenClaw, and its configuration and installation methods are similar to or the same as OpenClaw.
 
 ```bash
-# 下载并安装 nvm：
+# Download and install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-# 代替重启 shell
+# Instead of restarting shell
 \. "$HOME/.nvm/nvm.sh"
-# 下载并安装 Node.js：
+# Download and install Node.js:
 nvm install 24
-# 验证 Node.js 版本：
+# Verify Node.js version:
 node -v # Should print "v24.14.0".
-# 下载并安装 pnpm：
+# Download and install pnpm:
 corepack enable pnpm
-# 验证 pnpm 版本：
+# Verify pnpm version:
 pnpm -v
 
-# 下载 EthoClaw 代码：
+# Download EthoClaw code:
 git clone https://github.com/penciler-star/EthoClaw.git
 cd EthoClaw
-# 安装
+# Install
 pnpm install
 pnpm ui:build # auto-installs UI deps on first run
 pnpm build
-# 配置 EthoClaw 环境
+# Configure EthoClaw environment
 pnpm openclaw onboard --install-daemon
-# 启动 EthoClaw
+# Start EthoClaw
 pnpm gateway:watch
 ```
+
+## Project Effects
