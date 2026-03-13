@@ -19,10 +19,12 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
 
 - **Automated Target Localization:**
   1. Based on image processing methods, automatically locate experimental targets (such as animals, environmental elements, etc.).
-  <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="450" /></div>
-  <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="450" /></div>
+  <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
+  <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
 - **Automatic Pose Estimation:**
   1. Access open-source deep learning pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.). Currently, it has supported the **SuperAnimal** framework.
+  <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
+  <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
 - **Chart/Report Generation:**
   1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
   2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;

@@ -18,10 +18,12 @@
 
 - **自动化目标定位**：
   1. 基于图像处理方法，自动定位实验目标（如动物、环境元素等）。
-  <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="450" /></div>
-  <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="450" /></div>
+  <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
+  <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
 - **自动姿态估计**：
   1. 接入开源的深度学习姿态估计模型/项目，自动估计实验目标的姿态（如头部、背部、尾部等）。目前已接入了**SuperAnimal**框架。
+  <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
+  <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
 - **图表/报告生成**：
   1. 基于追踪数据生成速度热图、轨迹热图；
   2. 支持多组数据的小提琴图、聚类图、雷达图等；自动排版实验流程图和分析图；
