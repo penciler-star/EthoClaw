@@ -1,5 +1,5 @@
 ---
-name: animal-pose-estimation
+name: ethoclaw-animal-pose-estimation
 description: Animal pose estimation using DeepLabCut SuperAnimal pre-trained models, supporting analysis of local videos and images.
 homepage: https://github.com/DeepLabCut/DeepLabCut
 metadata:
@@ -13,7 +13,8 @@ metadata:
             {
               "id": "pip",
               "kind": "pip",
-              "package": "deeplabcut[tf,modelzoo]",
+              "package": "deeplabcut",
+              "version": "--pre",
               "label": "Install DeepLabCut with model zoo support",
             },
           ],

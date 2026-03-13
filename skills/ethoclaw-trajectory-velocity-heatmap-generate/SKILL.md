@@ -1,5 +1,5 @@
 ---
-name: trajectory_velocity_heatmap_generate
+name: ethoclaw-trajectory_velocity_heatmap_generate
 description: Generate spatial velocity heatmaps and trajectory heatmaps from 2D/3D animal behavior tracking data. Supports flexible data formats (.h5, .csv) with auto-detection of body parts and column naming patterns. Handles missing data, outliers, and various tracking configurations.
 metadata: { "openclaw": { "emoji": "🐭", "requires": { "bins": ["python3"] } } }
 ---
