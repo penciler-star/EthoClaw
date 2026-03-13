@@ -1,5 +1,3 @@
-# <p align="center">EthoClaw</p>
-
 <div align=center><img src="docs/EthoClaw.png" width="450" /></div>
 
 [中文版本 (Chinese Version)](README-zh.md)
