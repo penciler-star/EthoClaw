@@ -26,7 +26,7 @@
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
 - **图表/报告生成**：
   1. 基于追踪数据生成速度热图、轨迹热图；
-  <div align=center><img src="docs/animal_speed_heatmap_demo.png" width="500" /></div>
+  <div align=center><img src="docs/heatmap_demo.png" width="500" /></div>
   2. 支持多组数据的小提琴图、聚类图、雷达图等；自动排版实验流程图和分析图；
   3. 支持CSV/Excel格式转换；
   4. 生成包含实验背景、样本信息、分析内容和总结的PDF分析报告。
