@@ -1,280 +1,390 @@
 ---
 name: ethoclaw-animal-grounding
-description: Animal grounding (center tracking) using OpenCV for 2D top-view videos of black mice.
+description: Animal center tracking using OpenCV for top-view videos, detecting black mouse body center position and exporting DeepLabCut-compatible results.
 metadata:
   {
     "openclaw":
       {
-        "emoji": "🐭",
+        "emoji": "🎯",
         "requires": { "python": ["opencv-python", "numpy", "pandas"] },
         "install":
           [
-            { "id": "pip", "kind": "pip", "package": "opencv-python", "label": "Install OpenCV" },
-            { "id": "pip", "kind": "pip", "package": "numpy", "label": "Install NumPy" },
-            { "id": "pip", "kind": "pip", "package": "pandas", "label": "Install Pandas" },
+            {
+              "id": "pip",
+              "kind": "pip",
+              "package": "opencv-python",
+              "label": "Install OpenCV for computer vision",
+            },
+            {
+              "id": "pip",
+              "kind": "pip",
+              "package": "numpy",
+              "label": "Install NumPy for numerical computing",
+            },
+            {
+              "id": "pip",
+              "kind": "pip",
+              "package": "pandas",
+              "label": "Install Pandas for data handling",
+            },
+            {
+              "id": "pip",
+              "kind": "pip",
+              "package": "tables",
+              "label": "Install PyTables for HDF5 support",
+            },
           ],
       },
   }
 ---
 
-# Animal Grounding (Center Tracking)
+# Animal Center Tracking (OpenCV-based)
 
-Use OpenCV-based computer vision methods to track the body center position of black mice in 2D top-view videos. Results are saved in DeepLabCut compatible format.
+Use OpenCV image processing techniques to track the body center position of a black mouse in top-view videos, and export results in DeepLabCut-compatible format.
 
-## Algorithm Description
+## Supported Scenarios
 
-The tracking algorithm uses the following approach:
+- **Top-view mouse tracking**: Black mouse on light background
+- **Single animal tracking**: One mouse per video
+- **Real-time or recorded video**: Process video files frame by frame
 
-1. **Frame differencing**: Detect moving objects by comparing consecutive frames
-2. **Contour detection**: Find contours of the detected motion regions
-3. **Center calculation**: Calculate the centroid (center of mass) of the largest contour as the animal position
-4. **Smoothing**: Apply simple moving average to reduce jitter
+## Adjustable Parameters
+
+| Parameter         | Type | Default | Description                                        |
+| ----------------- | ---- | ------- | -------------------------------------------------- |
+| `threshold_value` | int  | 80      | Binary threshold for detecting black mouse (0-255) |
+| `min_area`        | int  | 300     | Minimum contour area to filter noise (pixels)      |
+| `blur_kernel`     | int  | 5       | Gaussian blur kernel size for noise reduction      |
+| `morph_kernel`    | int  | 5       | Morphological operation kernel size                |
 
 ## Quick Start
 
-### Analyze a Single Video
+### Track a Single Video
 
 ```python
 import cv2
 import numpy as np
 import pandas as pd
+import os
+
+# Video path
+video_path = "/path/to/your/video.mp4"
+
+# Run tracking
+track_mouse_center(video_path)
+```
+
+### Track with Custom Parameters
+
+```python
+# Adjust parameters for different lighting conditions
+track_mouse_center(
+    video_path,
+    threshold_value=60,    # Lower threshold for darker mice
+    min_area=500,          # Larger minimum area
+    blur_kernel=7,         # Stronger noise reduction
+    morph_kernel=7
+)
+```
+
+## Parameter Description
+
+### Tracking Parameters
+
+| Parameter         | Type | Default  | Description                                              |
+| ----------------- | ---- | -------- | -------------------------------------------------------- |
+| `video_path`      | str  | Required | Path to input video file                                 |
+| `threshold_value` | int  | 80       | Binary threshold (lower values detect darker objects)    |
+| `min_area`        | int  | 300      | Minimum contour area in pixels to be considered as mouse |
+| `blur_kernel`     | int  | 5        | Gaussian blur kernel size (must be odd number)           |
+| `morph_kernel`    | int  | 5        | Morphological opening kernel size                        |
+
+## Output Results
+
+After analysis is complete, the following files will be generated in the same directory as the input video:
+
+- **`video_name_tracking.h5`**: HDF5 file containing center coordinate data (DeepLabCut-compatible)
+- **`video_name_tracking.csv`**: CSV file containing center coordinate data (easy to view)
+- **`video_name_tracking.mp4`**: Visualization video with center point annotations
+
+### Result Data Structure
+
+CSV/H5 files contain the following columns:
+
+- `scorer`: "EthoClaw"
+- `bodyparts`: "center"
+- `coords`: Coordinate type (x, y, likelihood)
+
+Example data:
+
+```
+         EthoClaw
+         center
+         x       y       likelihood
+0        320.0   240.0   1.0
+1        322.0   238.0   1.0
+2        NaN     NaN     0.0      # Detection failed
+```
+
+## Complete Example Script
+
+### Complete Video Tracking Example
+
+```python
+import cv2
+import numpy as np
+import pandas as pd
+import os
 from pathlib import Path
-from collections import deque
 
-def track_animal_center(video_path, output_folder=None, smoothing_window=5, visualize=True):
+
+def track_mouse_center(video_path,
+                       threshold_value=80,
+                       min_area=300,
+                       blur_kernel=5,
+                       morph_kernel=5):
     """
-    Track animal center position in a video using OpenCV.
+    Track black mouse center position in top-view video using OpenCV
 
-    Args:
-        video_path: Path to the video file
-        output_folder: Output directory (default: same as video)
-        smoothing_window: Window size for moving average smoothing
-        visualize: Whether to generate tracking visualization video
+    Parameters:
+    -----------
+    video_path : str
+        Path to input video file
+    threshold_value : int
+        Binary threshold for detecting black mouse (default 80)
+    min_area : int
+        Minimum contour area to filter noise (default 300)
+    blur_kernel : int
+        Gaussian blur kernel size (default 5)
+    morph_kernel : int
+        Morphological operation kernel size (default 5)
 
     Returns:
-        DataFrame with tracking results
+    --------
+    dict : Paths to output files
     """
 
-    # Determine output directory
-    video_path = Path(video_path)
-    if output_folder is None:
-        output_folder = video_path.parent
-    else:
-        output_folder = Path(output_folder)
-        output_folder.mkdir(parents=True, exist_ok=True)
+    # Check input file
+    if not os.path.exists(video_path):
+        raise FileNotFoundError(f"Video file does not exist: {video_path}")
 
-    # Open video
-    cap = cv2.VideoCapture(str(video_path))
+    # Generate output paths (same directory as input video)
+    video_dir = os.path.dirname(video_path)
+    video_name = os.path.splitext(os.path.basename(video_path))[0]
+
+    output_h5 = os.path.join(video_dir, f"{video_name}_tracking.h5")
+    output_csv = os.path.join(video_dir, f"{video_name}_tracking.csv")
+    output_video = os.path.join(video_dir, f"{video_name}_tracking.mp4")
+
+    # Open input video
+    cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
-        raise ValueError(f"Cannot open video: {video_path}")
+        raise ValueError(f"Cannot open video file: {video_path}")
 
     # Get video properties
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    # Initialize variables
-    centers = []
-    frame_indices = []
-    smoothing_buffer = deque(maxlen=smoothing_window)
+    # Setup output video writer
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter(output_video, fourcc, fps, (frame_width, frame_height))
 
-    # Background subtractor
-    bg_subtractor = cv2.createBackgroundSubtractorMOG2(detectShadows=False)
+    # Store tracking results
+    tracking_data = {
+        'frame': [],
+        'center_x': [],
+        'center_y': [],
+        'likelihood': []
+    }
 
-    # Read first frame
-    ret, prev_frame = cap.read()
-    if not ret:
-        raise ValueError("Cannot read first frame")
+    frame_count = 0
 
-    frame_idx = 0
-
-    # Initialize video writer for visualization
-    if visualize:
-        output_video_path = output_folder / f"{video_path.stem}_labeled.mp4"
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(str(output_video_path), fourcc, fps, (width, height))
+    print(f"Starting video processing: {video_path}")
+    print(f"Total frames: {total_frames}, Resolution: {frame_width}x{frame_height}, FPS: {fps}")
 
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
-        frame_idx += 1
+        frame_count += 1
 
-        # Apply background subtraction
-        fg_mask = bg_subtractor.apply(frame)
+        # Image preprocessing
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (blur_kernel, blur_kernel), 0)
 
-        # Apply threshold to get binary image
-        _, thresh = cv2.threshold(fg_mask, 50, 255, cv2.THRESH_BINARY)
+        # Binarization (extract black regions)
+        _, thresh = cv2.threshold(blurred, threshold_value, 255, cv2.THRESH_BINARY_INV)
 
-        # Morphological operations to remove noise
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-        thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        # Morphological operation (opening to remove noise)
+        kernel = np.ones((morph_kernel, morph_kernel), np.uint8)
+        mask = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
 
         # Find contours
-        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        center_x, center_y, likelihood = np.nan, np.nan, 0.0
 
         if contours:
-            # Find the largest contour
+            # Find largest contour
             largest_contour = max(contours, key=cv2.contourArea)
 
-            # Filter small contours (noise)
-            if cv2.contourArea(largest_contour) > 500:
-                # Calculate centroid
+            # Filter small noise
+            if cv2.contourArea(largest_contour) > min_area:
+                # Calculate contour center (image moments)
                 M = cv2.moments(largest_contour)
-                if M["m00"] > 0:
-                    cx = int(M["m10"] / M["m00"])
-                    cy = int(M["m01"] / M["m00"])
+                if M["m00"] != 0:
+                    center_x = int(M["m10"] / M["m00"])
+                    center_y = int(M["m01"] / M["m00"])
+                    likelihood = 1.0  # Successfully detected
 
-                    # Apply smoothing
-                    smoothing_buffer.append((cx, cy))
-                    smoothed_cx = int(np.mean([p[0] for p in smoothing_buffer]))
-                    smoothed_cy = int(np.mean([p[1] for p in smoothing_buffer]))
+                    # Draw results on frame
+                    cv2.drawContours(frame, [largest_contour], -1, (0, 255, 0), 2)
+                    cv2.circle(frame, (center_x, center_y), 5, (0, 0, 255), -1)
+                    text = f"Center: ({center_x}, {center_y})"
+                    cv2.putText(frame, text, (center_x - 50, center_y - 20),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-                    centers.append([smoothed_cx, smoothed_cy, 1.0])  # [x, y, likelihood]
-                else:
-                    centers.append([cx, cy, 0.0] if 'cx' in locals() else [0, 0, 0.0])
-            else:
-                centers.append([0, 0, 0.0])
-        else:
-            centers.append([0, 0, 0.0])
+        # Record tracking data
+        tracking_data['frame'].append(frame_count)
+        tracking_data['center_x'].append(center_x)
+        tracking_data['center_y'].append(center_y)
+        tracking_data['likelihood'].append(likelihood)
 
-        frame_indices.append(frame_idx)
+        # Write to output video
+        out.write(frame)
 
-        # Draw visualization
-        if visualize:
-            vis_frame = frame.copy()
-
-            if centers[-1][2] > 0:
-                cv2.circle(vis_frame, (centers[-1][0], centers[-1][1]), 10, (0, 255, 0), -1)
-                cv2.putText(vis_frame, "center", (centers[-1][0] + 15, centers[-1][1] - 15),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-
-            # Add frame number
-            cv2.putText(vis_frame, f"Frame: {frame_idx}/{total_frames}", (10, 30),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-
-            out.write(vis_frame)
+        # Progress display
+        if frame_count % 100 == 0:
+            print(f"Progress: {frame_count}/{total_frames} ({frame_count/total_frames*100:.1f}%)")
 
     # Release resources
     cap.release()
-    if visualize:
-        out.release()
+    out.release()
 
-    # Create DataFrame in DeepLabCut format
-    # DeepLabCut format: multi-index columns (scorer, individual, bodypart, coord)
-    n_frames = len(frame_indices)
+    # Create DeepLabCut-compatible DataFrame
+    scorer = 'EthoClaw'
+    bodypart = 'center'
 
-    # Create multi-level column index
+    # Build multi-index columns
     columns = pd.MultiIndex.from_tuples([
-        ('ethoclaw_animal_grounding', 'center', 'x', 'x'),
-        ('ethoclaw_animal_grounding', 'center', 'x', 'y'),
-        ('ethoclaw_animal_grounding', 'center', 'x', 'likelihood'),
-    ], names=['scorer', 'individuals', 'bodyparts', 'coords'])
+        (scorer, bodypart, 'x'),
+        (scorer, bodypart, 'y'),
+        (scorer, bodypart, 'likelihood')
+    ], names=['scorer', 'bodyparts', 'coords'])
 
-    # Create data array
-    data = np.array(centers)
-    df = pd.DataFrame(data, columns=columns, index=frame_indices)
-    df.index.name = 'frames'
+    # Create DataFrame
+    df_data = np.column_stack([
+        tracking_data['center_x'],
+        tracking_data['center_y'],
+        tracking_data['likelihood']
+    ])
 
-    # Save to CSV
-    csv_path = output_folder / f"{video_path.stem}DLC_center.csv"
-    df.to_csv(csv_path)
+    df = pd.DataFrame(df_data, columns=columns)
 
-    # Save to H5
-    h5_path = output_folder / f"{video_path.stem}DLC_center.h5"
-    df.to_hdf(h5_path, key='df_with_missing', mode='w')
+    # Save as HDF5 format (DeepLabCut-compatible)
+    df.to_hdf(output_h5, key='df_with_missing', mode='w')
 
-    print(f"Tracking complete!")
-    print(f"Results saved to: {output_folder}")
-    print(f"  - CSV: {csv_path.name}")
-    print(f"  - H5: {h5_path.name}")
-    if visualize:
-        print(f"  - Video: {output_video_path.name}")
+    # Save as CSV format
+    df.to_csv(output_csv)
 
-    return df
+    print(f"\nProcessing complete!")
+    print(f"Results saved:")
+    print(f"  - HDF5: {output_h5}")
+    print(f"  - CSV: {output_csv}")
+    print(f"  - Video: {output_video}")
+
+    return {
+        'h5_path': output_h5,
+        'csv_path': output_csv,
+        'video_path': output_video,
+        'total_frames': frame_count
+    }
 
 
-# ==================== User Configuration ====================
+# ==================== User Configuration Area ====================
 
 # Video path (Required)
 video_path = "/path/to/your/video.mp4"
 
-# Output directory (Optional, default: same as video)
-output_folder = None  # Example: "/path/to/output"
-
-# Smoothing window size (Optional, default: 5)
-# Larger values = smoother but more lag
-smoothing_window = 5
-
-# Generate visualization video (Optional, default: True)
-visualize = True
+# Tracking parameters (Optional)
+threshold_value = 80    # Binary threshold (0-255), lower for darker mice
+min_area = 300          # Minimum contour area in pixels
+blur_kernel = 5         # Gaussian blur kernel size
+morph_kernel = 5        # Morphological kernel size
 
 # ==================== Run Tracking ====================
 
-df = track_animal_center(
-    video_path=video_path,
-    output_folder=output_folder,
-    smoothing_window=smoothing_window,
-    visualize=visualize
+# Verify video exists
+if not os.path.exists(video_path):
+    raise FileNotFoundError(f"Video file does not exist: {video_path}")
+
+print(f"Starting mouse center tracking: {video_path}")
+
+# Run tracking
+result = track_mouse_center(
+    video_path,
+    threshold_value=threshold_value,
+    min_area=min_area,
+    blur_kernel=blur_kernel,
+    morph_kernel=morph_kernel
 )
+
+print("Tracking complete!")
+print(f"Total frames processed: {result['total_frames']}")
+print(f"Results saved to: {os.path.dirname(video_path)}")
 ```
 
-## Parameter Description
+## Tracking Method
 
-| Parameter          | Type | Default  | Description                                            |
-| ------------------ | ---- | -------- | ------------------------------------------------------ |
-| `video_path`       | str  | Required | Path to the video file                                 |
-| `output_folder`    | str  | None     | Output directory, if None uses same directory as video |
-| `smoothing_window` | int  | 5        | Window size for moving average smoothing               |
-| `visualize`        | bool | True     | Whether to generate tracking visualization video       |
+The tracking algorithm follows these steps:
 
-## Output Results
+1. **Image Preprocessing**
+   - Convert to grayscale
+   - Apply Gaussian blur to reduce noise
 
-After analysis, the following files will be generated in the output directory:
+2. **Binarization**
+   - Use threshold to extract black mouse regions (THRESH_BINARY_INV)
+   - Pixels darker than `threshold_value` become white (255)
 
-- **`video_nameDLC_center.h5`**: HDF5 file containing tracking data in DeepLabCut format
-- **`video_nameDLC_center.csv`**: CSV file containing tracking data (same content as H5)
-- **`video_name_labeled.mp4`**: Visualization video with center point annotated
+3. **Morphological Operations**
+   - Apply opening operation to remove small noise
 
-## Result Data Structure
+4. **Contour Detection**
+   - Find all contours in the binary mask
+   - Select the largest contour (assumed to be the mouse)
 
-The output CSV/H5 files follow DeepLabCut's format with multi-level columns:
+5. **Center Calculation**
+   - Use image moments to calculate the centroid of the contour
+   - Formula: `cx = M10/M00`, `cy = M01/M00`
 
-- **scorer**: `ethoclaw_animal_grounding`
-- **individuals**: `center`
-- **bodyparts**: `center`
-- **coords**: `x`, `y`, `likelihood`
-
-Each row represents a frame, with the x, y coordinates and likelihood (1.0 for valid detection, 0.0 for no detection).
-
-## Algorithm Details
-
-### Background Subtraction
-
-The algorithm uses OpenCV's MOG2 (Mixture of Gaussians) background subtractor to detect moving objects. This method models each pixel as a mixture of Gaussians and adapts to changes in the background.
-
-### Contour Processing
-
-- Detects external contours in the foreground mask
-- Selects the largest contour as the animal (assumes single animal)
-- Filters out small contours (area < 500 pixels) as noise
-
-### Center Calculation
-
-- Uses image moments to calculate the centroid of the contour
-- Applies a moving average filter to reduce jitter between frames
+6. **Result Export**
+   - Save coordinates in DeepLabCut-compatible format
+   - Generate visualization video with annotations
 
 ## Notes
 
-1. **Single Animal**: This algorithm assumes a single animal in the frame. For multiple animals, consider using DeepLabCut's pose estimation instead.
+1. **Video Requirements**:
+   - Top-view perspective
+   - Black mouse on light background
+   - Even lighting conditions
+   - Minimal shadows
 
-2. **Contrast Requirements**: Works best when the animal has good contrast with the background. For black mice on dark backgrounds, ensure adequate lighting.
+2. **Parameter Tuning**:
+   - If mouse is not detected: decrease `threshold_value`
+   - If too much noise is detected: increase `min_area` or `blur_kernel`
+   - For very small mice: decrease `min_area`
 
-3. **Frame Rate**: The tracking accuracy depends on the video frame rate. Higher frame rates provide smoother tracking.
+3. **Detection Failure**:
+   - When mouse is occluded or leaves the frame, `likelihood` will be 0
+   - Coordinates will be NaN for failed detections
 
-4. **No Detection**: When no animal is detected (e.g., animal leaves frame), the center position is set to (0, 0) with likelihood 0.0.
+4. **Single Animal Only**:
+   - This method tracks only the largest black object
+   - For multiple animals, consider using DeepLabCut SuperAnimal models
 
-5. **DeepLabCut Compatibility**: The output format is compatible with DeepLabCut's native format, allowing integration with other DeepLabCut analysis tools.
+5. **Output Compatibility**:
+   - HDF5 format is compatible with DeepLabCut analysis tools
+   - CSV format can be opened in Excel or Python pandas
