@@ -15,7 +15,7 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
 
 - Open field, elevated plus maze, and other 2D top-down shooting scenarios
 
-## Supported Features
+## Highlighted Features
 
 - **Automated Target Localization:**
   1. Based on image processing methods, automatically locate experimental targets (such as animals, environmental elements, etc.).
@@ -107,3 +107,11 @@ pip install --pre deeplabcut
 
 
 ```
+
+## Contributions
+
+We thank all developers who have contributed to the EthoClaw project.
+
+## Feedback
+
+If you encounter any issues or have suggestions while using this project, please provide feedback through Issues.

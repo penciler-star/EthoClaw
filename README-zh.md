@@ -105,3 +105,11 @@ pip install --pre deeplabcut
 
 
 ```
+
+## 贡献
+
+感谢所有为EthoClaw项目做出贡献的开发者
+
+## 反馈
+
+如果您在使用本项目过程中遇到任何问题或有任何建议，欢迎通过[Issues](https://github.com/penciler-star/EthoClaw/issues)反馈。
