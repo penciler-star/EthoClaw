@@ -29,6 +29,9 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
   1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
   <div align=center><img src="docs/headmap_demo.png" width="500" /></div>
   2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
+  <div align=center><img src="docs/violin_demo.png" width="500" /></div>
+  <div align=center><img src="docs/clustermap_demo.png" width="500" /></div>
+  <div align=center><img src="docs/radar_demo.png" width="500" /></div>
   3. Support CSV/Excel format conversion;
   4. Generate PDF analysis reports including experiment background, sample information, analysis content, and summaries.
 - **Tutorial Assistance:**
