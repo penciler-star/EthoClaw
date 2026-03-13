@@ -17,51 +17,35 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
 
 ## Highlighted Features
 
-### Automated Target Localization:
-
-#### 1.Based on image processing methods, automatically locate experimental targets (such as animals, environmental elements, etc.).
-
+- **Automated Target Localization:**
+  1. Based on image processing methods, automatically locate experimental targets (such as animals, environmental elements, etc.).
   <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
 
-### Automatic Pose Estimation:
-
-#### 1.Access open-source deep learning pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.). Currently, it has supported the **SuperAnimal** framework.
-
+- **Automatic Pose Estimation:**
+  1. Access open-source deep learning pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.). Currently, it has supported the **SuperAnimal** framework.
   <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
 
-### Chart/Report Generation:
-
-#### 1.Generate speed heatmaps and trajectory heatmaps based on tracking data;
-
+- **Chart/Report Generation:**
+  1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
   <div align=center><img src="docs/headmap_demo.png" width="500" /></div>
 
-#### 2.Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
-
+  2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
   <div align=center><img src="docs/violin_demo.png" width="500" /></div>
   <div align=center><img src="docs/clustermap_demo1.png" width="500" /></div>
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
+  3. Support CSV/Excel format conversion;
+  4. Generate PDF analysis reports including experiment background, sample information, analysis content, and summaries.
 
-#### 3.Support CSV/Excel format conversion;
-
-#### 4.Generate PDF analysis reports including experiment background, sample information, analysis content, and summaries.
-
-### Tutorial Assistance:
-
-#### 1.Provide detailed explanations for beginners on parameter calculation methods, chart data sources, clustering methods and parameters, etc., to facilitate writing the methods section of papers.
-
-### Local Knowledge Base:
-
-#### 1.Read local PDF papers and reports, summarize and output them, forming local research logs.
-
-### Network Search:
-
-#### 1.Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv papers.
-
-### Note:
-
-#### Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins.
+- **Tutorial Assistance:**
+  1. Provide detailed explanations for beginners on parameter calculation methods, chart data sources, clustering methods and parameters, etc., to facilitate writing the methods section of papers.
+- **Local Knowledge Base:**
+  1. Read local PDF papers and reports, summarize and output them, forming local research logs.
+- **Network Search:**
+  1. Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv papers.
+- **Note:**
+  Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins.
 
 ## Quick Start
 
