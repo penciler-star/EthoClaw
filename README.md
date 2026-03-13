@@ -13,7 +13,7 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
 
 ## Supported Experiment Scenarios
 
-- Open field, elevated plus maze, and other 2D top-down shooting scenarios
+- Open field, elevated plus maze, and other 2D top-down scenarios
 
 ## Highlighted Features
 
