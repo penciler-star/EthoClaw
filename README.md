@@ -27,6 +27,7 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
 - **Chart/Report Generation:**
   1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
+  <div align=center><img src="docs/animal_speed_heatmap_demo.png" width="500" /></div>
   2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
   3. Support CSV/Excel format conversion;
   4. Generate PDF analysis reports including experiment background, sample information, analysis content, and summaries.
