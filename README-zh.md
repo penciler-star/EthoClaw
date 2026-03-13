@@ -42,7 +42,7 @@
 
 ### 系统要求
 
-- 系统要求和OpenClaw相同
+- 系统要求和OpenClaw相同，推荐ubuntu 24.04 LTS版本。
 - 如果要开启自动化姿态估计功能，电脑最好安装**NVIDIA GPU**，并且安装CUDA和cuDNN。
 
 ### 安装

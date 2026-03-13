@@ -42,7 +42,7 @@ This project is built on OpenClaw, and its configuration and installation method
 
 ### System Requirements
 
-- System requirements are the same as OpenClaw
+- System requirements are the same as OpenClaw, recommend ubuntu 24.04 LTS version.
 - If you want to enable automated pose estimation functionality, it is recommended to have an **NVIDIA GPU** with CUDA and cuDNN installed.
 
 ### Installation
