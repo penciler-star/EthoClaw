@@ -8,6 +8,14 @@ An open-source project in the field of Ethology built on top of OpenClaw.
 
 In behavioral analysis, EthoClaw can help researchers automate tedious processes such as preprocessing, data conversion, format matching, and environment configuration. It can also search for network information, generate analysis reports, result graphs, and interpret local literature, allowing researchers to focus more on solving scientific problems and improving research efficiency.
 
+## Supported Species
+
+- Black mouse
+
+## Supported Experiment Scenarios
+
+- Open field, elevated plus maze, and other 2D top-down shooting scenarios
+
 ## Supported Features
 
 - **Automated Target Localization:**
