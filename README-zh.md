@@ -18,8 +18,8 @@
 
 - **自动化目标定位**：
   1. 基于图像识别技术，自动定位实验目标（如动物、环境元素等）。
-  <div align=center><img src="docs/docs/animal_grounding_demo_OFT.gif" width="450" /></div>
-  <div align=center><img src="docs/docs/animal_grounding_demo_EPM.gif" width="450" /></div>
+  <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="450" /></div>
+  <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="450" /></div>
 - **自动姿态估计**：
   1. 接入开源的姿态估计模型/项目，自动估计实验目标的姿态（如头部、背部、尾部等）。
 - **图表/报告生成**：
