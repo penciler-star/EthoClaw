@@ -57,6 +57,14 @@ corepack enable pnpm
 # Verify pnpm version:
 pnpm -v
 
+# Download and install miniconda:
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+# Initialize conda:
+conda init bash
+# Restart shell:
+source ~/.bashrc
+
 # Download EthoClaw code:
 git clone https://github.com/penciler-star/EthoClaw.git
 cd EthoClaw

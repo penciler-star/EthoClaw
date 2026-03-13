@@ -57,6 +57,14 @@ corepack enable pnpm
 # 验证 pnpm 版本：
 pnpm -v
 
+# 下载并按照miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+# 初始化conda
+conda init bash
+# 重启shell
+source ~/.bashrc
+
 # 下载 EthoClaw 代码：
 git clone https://github.com/penciler-star/EthoClaw.git
 cd EthoClaw
