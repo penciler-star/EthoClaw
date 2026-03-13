@@ -1,8 +1,6 @@
 # <p align="center">EthoClaw</p>
 
-<p align="center">
-  <img src="docs/EthoClaw.png" alt="EthoClaw" width="400"/>
-</p>
+<div align=center><img src="docs/EthoClaw.png" width="450" /></div>
 
 [中文版本 (Chinese Version)](README-zh.md)
 
