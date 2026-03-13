@@ -16,25 +16,33 @@
 
 ## 已支持的功能
 
-- **自动化目标定位**：1.基于图像处理方法，自动定位实验目标（如动物、环境元素等）。
+### 自动化目标定位：
+
+#### 1.基于图像处理方法，自动定位实验目标（如动物、环境元素等）。
+
   <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
-- **自动姿态估计**：1.接入开源的深度学习姿态估计模型/项目，自动估计实验目标的姿态（如头部、背部、尾部等）。目前已接入了**SuperAnimal**框架。
+### 自动姿态估计：
+#### 1.接入开源的深度学习姿态估计模型/项目，自动估计实验目标的姿态（如头部、背部、尾部等）。目前已接入了**SuperAnimal**框架。
   <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
-- **图表/报告生成**：1.基于追踪数据生成速度热图、轨迹热图；
+### 图表/报告生成：
+#### 1.基于追踪数据生成速度热图、轨迹热图；
   <div align=center><img src="docs/heatmap_demo.png" width="500" /></div>
-  2. 支持多组数据的小提琴图、聚类图、雷达图等；自动排版实验流程图和分析图；
+#### 2. 支持多组数据的小提琴图、聚类图、雷达图等；自动排版实验流程图和分析图；
   <div align=center><img src="docs/violin_demo.png" width="500" /></div>
   <div align=center><img src="docs/clustermap_demo1.png" width="500" /></div>
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
-  3.支持CSV/Excel格式转换；
-  4.生成包含实验背景、样本信息、分析内容和总结的PDF分析报告。
-- **教程辅助**：1.为初学者提供参数计算方法、图表数据来源、聚类方法及参数等详细说明，便于论文方法部分撰写。
-- **本地知识库**：1.读取本地PDF论文和报告，总结并输出，形成本地研究日志。
-- **网络搜索**：1.通过网页或学术搜索获取最新论文，支持每日定时推送arxiv论文。
-- **注**：
-  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件。
+#### 3.支持CSV/Excel格式转换；
+#### 4.生成包含实验背景、样本信息、分析内容和总结的PDF分析报告。
+### 教程辅助：
+#### 1.为初学者提供参数计算方法、图表数据来源、聚类方法及参数等详细说明，便于论文方法部分撰写。
+### 本地知识库：
+#### 1.读取本地PDF论文和报告，总结并输出，形成本地研究日志。
+### 网络搜索：
+#### 1.通过网页或学术搜索获取最新论文，支持每日定时推送arxiv论文。
+### 注：
+#### 由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件。
 
 ## 快速开始
 
