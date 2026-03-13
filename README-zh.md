@@ -57,7 +57,7 @@ corepack enable pnpm
 # 验证 pnpm 版本：
 pnpm -v
 
-# 下载并按照miniconda
+# 下载并安装 miniconda
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 # 初始化conda
