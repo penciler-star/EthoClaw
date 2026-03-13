@@ -19,6 +19,8 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
 
 - **Automated Target Localization:**
   1. Based on image recognition technology, automatically locate experimental targets (such as animals, environmental elements, etc.).
+  <div align=center><img src="docs/docs/animal_grounding_demo_OFT.gif" width="450" /></div>
+  <div align=center><img src="docs/docs/animal_grounding_demo_EPM.gif" width="450" /></div>
 - **Automatic Pose Estimation:**
   1. Access open-source pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.).
 - **Chart/Report Generation:**
