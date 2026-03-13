@@ -2,7 +2,7 @@
 
 [English Version](README.md)
 
-基于OpenClaw构建的Ethology领域内的开源项目。
+基于OpenClaw构建的Ethology领域内的开源项目，重点开发行为学领域实用skills。
 
 ## 为什么要开发EthoClaw
 

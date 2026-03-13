@@ -2,7 +2,7 @@
 
 [中文版本 (Chinese Version)](README-zh.md)
 
-An open-source project in the field of Ethology built on top of OpenClaw.
+An open-source project for the field of Ethology, basing on OpenClaw, with a focus on developing practical skills for behavioral research.
 
 ## Why Develop EthoClaw
 
