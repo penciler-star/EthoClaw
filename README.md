@@ -2,11 +2,7 @@
 
 [中文版本 (Chinese Version)](README-zh.md)
 
-An open-source project for the field of Ethology, basing on OpenClaw, with a focus on developing practical skills for behavioral research.
-
-## Why Develop EthoClaw
-
-In behavioral analysis, EthoClaw can help researchers automate tedious processes such as preprocessing, data conversion, format matching, and environment configuration. It can also search for network information, generate analysis reports, result graphs, and interpret local literature, allowing researchers to focus more on solving scientific problems and improving research efficiency.
+**EthoClaw** is an open-source project in the field of Ethology built on OpenClaw, with a core focus on implementing practical skills for behavioral research. Targeting cumbersome workflows in ethological analysis—such as preprocessing, data conversion, format matching, and environment setup—EthoClaw not only automates these tasks for researchers but also supports web information retrieval, analytical report and result figure generation, local literature interpretation, automated object localization, and automatic pose estimation, enabling researchers to focus more on solving scientific questions and significantly improving research efficiency.
 
 ## Supported Species
 
