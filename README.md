@@ -10,6 +10,10 @@ In behavioral analysis, EthoClaw can help researchers automate tedious processes
 
 ## Supported Features
 
+- **Automated Target Localization:**
+  1. Based on image recognition technology, automatically locate experimental targets (such as animals, environmental elements, etc.).
+- **Automatic Pose Estimation:**
+  1. Access open-source pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.).
 - **Chart/Report Generation:**
   1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
   2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
@@ -24,14 +28,14 @@ In behavioral analysis, EthoClaw can help researchers automate tedious processes
 - **Note:**
   Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins.
 
-## Planned Features
-
-- Support target localization: Based on image recognition technology, automatically locate experimental targets (such as animals, environmental elements, etc.).
-- Support pose estimation: Can access open-source pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.).
-
 ## Quick Start
 
 This project is built on OpenClaw, and its configuration and installation methods are similar to or the same as OpenClaw.
+
+### System Requirements
+
+- System requirements are the same as OpenClaw
+- If you want to enable automated pose estimation functionality, it is recommended to have an **NVIDIA GPU** with CUDA and cuDNN installed.
 
 ### Installation
 
@@ -60,10 +64,20 @@ pnpm build
 pnpm openclaw onboard --install-daemon
 # Start EthoClaw
 pnpm gateway:watch
+
+
+# If you need to enable pose estimation functionality and have an NVIDIA GPU
+# 1. Install drivers, CUDA, and cuDNN
+# 2. Refer to https://pytorch.org/ to install the appropriate torch version for your computer
+# 3. Install pose estimation model dependencies, here we use DeepLabCut
+pip install --pre deeplabcut
 ```
 
-### Usage
+### Usage Examples
 
 ```
+
+
+
 
 ```
