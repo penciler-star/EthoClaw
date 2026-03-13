@@ -42,6 +42,12 @@
 
 本项目基于OpenClaw构建，配置和安装方式与OpenClaw类似或相同。
 
+本项目有两种食用方式：
+
+**1. 如果您已经安装了OpenClaw，可以直接将EthoClaw中skill下带有`ethoclaw-`前缀的文件夹拖入OpenClaw的SKILL文件夹下**
+
+**2. 如果您还没有安装OpenClaw，也可以直接按照以下步骤安装EthoClaw：**
+
 ### 系统要求
 
 - 系统要求和OpenClaw相同，推荐ubuntu 24.04 LTS版本。

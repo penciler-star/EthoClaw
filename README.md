@@ -43,6 +43,12 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
 
 This project is built on OpenClaw, and its configuration and installation methods are similar to or the same as OpenClaw.
 
+This project has two ways to use:
+
+**1. If you already have OpenClaw installed, you can directly drag the folders with the prefix `ethoclaw-` in the skill folder of EthoClaw into the SKILL folder of OpenClaw.**
+
+**2. If you haven't installed OpenClaw yet, you can follow the steps below to install EthoClaw:**
+
 ### System Requirements
 
 - System requirements are the same as OpenClaw, recommend ubuntu 24.04 LTS version.
