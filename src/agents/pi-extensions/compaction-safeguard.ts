@@ -622,7 +622,8 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
       const contextWindowTokens = runtime?.contextWindowTokens ?? modelContextWindow;
       const turnPrefixMessages = preparation.turnPrefixMessages ?? [];
       let messagesToSummarize = preparation.messagesToSummarize;
-      const recentTurnsPreserve = resolveRecentTurnsPreserve(runtime?.recentTurnsPreserve);
+      const isEthoclaw = runtime?.promptMode === "ethoclaw";
+      const recentTurnsPreserve = resolveRecentTurnsPreserve(isEthoclaw ? 6 : runtime?.recentTurnsPreserve);
       const structuredInstructions = buildCompactionStructureInstructions(
         customInstructions,
         summarizationInstructions,
