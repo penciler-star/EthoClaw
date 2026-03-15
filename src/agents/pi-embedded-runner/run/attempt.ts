@@ -63,6 +63,7 @@ import { subscribeEmbeddedPiSession } from "../../pi-embedded-subscribe.js";
 import { createPreparedEmbeddedPiSettingsManager } from "../../pi-project-settings.js";
 import { toClientToolDefinitions } from "../../pi-tool-definition-adapter.js";
 import { createOpenClawCodingTools, resolveToolLoopDetectionConfig } from "../../pi-tools.js";
+import { detectToolLazyProfile } from "../../tool-lazy-loader.js";
 import { resolveSandboxContext } from "../../sandbox.js";
 import { resolveSandboxRuntimeStatus } from "../../sandbox/runtime-status.js";
 import { isXaiProvider } from "../../schema/clean-for-xai.js";
@@ -752,10 +753,22 @@ export async function runEmbeddedAttempt(
     });
     // Check if the model supports native image input
     const modelHasVision = params.model.input?.includes("image") ?? false;
+    const promptMode = params.promptMode ?? resolvePromptModeForSession(params.sessionKey);
+    const effectiveLazyProfile =
+      params.lazyProfile ??
+      (promptMode === "ethoclaw"
+        ? detectToolLazyProfile({
+          prompt: params.prompt,
+          trigger: params.trigger,
+          isSubagent: isSubagentSessionKey(params.sessionKey),
+        })
+        : undefined);
+
     const toolsRaw = params.disableTools
       ? []
       : createOpenClawCodingTools({
         agentId: sessionAgentId,
+        lazyProfile: effectiveLazyProfile,
         exec: {
           ...params.execOverrides,
           elevated: params.bashElevated,
@@ -794,7 +807,6 @@ export async function runEmbeddedAttempt(
         requireExplicitMessageTarget:
           params.requireExplicitMessageTarget ?? isSubagentSessionKey(params.sessionKey),
         disableMessageTool: params.disableMessageTool,
-        lazyProfile: params.lazyProfile,
       });
     const tools = sanitizeToolsForGoogle({ tools: toolsRaw, provider: params.provider });
     const allowedToolNames = collectAllowedToolNames({
@@ -891,7 +903,6 @@ export async function runEmbeddedAttempt(
       },
     });
     const isDefaultAgent = sessionAgentId === defaultAgentId;
-    const promptMode = params.promptMode ?? resolvePromptModeForSession(params.sessionKey);
     const docsPath = await resolveOpenClawDocsPath({
       workspaceDir: effectiveWorkspace,
       argv1: process.argv[1],
