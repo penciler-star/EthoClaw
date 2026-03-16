@@ -105,14 +105,6 @@ pnpm gateway:watch
 pip install --pre deeplabcut
 ```
 
-### 使用示例
-
-```
-
-
-
-```
-
 ## 贡献
 
 感谢所有为EthoClaw项目做出贡献的开发者
