@@ -38,7 +38,7 @@ const CORE_TOOL_SECTION_ORDER: Array<{ id: string; label: string }> = [
   { id: "media", label: "Media" },
 ];
 
-export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
+const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
   {
     id: "read",
     label: "read",
@@ -239,7 +239,7 @@ const CORE_TOOL_BY_ID = new Map<string, CoreToolDefinition>(
   CORE_TOOL_DEFINITIONS.map((tool) => [tool.id, tool]),
 );
 
-export function listCoreToolIdsForProfile(profile: ToolProfileId): string[] {
+function listCoreToolIdsForProfile(profile: ToolProfileId): string[] {
   return CORE_TOOL_DEFINITIONS.filter((tool) => tool.profiles.includes(profile)).map(
     (tool) => tool.id,
   );

@@ -84,6 +84,4 @@ export type ReplyPayload = {
   isReasoning?: boolean;
   /** Channel-specific payload data (per-channel envelope). */
   channelData?: Record<string, unknown>;
-  /** Optional prompt mode override for the next turn. */
-  promptMode?: string;
 };

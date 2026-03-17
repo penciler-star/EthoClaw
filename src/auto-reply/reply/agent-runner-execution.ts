@@ -13,15 +13,12 @@ import {
   sanitizeUserFacingText,
 } from "../../agents/pi-embedded-helpers.js";
 import { runEmbeddedPiAgent } from "../../agents/pi-embedded.js";
-import { type PromptMode } from "../../agents/system-prompt.js";
 import {
   resolveGroupSessionKey,
   resolveSessionTranscriptPath,
   type SessionEntry,
   updateSessionStore,
 } from "../../config/sessions.js";
-import { isSubagentSessionKey } from "../../routing/session-key.js";
-import { detectToolLazyProfile } from "../../agents/tool-lazy-loader.js";
 import { logVerbose } from "../../globals.js";
 import { emitAgentEvent, registerAgentRunContext } from "../../infra/agent-events.js";
 import { defaultRuntime } from "../../runtime.js";
@@ -60,18 +57,17 @@ export type RuntimeFallbackAttempt = {
 
 export type AgentRunLoopResult =
   | {
-    kind: "success";
-    runId: string;
-    runResult: Awaited<ReturnType<typeof runEmbeddedPiAgent>>;
-    fallbackProvider?: string;
-    fallbackModel?: string;
-    fallbackAttempts: RuntimeFallbackAttempt[];
-    didLogHeartbeatStrip: boolean;
-    autoCompactionCompleted: boolean;
-    promptMode?: string;
-    /** Payload keys sent directly (not via pipeline) during tool flush. */
-    directlySentBlockKeys?: Set<string>;
-  }
+      kind: "success";
+      runId: string;
+      runResult: Awaited<ReturnType<typeof runEmbeddedPiAgent>>;
+      fallbackProvider?: string;
+      fallbackModel?: string;
+      fallbackAttempts: RuntimeFallbackAttempt[];
+      didLogHeartbeatStrip: boolean;
+      autoCompactionCompleted: boolean;
+      /** Payload keys sent directly (not via pipeline) during tool flush. */
+      directlySentBlockKeys?: Set<string>;
+    }
   | { kind: "final"; payload: ReplyPayload };
 
 export async function runAgentTurnWithFallback(params: {
@@ -101,7 +97,6 @@ export async function runAgentTurnWithFallback(params: {
   activeSessionStore?: Record<string, SessionEntry>;
   storePath?: string;
   resolvedVerboseLevel: VerboseLevel;
-  promptMode?: PromptMode;
 }): Promise<AgentRunLoopResult> {
   const TRANSIENT_HTTP_RETRY_DELAY_MS = 2_500;
   let didLogHeartbeatStrip = false;
@@ -234,7 +229,7 @@ export async function runAgentTurnWithFallback(params: {
                   bootstrapPromptWarningSignaturesSeen,
                   bootstrapPromptWarningSignature:
                     bootstrapPromptWarningSignaturesSeen[
-                    bootstrapPromptWarningSignaturesSeen.length - 1
+                      bootstrapPromptWarningSignaturesSeen.length - 1
                     ],
                   images: params.opts?.images,
                 });
@@ -321,12 +316,6 @@ export async function runAgentTurnWithFallback(params: {
               ...senderContext,
               ...runBaseParams,
               prompt: params.commandBody,
-              promptMode: params.promptMode,
-              lazyProfile: detectToolLazyProfile({
-                prompt: params.commandBody,
-                trigger: params.isHeartbeat ? "heartbeat" : "user",
-                isSubagent: isSubagentSessionKey(params.sessionKey),
-              }),
               extraSystemPrompt: params.followupRun.run.extraSystemPrompt,
               toolResultFormat: (() => {
                 const channel = resolveMessageChannel(
@@ -362,12 +351,12 @@ export async function runAgentTurnWithFallback(params: {
               onReasoningStream:
                 params.typingSignals.shouldStartOnReasoning || params.opts?.onReasoningStream
                   ? async (payload) => {
-                    await params.typingSignals.signalReasoningDelta();
-                    await params.opts?.onReasoningStream?.({
-                      text: payload.text,
-                      mediaUrls: payload.mediaUrls,
-                    });
-                  }
+                      await params.typingSignals.signalReasoningDelta();
+                      await params.opts?.onReasoningStream?.({
+                        text: payload.text,
+                        mediaUrls: payload.mediaUrls,
+                      });
+                    }
                   : undefined,
               onReasoningEnd: params.opts?.onReasoningEnd,
               onAgentEvent: async (evt) => {
@@ -400,60 +389,60 @@ export async function runAgentTurnWithFallback(params: {
               // via opts.onBlockReply when the pipeline isn't available.
               onBlockReply: params.opts?.onBlockReply
                 ? createBlockReplyDeliveryHandler({
-                  onBlockReply: params.opts.onBlockReply,
-                  currentMessageId:
-                    params.sessionCtx.MessageSidFull ?? params.sessionCtx.MessageSid,
-                  normalizeStreamingText,
-                  applyReplyToMode: params.applyReplyToMode,
-                  typingSignals: params.typingSignals,
-                  blockStreamingEnabled: params.blockStreamingEnabled,
-                  blockReplyPipeline,
-                  directlySentBlockKeys,
-                })
+                    onBlockReply: params.opts.onBlockReply,
+                    currentMessageId:
+                      params.sessionCtx.MessageSidFull ?? params.sessionCtx.MessageSid,
+                    normalizeStreamingText,
+                    applyReplyToMode: params.applyReplyToMode,
+                    typingSignals: params.typingSignals,
+                    blockStreamingEnabled: params.blockStreamingEnabled,
+                    blockReplyPipeline,
+                    directlySentBlockKeys,
+                  })
                 : undefined,
               onBlockReplyFlush:
                 params.blockStreamingEnabled && blockReplyPipeline
                   ? async () => {
-                    await blockReplyPipeline.flush({ force: true });
-                  }
+                      await blockReplyPipeline.flush({ force: true });
+                    }
                   : undefined,
               shouldEmitToolResult: params.shouldEmitToolResult,
               shouldEmitToolOutput: params.shouldEmitToolOutput,
               bootstrapPromptWarningSignaturesSeen,
               bootstrapPromptWarningSignature:
                 bootstrapPromptWarningSignaturesSeen[
-                bootstrapPromptWarningSignaturesSeen.length - 1
+                  bootstrapPromptWarningSignaturesSeen.length - 1
                 ],
               onToolResult: onToolResult
                 ? (() => {
-                  // Serialize tool result delivery to preserve message ordering.
-                  // Without this, concurrent tool callbacks race through typing signals
-                  // and message sends, causing out-of-order delivery to the user.
-                  // See: https://github.com/openclaw/openclaw/issues/11044
-                  let toolResultChain: Promise<void> = Promise.resolve();
-                  return (payload: ReplyPayload) => {
-                    toolResultChain = toolResultChain
-                      .then(async () => {
-                        const { text, skip } = normalizeStreamingText(payload);
-                        if (skip) {
-                          return;
-                        }
-                        await params.typingSignals.signalTextDelta(text);
-                        await onToolResult({
-                          text,
-                          mediaUrls: payload.mediaUrls,
+                    // Serialize tool result delivery to preserve message ordering.
+                    // Without this, concurrent tool callbacks race through typing signals
+                    // and message sends, causing out-of-order delivery to the user.
+                    // See: https://github.com/openclaw/openclaw/issues/11044
+                    let toolResultChain: Promise<void> = Promise.resolve();
+                    return (payload: ReplyPayload) => {
+                      toolResultChain = toolResultChain
+                        .then(async () => {
+                          const { text, skip } = normalizeStreamingText(payload);
+                          if (skip) {
+                            return;
+                          }
+                          await params.typingSignals.signalTextDelta(text);
+                          await onToolResult({
+                            text,
+                            mediaUrls: payload.mediaUrls,
+                          });
+                        })
+                        .catch((err) => {
+                          // Keep chain healthy after an error so later tool results still deliver.
+                          logVerbose(`tool result delivery failed: ${String(err)}`);
                         });
-                      })
-                      .catch((err) => {
-                        // Keep chain healthy after an error so later tool results still deliver.
-                        logVerbose(`tool result delivery failed: ${String(err)}`);
+                      const task = toolResultChain.finally(() => {
+                        params.pendingToolTasks.delete(task);
                       });
-                    const task = toolResultChain.finally(() => {
-                      params.pendingToolTasks.delete(task);
-                    });
-                    params.pendingToolTasks.add(task);
-                  };
-                })()
+                      params.pendingToolTasks.add(task);
+                    };
+                  })()
                 : undefined,
             });
             bootstrapPromptWarningSignaturesSeen = resolveBootstrapWarningSignaturesSeen(
@@ -468,13 +457,13 @@ export async function runAgentTurnWithFallback(params: {
       fallbackModel = fallbackResult.model;
       fallbackAttempts = Array.isArray(fallbackResult.attempts)
         ? fallbackResult.attempts.map((attempt) => ({
-          provider: String(attempt.provider ?? ""),
-          model: String(attempt.model ?? ""),
-          error: String(attempt.error ?? ""),
-          reason: attempt.reason ? String(attempt.reason) : undefined,
-          status: typeof attempt.status === "number" ? attempt.status : undefined,
-          code: attempt.code ? String(attempt.code) : undefined,
-        }))
+            provider: String(attempt.provider ?? ""),
+            model: String(attempt.model ?? ""),
+            error: String(attempt.error ?? ""),
+            reason: attempt.reason ? String(attempt.reason) : undefined,
+            status: typeof attempt.status === "number" ? attempt.status : undefined,
+            code: attempt.code ? String(attempt.code) : undefined,
+          }))
         : [];
 
       // Some embedded runs surface context overflow as an error payload instead of throwing.
@@ -491,7 +480,6 @@ export async function runAgentTurnWithFallback(params: {
           kind: "final",
           payload: {
             text: "⚠️ Context limit exceeded. I've reset our conversation to start fresh - please try again.\n\nTo prevent this, increase your compaction buffer by setting `agents.defaults.compaction.reserveTokensFloor` to 20000 or higher in your config.",
-            promptMode: "ethoclaw",
           },
         };
       }
@@ -526,7 +514,6 @@ export async function runAgentTurnWithFallback(params: {
           kind: "final",
           payload: {
             text: "⚠️ Context limit exceeded during compaction. I've reset our conversation to start fresh - please try again.\n\nTo prevent this, increase your compaction buffer by setting `agents.defaults.compaction.reserveTokensFloor` to 20000 or higher in your config.",
-            promptMode: "ethoclaw",
           },
         };
       }
@@ -647,7 +634,6 @@ export async function runAgentTurnWithFallback(params: {
     fallbackAttempts,
     didLogHeartbeatStrip,
     autoCompactionCompleted,
-    promptMode: params.promptMode,
     directlySentBlockKeys: directlySentBlockKeys.size > 0 ? directlySentBlockKeys : undefined,
   };
 }
