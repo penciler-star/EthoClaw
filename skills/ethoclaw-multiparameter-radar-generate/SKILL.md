@@ -1,5 +1,5 @@
 ---
-name: multiparameter-radar-generate
+name: ethoclaw-multiparameter-radar-generate
 description: Generate GraphPad Prism-like multi-parameter radar charts from a folder of HDF5 .h5/.hdf5 files (KinematicParameter/ParameterName + ParameterData). Summarize frames per sample (mean/median/max), normalize (min-max or z-score), and plot per-sample radars and/or group-mean comparison radars (group inferred from filenames). Outputs publication-style PNG/PDF and CSV. Use when user asks for 多参数雷达图生成/参数雷达图对比。
 ---
 

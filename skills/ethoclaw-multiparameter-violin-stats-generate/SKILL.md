@@ -1,5 +1,5 @@
 ---
-name: multiparameter-violin-stats-generate
+name: ethoclaw-multiparameter-violin-stats-generate
 description: "Read HDF5 (.h5/.hdf5) data, compare groups with appropriate statistical tests (2 groups: t-test/Mann–Whitney; 3+ groups: ANOVA/Kruskal–Wallis + post-hoc pairwise), and generate violin plots + summary table/JSON. Use when the user asks for 多参数小提琴图生成/组间差异检验/批量参数统计画图。"
 ---
 
@@ -28,7 +28,7 @@ python scripts/h5_violin_stats.py \
   --dataset /metrics/score \
   --group /meta/group \
   --method auto \
-  --config skills/multiparameter-violin-stats-generate/config.toml \
+  --config skills/ethoclaw-multiparameter-violin-stats-generate/config.toml \
   --out outputs/violin.png \
   --out-json outputs/result.json
 ```

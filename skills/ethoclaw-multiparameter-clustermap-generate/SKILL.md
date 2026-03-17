@@ -1,5 +1,5 @@
 ---
-name: multiparameter-clustermap-generate
+name: ethoclaw-multiparameter-clustermap-generate
 description: "Generate journal-style hierarchical clustering clustermaps (heatmap+dendrogram) from a folder of .h5/.hdf5 files (KinematicParameter/ParameterName + ParameterData). Summarize frames per sample (mean/median/max), optionally normalize (column z-score), cluster samples/parameters, and export PNG/PDF + CSV + linkage arrays. Use when user asks for 多参数聚类热图/聚类树/全参数全样本聚类图生成."
 ---
 
