@@ -32,7 +32,7 @@ def init_contract(base_dir: Path, run_name: str):
 
     payload = {
         "schema_version": 1,
-        "skill": "Etho-daily-paper",
+        "skill": "ethoclaw-daily-paper",
         "created_at": now_iso(),
         "run_name": run_name,
         "status": "initialized",
@@ -87,7 +87,7 @@ def finalize_contract(contract_path: Path, digest_path: Path, selected_indexes: 
 
     summary = {
         "schema_version": 1,
-        "skill": contract.get("skill", "Etho-daily-paper"),
+        "skill": contract.get("skill", "ethoclaw-daily-paper"),
         "status": "completed",
         "completed_at": now_iso(),
         "generator_label": generator_label,

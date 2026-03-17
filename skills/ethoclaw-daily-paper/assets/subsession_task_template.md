@@ -1,4 +1,4 @@
-在独立子会话中运行 `skills/Etho-daily-paper`，目标是只把最终成稿返回主会话，不回传候选池细节。
+在独立子会话中运行 `skills/ethoclaw-daily-paper`，目标是只把最终成稿返回主会话，不回传候选池细节。
 
 约束：
 1. 先执行 `python3 scripts/subsession_contract.py init --base-dir <runs-dir> --run-name <run-name>`，使用生成的 `work/` 与 `return/` 目录。

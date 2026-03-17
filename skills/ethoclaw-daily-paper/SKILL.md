@@ -1,5 +1,5 @@
 ---
-name: Etho-daily-paper
+name: ethoclaw-daily-paper
 description: "Search arXiv and PubMed for neuroethology and behavioral neuroscience papers, merge the candidate pool, prepare title-only and abstract review packets for in-agent ranking, and render a final Chinese Markdown digest without using an external summarization API. Use when Codex needs a reusable neuroethology literature-monitoring workflow, especially when it should run retrieval and digest assembly in an automatically spawned sub-session/subagent so the main session reads only the final Markdown deliverable."
 ---
 
