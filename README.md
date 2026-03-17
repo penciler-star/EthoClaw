@@ -109,9 +109,9 @@ pip install --pre deeplabcut
 
 ## Contributions
 
-We thank all developers who have contributed to the EthoClaw project.
-<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="penciler-star"/></a>
-<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="fxqaq"/></a>
+### We thank all developers who have contributed to the EthoClaw project.
+<a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
+<a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
 <a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="yichuan1998"/></a>
 <a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="troyc126"/></a>
 <a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="LZAndy"/></a>
