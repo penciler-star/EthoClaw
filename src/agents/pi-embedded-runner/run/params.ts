@@ -7,7 +7,9 @@ import type { InputProvenance } from "../../../sessions/input-provenance.js";
 import type { ExecElevatedDefaults, ExecToolDefaults } from "../../bash-tools.js";
 import type { BlockReplyPayload } from "../../pi-embedded-payloads.js";
 import type { BlockReplyChunking, ToolResultFormat } from "../../pi-embedded-subscribe.js";
+import { buildAgentSystemPrompt, type PromptMode } from "../../system-prompt.js";
 import type { SkillSnapshot } from "../../skills.js";
+import type { ToolProfileId } from "../../tool-catalog.js";
 
 // Simplified tool definition for client-provided tools (OpenResponses hosted tools)
 export type ClientToolDefinition = {
@@ -113,4 +115,8 @@ export type RunEmbeddedPiAgentParams = {
   streamParams?: AgentStreamParams;
   ownerNumbers?: string[];
   enforceFinalTag?: boolean;
+  /** Lazy tool loading profile. If set, only tools matching this profile are injected. */
+  lazyProfile?: ToolProfileId;
+  /** Controls which hardcoded sections to include in the system prompt. */
+  promptMode?: PromptMode;
 };
