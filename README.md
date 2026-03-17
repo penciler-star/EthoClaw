@@ -110,6 +110,12 @@ pip install --pre deeplabcut
 ## Contributions
 
 We thank all developers who have contributed to the EthoClaw project.
+<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="penciler-star"/></a>
+<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="fxqaq"/></a>
+<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="yichuan1998"/></a>
+<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="troyc126"/></a>
+<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="LZAndy"/></a>
+<a href="https://github.com"><img src="https://github.com.png" width="50px;" alt="Liangjh40"/></a>
 
 ## Feedback
 
