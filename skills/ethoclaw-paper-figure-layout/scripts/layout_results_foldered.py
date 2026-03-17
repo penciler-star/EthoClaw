@@ -8,7 +8,7 @@ Design goals
 
 Usage
   python3 layout_results_foldered.py \
-    --input "/home/max/下载/results" \
+    --input "/home/max/Downloads/results" \
     --output "/home/max/.openclaw/workspace/tmp_results/results_auto.pdf"
 
 Options

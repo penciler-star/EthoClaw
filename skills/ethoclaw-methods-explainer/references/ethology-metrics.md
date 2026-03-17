@@ -1,10 +1,10 @@
-﻿# Ethology Metrics Reference
+# Ethology Metrics Reference
 
-在用户询问行为学指标“怎么定义、怎么计算、怎么解释”时读取本文件。
+Read this file when users ask about behavioral metrics "how they are defined, calculated, and interpreted".
 
-## 适用范围
+## Scope
 
-优先用于解释以下常见行为学指标：
+Prioritize for explaining these common ethology metrics:
 
 - Frequency / rate
 - Duration
@@ -13,109 +13,109 @@
 - Transition count / transition probability
 - Bout length / bout count
 - Inter-event interval
-- Individual-level summary 与 group-level summary 的区别
+- Individual-level summary vs. group-level summary
 
-## 解释顺序
+## Explanation Order
 
-解释任何指标时，优先按这个顺序输出：
+When explaining any metric, prioritize outputting in this order:
 
-1. 原始输入是什么。
-2. 一条记录代表什么。
-3. 预处理做了什么。
-4. 指标如何计算。
-5. 结果单位是什么。
-6. 生物学上如何解释。
-7. 有哪些常见误解或限制。
+1. What is the raw input.
+2. What does one record represent.
+3. What preprocessing was done.
+4. How the metric is calculated.
+5. What is the unit of result.
+6. How to interpret biologically.
+7. What are common misunderstandings or limitations.
 
-## 常见指标定义
+## Common Metric Definitions
 
 ### Frequency
 
-- 含义：在给定观察窗口内，某行为开始发生的次数。
-- 常见输入：行为事件表，至少包含个体 ID、行为标签、开始时间。
-- 公式：Frequency = event onset count within window
-- 单位：次 / 窗口，或次 / 分钟、次 / 小时。
-- 注意：必须说明是按 onset 计数，还是按任意被标记帧计数。
+- Meaning: The number of times a behavior starts occurring within a given observation window.
+- Common input: Behavior event table, at least containing individual ID, behavior label, start time.
+- Formula: Frequency = event onset count within window
+- Unit: counts/window, or counts/minute, counts/hour.
+- Note: Must specify whether counting by onset or by any tagged frames.
 
 ### Duration
 
-- 含义：某行为在观察窗口内累计持续的总时间。
-- 常见输入：包含开始时间和结束时间的行为片段表。
-- 公式：Duration = sum(end_time - start_time)
-- 单位：秒、分钟，或占窗口的比例。
-- 注意：说明是否剔除了不可见时段和中断片段。
+- Meaning: Total time a behavior lasts cumulatively within the observation window.
+- Common input: Behavior segment table containing start time and end time.
+- Formula: Duration = sum(end_time - start_time)
+- Unit: seconds, minutes, or proportion of window.
+- Note: Specify whether invisible periods and interruption segments are excluded.
 
 ### Latency
 
-- 含义：从一个参考时点到目标行为首次出现的等待时间。
-- 常见输入：参考事件时间、目标行为首次 onset 时间。
-- 公式：Latency = first_target_onset - reference_time
-- 单位：秒、分钟。
-- 注意：如果目标行为未出现，说明是否记为缺失、删失（censored）或赋最大观察时长。
+- Meaning: Waiting time from a reference time point to the first occurrence of target behavior.
+- Common input: Reference event time, first onset time of target behavior.
+- Formula: Latency = first_target_onset - reference_time
+- Unit: seconds, minutes.
+- Note: If target behavior does not occur, specify whether it's recorded as missing, censored, or assigned maximum observation duration.
 
 ### Proportion / Time Budget
 
-- 含义：某行为持续时间占总可观察时间的比例。
-- 公式：Proportion = behavior_duration / observable_time
-- 单位：0 到 1，或百分比。
-- 注意：observable time 不一定等于 session 总时长，可能需要扣除遮挡、离屏、无法编码时间。
+- Meaning: Proportion of a behavior's duration to total observable time.
+- Formula: Proportion = behavior_duration / observable_time
+- Unit: 0 to 1, or percentage.
+- Note: Observable time is not necessarily equal to total session duration; may need to deduct occlusion, out-of-frame, uncodeable times.
 
 ### Transition Probability
 
-- 含义：从行为 A 转换到行为 B 的条件概率。
-- 常见输入：按时间排序的行为序列。
-- 公式：P(A -> B) = count(A -> B) / total outgoing transitions from A
-- 注意：要说明是否允许 self-transition、是否按个体分别算后再汇总。
+- Meaning: Conditional probability of transitioning from behavior A to behavior B.
+- Common input: Time-ordered behavior sequence.
+- Formula: P(A -> B) = count(A -> B) / total outgoing transitions from A
+- Note: Specify whether self-transitions are allowed, and whether calculations are done per individual first then aggregated.
 
 ### Bout Length
 
-- 含义：某行为一次连续发生、直到切换为其他行为前的持续时间。
-- 公式：Bout length = end_of_continuous_run - start_of_continuous_run
-- 注意：必须定义“连续”的判据，例如是否允许短暂中断合并。
+- Meaning: Duration of one continuous occurrence of a behavior until switching to another behavior.
+- Formula: Bout length = end_of_continuous_run - start_of_continuous_run
+- Note: Must define criteria for "continuous", e.g., whether brief interruptions are allowed to be merged.
 
 ### Inter-event Interval
 
-- 含义：两次相邻目标事件之间的时间间隔。
-- 公式：IEI = onset(i+1) - onset(i)
-- 注意：只有在事件定义清晰且时间排序可靠时才有意义。
+- Meaning: Time interval between two adjacent target events.
+- Formula: IEI = onset(i+1) - onset(i)
+- Note: Only meaningful when event definition is clear and time ordering is reliable.
 
-## 常见预处理
+## Common Preprocessing
 
-在解释指标时，优先检查是否涉及：
+When explaining metrics, prioritize checking if the following are involved:
 
-- 行为标签合并或重编码。
-- 时间窗切分（binning）。
-- 平滑或滚动窗口。
-- 缺失值或不可见时段剔除。
-- 按个体、session、trial 先聚合再做组间分析。
-- 标准化为每分钟、每小时或每次试验。
+- Behavior label merging or recoding.
+- Time window binning.
+- Smoothing or rolling windows.
+- Missing value or invisible period exclusion.
+- Aggregation per individual, session, trial first, then inter-group analysis.
+- Normalization per minute, per hour, or per trial.
 
-## 常见坑
+## Common Pitfalls
 
-- 把 frequency 和 duration 混为一谈。
-- 不说明 denominator，导致 proportion 无法复现。
-- 用 group mean 掩盖 individual variation。
-- 把原始事件层级的数据和聚合后的 summary 层级混用。
-- 不交代未观察到目标行为时 latency 怎么处理。
+- Confusing frequency and duration.
+- Not specifying denominator, making proportion unreproducible.
+- Using group mean to mask individual variation.
+- Mixing raw event-level data with aggregated summary-level data.
+- Not explaining how latency is handled when target behavior is not observed.
 
-## 建议输出句式
+## Recommended Output Sentence Patterns
 
-### 参数卡最小模板
+### Parameter Card Minimum Template
 
-- 名称：
-- 输入：
-- 公式：
-- 单位：
-- 预处理：
-- 解释：
-- 限制：
+- Name:
+- Input:
+- Formula:
+- Unit:
+- Preprocessing:
+- Interpretation:
+- Limitation:
 
-### Methods 写法提示
+### Methods Writing Tips
 
-优先使用这种句式：
+Prioritize using this pattern:
 
 "For each individual / trial / session, we calculated ... as ..."
 
-中文可写成：
+In English, can write as:
 
-“对每个个体 / trial / session，计算……，其定义为……。”
+"For each individual / trial / session, calculate... with the definition of..."

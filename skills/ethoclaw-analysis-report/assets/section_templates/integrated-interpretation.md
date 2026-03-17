@@ -1,3 +1,3 @@
-﻿## 综合整理
+## Integrated Interpretation
 
 {{ integrated_interpretation_body }}

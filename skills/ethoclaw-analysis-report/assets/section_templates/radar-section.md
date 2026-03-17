@@ -1,4 +1,4 @@
-﻿## 雷达图结果
+## Radar Plot Results
 
 {{ radar_body }}
 

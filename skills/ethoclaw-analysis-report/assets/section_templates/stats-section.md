@@ -1,4 +1,4 @@
-﻿## 统计与汇总图结果
+## Statistical Summary Plot Results
 
 {{ stats_body }}
 

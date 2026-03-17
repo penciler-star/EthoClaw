@@ -1,6 +1,6 @@
 ---
 name: paper-figure-layout
-description: "Auto-layout folders of result images into a paper-like PDF (LaTeX) with captions derived from filenames and optional heatmap+colorbar grouping. Use when the user says: 用这个文件夹的图片帮我排版 / 出论文图 / 把图按文件夹分组排成PDF; or when there are many PNG/JPG figures that need consistent captions and pagination."
+description: "Auto-layout folders of result images into a paper-like PDF (LaTeX) with captions derived from filenames and optional heatmap+colorbar grouping. Use when the user says: use images in this folder to help with layout/generate paper figures/arrange figures into PDF by folder grouping; or when there are many PNG/JPG figures that need consistent captions and pagination."
 ---
 
 # Paper Figure Layout

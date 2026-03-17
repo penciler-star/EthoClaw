@@ -1,60 +1,60 @@
-﻿# GLM and GLMM Reference
+# GLM and GLMM Reference
 
-在用户询问 GLM、GLMM、logistic regression、Poisson regression、mixed model、random effect、link function 时读取本文件。
+Read this file when users ask about GLM, GLMM, logistic regression, Poisson regression, mixed model, random effect, link function.
 
-## 一句话定位
+## One-Sentence Positioning
 
-- GLM：广义线性模型，用于非正态响应变量。
-- GLMM：广义线性混合模型，在 GLM 基础上加入随机效应（random effects），适合重复测量、层级结构或个体差异明显的数据。
+- GLM: Generalized Linear Model, used for non-normal response variables.
+- GLMM: Generalized Linear Mixed Model, adds random effects on top of GLM, suitable for repeated measures, hierarchical structures, or data with obvious individual differences.
 
-## 什么时候优先考虑这些模型
+## When to Prioritize These Models
 
-如果响应变量不是“近似正态、独立、连续”的普通数据，优先考虑 GLM / GLMM。例如：
+If the response variable is not "approximately normal, independent, continuous" ordinary data, prioritize GLM/GLMM. For example:
 
-- 是否发生某行为：二分类，常用 binomial / logistic。
-- 行为发生次数：计数型，常用 Poisson 或 negative binomial。
-- 成功次数 / 总次数：比例型，常用 binomial。
-- 同一只动物被重复观察：通常需要 mixed model 处理个体内相关性。
-- 数据来自不同笼位、群组、批次、观察者：可能需要随机效应。
+- Whether a behavior occurs: binary, commonly binomial/logistic.
+- Number of behavior occurrences: count data, commonly Poisson or negative binomial.
+- Success count / total count: proportion, commonly binomial.
+- Same animal repeatedly observed: usually needs mixed model to handle within-individual correlation.
+- Data from different cages, groups, batches, observers: may need random effects.
 
-## 解释顺序
+## Explanation Order
 
-解释 GLM / GLMM 时，优先按这个顺序输出：
+When explaining GLM/GLMM, prioritize outputting in this order:
 
-1. 响应变量是什么。
-2. 响应变量的数据类型是什么。
-3. 固定效应（fixed effects）是什么。
-4. 随机效应（random effects）是什么。
-5. 分布族（family）和链接函数（link function）是什么。
-6. 模型为什么适合这个问题。
-7. 参数如何解释。
-8. 有哪些常见诊断或限制。
+1. What is the response variable.
+2. What is the data type of response variable.
+3. What are fixed effects.
+4. What are random effects.
+5. What are distribution family and link function.
+6. Why the model is suitable for this problem.
+7. How to interpret parameters.
+8. What are common diagnostics or limitations.
 
-## 核心概念
+## Core Concepts
 
 ### Response Variable
 
-模型要解释或预测的结果变量，例如：
+The result variable the model tries to explain or predict, for example:
 
-- 某行为是否发生。
-- 某时间窗内叫声次数。
-- 某行为持续时间占比。
+- Whether a behavior occurs.
+- Number of calls within a certain time window.
+- Proportion of behavior duration.
 
 ### Fixed Effects
 
-研究者主要关心的解释变量，例如：
+Variables the researcher mainly cares about, for example:
 
-- 处理组别
-- 性别
-- 年龄
-- 时间阶段
-- 环境条件
+- Treatment group
+- Gender
+- Age
+- Time phase
+- Environmental conditions
 
-固定效应回答的是：“这些变量和结果之间的系统性关系是什么？”
+Fixed effects answer: "What is the systematic relationship between these variables and the result?"
 
 ### Random Effects
 
-用于表示分层结构或重复测量来源，例如：
+Used to represent hierarchical structure or repeated measurement sources, for example:
 
 - individual ID
 - group ID
@@ -62,70 +62,70 @@
 - observer ID
 - batch
 
-随机效应回答的是：“不同个体或群组之间的基线差异，是否需要单独建模而不是硬塞进误差项？”
+Random effects answer: "Do baseline differences between different individuals or groups need to be modeled separately rather than forcibly put into error terms?"
 
-## 常见 family 与典型场景
+## Common Families and Typical Scenarios
 
 ### Gaussian
 
-- 适用：近似连续正态的响应变量。
-- 常见例子：某连续测量值，且残差近似正态。
-- 说明：这时模型更接近普通线性模型。
+- Suitable for: approximately continuous normal response variables.
+- Common examples: some continuous measurement with approximately normal residuals.
+- Note: In this case, the model is closer to ordinary linear model.
 
 ### Binomial with logit link
 
-- 适用：二分类结果或成功次数 / 总次数。
-- 常见例子：某行为是否发生、是否成功选择某食物。
-- 解释：系数是在 log-odds 尺度上，需要说明是否转换为 odds ratio 或预测概率。
+- Suitable for: binary results or success count / total count.
+- Common examples: whether a behavior occurs, whether successfully selects a certain food.
+- Interpretation: Coefficients are on log-odds scale, need to explain whether converted to odds ratio or predicted probability.
 
 ### Poisson with log link
 
-- 适用：计数数据。
-- 常见例子：攻击次数、叫声次数、接触次数。
-- 注意：如果方差明显大于均值，可能存在 overdispersion。
+- Suitable for: count data.
+- Common examples: attack frequency, call frequency, contact frequency.
+- Note: If variance is significantly greater than mean, there may be overdispersion.
 
 ### Negative Binomial
 
-- 适用：过度离散（overdispersed）的计数数据。
-- 常见例子：大量零值且个体差异大的行为次数数据。
-- 解释：通常是 Poisson 不够灵活时的替代。
+- Suitable for: overdispersed count data.
+- Common examples: data with large number of zeros and high individual variation in behavior frequency.
+- Interpretation: Usually an alternative when Poisson is not flexible enough.
 
-## 为什么用 GLMM 而不是只用 GLM
+## Why Use GLMM Instead of Just GLM
 
-当数据存在重复测量或层级结构时，只用 GLM 往往会把本来相关的观测当成独立样本，导致标准误偏小、显著性被夸大。
+When data has repeated measures or hierarchical structure, using just GLM often treats inherently correlated observations as independent samples, causing standard errors to be underestimated and significance to be exaggerated.
 
-典型场景：
+Typical scenarios:
 
-- 同一只动物在多个 trial 中被重复观察。
-- 多个个体来自同一群组或笼位。
-- 同一观察者对多个视频打分。
+- Same animal repeatedly observed in multiple trials.
+- Multiple individuals from same group or cage.
+- Same observer scores multiple videos.
 
-此时常见写法是：
+Common phrasing:
 
-- fixed effects：处理、时间、性别等。
-- random effects：individual ID、group ID 等。
+- Fixed effects: treatment, time, gender, etc.
+- Random effects: individual ID, group ID, etc.
 
-## 参数解释提醒
+## Parameter Interpretation Reminders
 
-### Logistic 回归
+### Logistic Regression
 
-- 系数增加 1，不表示概率直接增加固定值。
-- 系数首先作用在 log-odds 上。
-- 如果需要给初学者解释，优先转成“更可能 / 更不可能”或给预测概率示例。
+- Coefficient increase of 1 does not mean probability directly increases by a fixed value.
+- Coefficients first act on log-odds.
+- If needing to explain to beginners, prioritize converting to "more likely / less likely" or give predicted probability examples.
 
 ### Poisson / Negative Binomial
 
-- 系数通常作用在 log count 或 log rate 上。
-- 解释时可转成倍数变化，例如 exp(beta)。
+- Coefficients usually act on log count or log rate.
+- When interpreting, can convert to multiplicative changes, e.g., exp(beta).
 
 ### Random Effect
 
-- 不要把 random effect coefficient 解释成和 fixed effect 同等含义的主效应。
-- 更准确的说法是：它反映不同个体或群组之间的变异结构。
+- Do not interpret random effect coefficient as main effect with same meaning as fixed effect.
+- More accurate statement: It reflects the variation structure between different individuals or groups.
 
-## 常见诊断与限制
+## Common Diagnostics and Limitations
 
-解释模型时，优先检查文中是否提到：
+When explaining models, prioritize checking whether the paper mentions:
 
 - overdispersion
 - zero inflation
@@ -135,35 +135,31 @@
 - collinearity
 - model comparison
 
-如果论文没有写，不要假装做过诊断，只能写 `Unconfirmed`。
+If the paper does not write, do not pretend diagnostics were done, can only write `Unconfirmed`.
 
-## 常见坑
+## Common Pitfalls
 
-- 把 repeated measures 数据直接当独立样本。
-- 计数数据还用普通线性回归。
-- 只报告 p 值，不说明 family、link 和 random effect。
-- 把 odds ratio 误写成概率差。
-- 不说明 offset，例如观测时长不同却直接比次数。
+- Treating repeated measures data as independent samples.
+- Using ordinary linear regression for count data.
+- Only reporting p-values without explaining family, link, and random effect.
+- Miswriting odds ratio as probability difference.
+- Not explaining offset, e.g., directly comparing counts when observation durations are different.
 
-## 建议输出句式
+## Recommended Output Sentence Patterns
 
-### 模型卡最小模板
+### Model Card Minimum Template
 
-- 响应变量：
-- 数据类型：
-- 固定效应：
-- 随机效应：
-- family / link：
-- 选择理由：
-- 参数解释：
-- 诊断或限制：
+- Response variable:
+- Data type:
+- Fixed effects:
+- Random effects:
+- Family / link:
+- Selection rationale:
+- Parameter interpretation:
+- Diagnostics or limitations:
 
-### Methods 写法提示
+### Methods Writing Tips
 
-中文：
+In English:
 
-“采用广义线性混合模型（GLMM）分析……，其中……作为响应变量，……作为固定效应，个体 ID 作为随机效应；根据响应变量的数据分布，指定……分布与……链接函数。”
-
-英文：
-
-"We fitted a generalized linear mixed model (GLMM) with ... as the response variable, ... as fixed effects, and individual ID as a random effect, using a ... family with a ... link."
+"We fitted a generalized linear mixed model (GLMM) with ... as the response variable, ... as fixed effects, and individual ID as a random effect, using a ... family with a ... link function based on the data distribution of the response variable."

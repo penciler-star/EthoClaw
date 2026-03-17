@@ -1,3 +1,3 @@
-## 项目概况与素材
+## Project Overview and Materials
 
 {{ project_summary_body }}

@@ -1,4 +1,4 @@
-﻿## 热图与轨迹结果
+## Heatmap and Trajectory Results
 
 {{ heatmap_body }}
 

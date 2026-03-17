@@ -5,17 +5,17 @@ from pathlib import Path
 
 
 REQUIRED_AGENT_FIELDS = [
-    "chinese_title",
-    "chinese_summary",
-    "chinese_methods",
-    "chinese_findings",
-    "chinese_significance",
+    "title",
+    "summary",
+    "methods",
+    "findings",
+    "significance",
     "selection_reason",
 ]
 
 OPTIONAL_AGENT_FIELDS = [
-    "chinese_background",
-    "chinese_limitations",
+    "background",
+    "limitations",
 ]
 
 
@@ -48,19 +48,19 @@ def paper_guidance(candidate_index, item):
     return {
         "candidate_index": candidate_index,
         "focus_questions": [
-            "这篇文章要解决的核心科学问题是什么？",
-            "作者使用了什么实验体系、记录/成像/行为范式或分析方法？",
-            "最关键的结果是什么，证据是否足够直接？",
-            "这些发现对神经行为学或行为神经科学的意义是什么？",
-            "有哪些边界条件、限制或尚未解决的问题？",
+            "What is the core scientific question this article aims to address?",
+            "What experimental paradigm, recording/imaging/behavior paradigm, or analytical methods did the authors use?",
+            "What are the most critical results, and is the evidence sufficiently direct?",
+            "What is the significance of these findings for neuroethology or behavioral neuroscience?",
+            "What are the boundary conditions, limitations, or unresolved issues?",
         ],
         "writing_requirements": [
-            f"先给出准确、自然的中文标题，保留物种、脑区、任务范式等关键信息。",
-            f"写 120-220 字中文综合导读，避免空泛评价，优先概括研究问题、方法、主要发现和意义。",
-            f"方法速览用 1-2 句，点出样本/物种、主要技术路线、行为任务或数据分析方法。",
-            f"核心发现用 2-4 句，写清楚因果链、比较关系或关键定量趋势，不要只重复标题。",
-            f"意义部分说明为什么值得读，特别是对 {source} / {published} 这类近期工作有什么启发。",
-            "如果摘要本身证据有限，明确写出限制或需要阅读全文确认的地方。",
+            f"First provide an accurate, natural title, retaining key information such as species, brain region, task paradigm, etc.",
+            f"Write a 120-220 word comprehensive summary, avoid empty evaluations, prioritize summarizing research question, methods, main findings, and significance.",
+            f"Methods overview in 1-2 sentences, highlighting sample/species, main technical approach, behavioral task or data analysis methods.",
+            f"Core findings in 2-4 sentences, clearly describing causal chains, comparative relationships, or key quantitative trends, not just repeating the title.",
+            f"Significance section explains why it's worth reading, especially what insights it offers for recent work like {source} / {published}.",
+            "If the abstract itself has limited evidence, clearly state limitations or places that need reading the full article to confirm.",
         ],
     }
 
@@ -96,13 +96,13 @@ def build_agent_packet(merged_payload, selected_indexes):
                 "abstract": item.get("summary", ""),
                 "weighted_score": item.get("weighted_score", item.get("relevance_score", "")),
                 "reader_guidance": paper_guidance(candidate_index, item),
-                "chinese_title": "",
-                "chinese_summary": "",
-                "chinese_background": "",
-                "chinese_methods": "",
-                "chinese_findings": "",
-                "chinese_significance": "",
-                "chinese_limitations": "",
+                "title": "",
+                "summary": "",
+                "background": "",
+                "methods": "",
+                "findings": "",
+                "significance": "",
+                "limitations": "",
                 "selection_reason": "",
             }
         )
@@ -112,17 +112,17 @@ def build_agent_packet(merged_payload, selected_indexes):
         "candidate_count": merged_payload.get("count", 0),
         "selected_indexes": selected_indexes,
         "agent_guidance": {
-            "goal": "阅读所选摘要，为每篇候选文献产出更详细、可读性高的中文导读。",
+            "goal": "Read the selected abstracts and produce detailed, readable summaries for each candidate paper.",
             "recommended_process": [
-                "优先在独立子会话中完成候选筛选与摘要撰写，主会话只接收最终成稿，减少 token 消耗。",
-                "先读完整摘要，再填写结构化字段，最后回头润色 chinese_summary。",
-                "如果某条信息无法仅凭摘要确认，写成保守表述，不要脑补。",
+                "Preferably complete candidate screening and abstract writing in independent sub-sessions, with the main session only receiving final drafts to reduce token consumption.",
+                "First read the complete abstract, then fill in structured fields, finally polish the summary.",
+                "If certain information cannot be confirmed from the abstract alone, write conservative statements, do not speculate.",
             ],
             "minimum_fields": REQUIRED_AGENT_FIELDS + OPTIONAL_AGENT_FIELDS,
             "style_rules": [
-                "面向科研读者，避免营销式形容词。",
-                "尽量保留物种、脑区、行为范式、记录技术、因果操作等关键实体。",
-                "中文导读要比一句话摘要更具体，至少覆盖问题、方法、结果、意义四部分。",
+                "Target scientific readers, avoid marketing-style adjectives.",
+                "Try to retain key entities such as species, brain region, behavioral paradigm, recording techniques, causal manipulations, etc.",
+                "Summary should be more specific than one-sentence abstracts, covering at least question, methods, results, and significance.",
             ],
         },
         "selected_papers": selected_papers,
@@ -137,7 +137,7 @@ def render_agent_review_markdown(packet):
         f"- Candidate Count: {packet.get('candidate_count', 0)}",
         f"- Selected Indexes: {', '.join(str(value) for value in packet.get('selected_indexes', []))}",
         "",
-        "> 先逐篇读摘要，再填写 JSON 中的结构化中文字段；最后再润色 `chinese_summary`，不要跳过 `chinese_methods` / `chinese_findings` / `chinese_significance`。",
+        "> First read each abstract, then fill in the structured JSON fields; finally polish the `summary`, do not skip `methods` / `findings` / `significance`.",
         "",
     ]
     guidance = packet.get("agent_guidance", {})
@@ -190,13 +190,13 @@ def render_agent_review_markdown(packet):
                 "",
                 "### JSON Fields To Fill",
                 "",
-                "- chinese_title:",
-                "- chinese_summary:",
-                "- chinese_background:",
-                "- chinese_methods:",
-                "- chinese_findings:",
-                "- chinese_significance:",
-                "- chinese_limitations:",
+                "- title:",
+                "- summary:",
+                "- background:",
+                "- methods:",
+                "- findings:",
+                "- significance:",
+                "- limitations:",
                 "- selection_reason:",
                 "",
             ]
@@ -211,41 +211,41 @@ def render_final_markdown(template_text, packet, generator_label):
             [
                 f"## {paper['slot']}. {paper.get('title', '').strip() or '(untitled)'}",
                 "",
-                f"- 中文标题：{paper.get('chinese_title', '').strip() or '待补充'}",
-                f"- 来源：{paper.get('source', 'unknown')}",
-                f"- 作者：{join_authors(paper.get('authors', []))}",
-                f"- 发表时间：{paper.get('published', '') or '未知'}",
-                f"- 入选理由：{paper.get('selection_reason', '').strip() or '待补充'}",
-                f"- 文献链接：{paper.get('url') or '暂无'}",
-                f"- PDF 链接：{paper.get('pdf_url') or '暂无'}",
+                f"- Title: {paper.get('title', '').strip() or 'To be added'}",
+                f"- Source: {paper.get('source', 'unknown')}",
+                f"- Authors: {join_authors(paper.get('authors', []))}",
+                f"- Published: {paper.get('published', '') or 'Unknown'}",
+                f"- Selection Reason: {paper.get('selection_reason', '').strip() or 'To be added'}",
+                f"- Article Link: {paper.get('url') or 'N/A'}",
+                f"- PDF Link: {paper.get('pdf_url') or 'N/A'}",
                 "",
-                "### 中文导读",
+                "### Summary",
                 "",
-                paper.get("chinese_summary", "").strip() or "待补充",
+                paper.get("summary", "").strip() or "To be added",
                 "",
-                "### 研究背景 / 核心问题",
+                "### Research Background / Core Question",
                 "",
-                paper.get("chinese_background", "").strip() or "待补充",
+                paper.get("background", "").strip() or "To be added",
                 "",
-                "### 方法速览",
+                "### Methods Overview",
                 "",
-                paper.get("chinese_methods", "").strip() or "待补充",
+                paper.get("methods", "").strip() or "To be added",
                 "",
-                "### 核心发现",
+                "### Key Findings",
                 "",
-                paper.get("chinese_findings", "").strip() or "待补充",
+                paper.get("findings", "").strip() or "To be added",
                 "",
-                "### 意义与启发",
+                "### Significance & Insights",
                 "",
-                paper.get("chinese_significance", "").strip() or "待补充",
+                paper.get("significance", "").strip() or "To be added",
                 "",
-                "### 局限与备注",
+                "### Limitations & Notes",
                 "",
-                paper.get("chinese_limitations", "").strip() or "待补充",
+                paper.get("limitations", "").strip() or "To be added",
                 "",
-                "### 原始摘要",
+                "### Original Abstract",
                 "",
-                paper.get("abstract", "").strip() or "暂无摘要",
+                paper.get("abstract", "").strip() or "No abstract available",
                 "",
             ]
         )
@@ -298,27 +298,3 @@ def main():
 
     if not args.input:
         raise SystemExit("`--input` is required when preparing an agent packet.")
-    if not args.paper_indexes:
-        raise SystemExit("`--paper-indexes` is required when preparing an agent packet.")
-    if not args.agent_json_output and not args.review_md_output:
-        raise SystemExit("Provide at least one of `--agent-json-output` or `--review-md-output`.")
-
-    merged_payload = load_json(args.input)
-    selected_indexes = parse_index_list(args.paper_indexes)
-    packet = build_agent_packet(merged_payload, selected_indexes)
-
-    if args.agent_json_output:
-        json_output_path = Path(args.agent_json_output).expanduser().resolve()
-        json_output_path.parent.mkdir(parents=True, exist_ok=True)
-        json_output_path.write_text(json.dumps(packet, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(json_output_path)
-
-    if args.review_md_output:
-        review_output_path = Path(args.review_md_output).expanduser().resolve()
-        review_output_path.parent.mkdir(parents=True, exist_ok=True)
-        review_output_path.write_text(render_agent_review_markdown(packet), encoding="utf-8")
-        print(review_output_path)
-
-
-if __name__ == "__main__":
-    main()
