@@ -1,9 +1,9 @@
 ---
-name: pdf-research-reader
+name: ethoclaw-pdf-research
 description: "Read local PDF files for analysis, summarization, and research-note generation. Use when the user uploads a PDF or provides a local PDF path and wants the model to inspect reports, papers, whitepapers, slides, or scanned documents by extracting text, rendering page images, and producing a structured summary or research log."
 ---
 
-# PDF Research Reader
+# EthoClaw PDF Research Reader
 
 Use scripts first. Prefer a two-path workflow: extract text for speed, inspect rendered page images when formatting is important or the PDF is scan-heavy.
 
@@ -12,6 +12,7 @@ Use scripts first. Prefer a two-path workflow: extract text for speed, inspect r
 Do not parse a newly received PDF immediately by default.
 
 When the user uploads a PDF without a clear output request, first confirm what they want:
+
 - short summary
 - detailed analysis
 - research log returned directly in chat
@@ -77,6 +78,7 @@ python3 scripts/build_research_log.py \
 ## Script behavior
 
 ### `scripts/extract_pdf_bundle.py`
+
 - Read PDF metadata via `pdfinfo`
 - Extract text with `pdftotext -layout`
 - Render selected pages to PNG via `pdftoppm`
@@ -86,22 +88,26 @@ python3 scripts/build_research_log.py \
   - `images/page-XXXX.png`
 
 Important flags:
+
 - `--text-last-page 0`: read all pages as text
 - `--render-last-page N`: render the first N pages for visual inspection
 - `--dpi 144`: default PNG quality; raise it if formulas or small print are hard to read
 - `--clean`: replace an existing output directory
 
 ### `scripts/build_research_log.py`
+
 - Convert `manifest.json` into a markdown note scaffold
 - Keep source paths and reading instructions in the log
 - Use it when the user explicitly wants a research log, reading note, or reusable markdown artifact
 - Do not stop at the empty scaffold; fill the sections with actual findings after reading the PDF bundle
 
 ### `scripts/build_summary_md.py`
+
 - Convert `manifest.json` into a short markdown summary scaffold
 - Use it when the user wants a concise deliverable or when you want a companion file next to the research log
 
 ### `scripts/build_markdown_deliverables.py`
+
 - Create both `summary.md` and `research-log.md` in one step
 - Use it as the default markdown-deliverable generator after the user confirms they want markdown output
 
