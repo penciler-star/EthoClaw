@@ -12,15 +12,9 @@ export function detectToolLazyProfile(params: {
   const { prompt, trigger, isSubagent } = params;
   const lowerPrompt = prompt.toLowerCase();
 
-  // Heartbeat/Cron/Memory triggersUsually need minimal or specific tools
-  if (trigger === "heartbeat") {
+  // Heartbeat/Cron/Memory triggers usually need minimal tools
+  if (trigger === "heartbeat" || trigger === "cron" || trigger === "memory") {
     return "minimal";
-  }
-  if (trigger === "memory") {
-    return "coding"; // memory flush often needs fs tools
-  }
-  if (trigger === "cron") {
-    return "full"; // Cron tasks are unmanaged and unpredictable
   }
 
   // Subagents often perform specialized tasks, but "minimal" is a safe base.
@@ -47,10 +41,12 @@ export function detectToolLazyProfile(params: {
 
 function isCodingTask(prompt: string): boolean {
   const keywords = [
-    "bash", "shell", "terminal",
-    "git", "diff", "patch", "apply_patch", "commit",
-    "build", "test", "vitest", "jest", "pytest", "npm", "pnpm", "yarn",
-    "refactor", "debug", "stack trace", "traceback", "exception", "typescript", "javascript", "python"
+    "run", "exec", "bash", "shell", "terminal",
+    "read", "write", "edit", "file", "path", "dir", "folder",
+    "grep", "search", "find", "list", "ls",
+    "git", "diff", "patch", "apply", "commit",
+    "build", "test", "npm", "pnpm", "yarn",
+    "refactor", "debug", "fix", "code", "typescript", "javascript", "python"
   ];
   return keywords.some(k => prompt.includes(k));
 }
@@ -58,6 +54,9 @@ function isCodingTask(prompt: string): boolean {
 function isMessagingTask(prompt: string): boolean {
   const keywords = [
     "send", "message", "reply", "chat", "channel", "group", "room",
+    "list", "search", "find" // shared with coding, but in context of messaging
   ];
-  return keywords.some(k => prompt.includes(k));
+  // Check for specific messaging keywords that don't overlap too much with coding
+  const strongKeywords = ["send", "message", "reply", "channel", "group"];
+  return strongKeywords.some(k => prompt.includes(k));
 }

@@ -86,7 +86,7 @@ export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
     label: "web_search",
     description: "Search the web",
     sectionId: "web",
-    profiles: ["coding", "messaging"],
+    profiles: [],
     includeInOpenClawGroup: true,
   },
   {
@@ -94,7 +94,7 @@ export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
     label: "web_fetch",
     description: "Fetch web content",
     sectionId: "web",
-    profiles: ["coding", "messaging"],
+    profiles: [],
     includeInOpenClawGroup: true,
   },
   {
@@ -166,7 +166,7 @@ export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
     label: "browser",
     description: "Control web browser",
     sectionId: "ui",
-    profiles: ["coding"],
+    profiles: [],
     includeInOpenClawGroup: true,
   },
   {

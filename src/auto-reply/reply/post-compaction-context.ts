@@ -82,8 +82,8 @@ export async function readPostCompactionContext(
 
     const ethoclawRefresh = promptMode === "ethoclaw"
       ? "\n\n[Ethoclaw Optimization Mode Active]\n" +
-      "Focus: Reducing token costs, optimizing response speed, and ensuring efficient tool usage.\n" +
-      "Check your current task list and optimization benchmarks before proceeding."
+        "Focus: Reducing token costs, optimizing response speed, and ensuring efficient tool usage.\n" +
+        "Check your current task list and optimization benchmarks before proceeding."
       : "";
 
     return (
