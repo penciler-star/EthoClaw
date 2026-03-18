@@ -136,22 +136,38 @@ def build_tex_compact(
     cols: int = 2,
     panels_per_figure: int = 6,
 ) -> str:
+    """Build a compact, Nature-like multi-panel layout.
+
+    Important differences vs LaTeX floats:
+    - We avoid figure/figure* floats entirely to prevent "blank first page" issues.
+    - We render a manual "Fig. X | Title" line ABOVE the panels.
+    - Panel letters are overlaid INSIDE images (via overpic) to avoid getting clipped/covered.
+    - Panel descriptions are printed BELOW as a compact paragraph.
+    """
+
     preamble_path = Path(__file__).resolve().parents[1] / "assets" / "naturecomm_figures.tex"
     preamble = preamble_path.read_text(encoding="utf-8")
 
-    # Keep 2-column; we will use figure* for multi-panel blocks.
+    # Use 1-column for stable compact layout; keep NatureComm-ish header/geometry.
+    preamble = preamble.replace("\\documentclass[9pt,twocolumn]{article}", "\\documentclass[9pt]{article}")
+
+    # Add overlay capability for panel letters.
+    if "\\usepackage{subcaption}" in preamble and "overpic" not in preamble:
+        preamble = preamble.replace("\\usepackage{subcaption}", "\\usepackage{subcaption}\n\\usepackage[percent]{overpic}")
+
     parts: list[str] = [preamble, "\\begin{document}\n"]
 
-    # Make the whole thing tighter/compact.
+    # Tighten vertical whitespace globally.
     parts.append(
-        "\\setlength{\\textfloatsep}{3mm}\n"
-        "\\setlength{\\intextsep}{3mm}\n"
-        "\\setlength{\\floatsep}{2.5mm}\n"
-        "\\setlength{\\dbltextfloatsep}{3mm}\n"
-        "\\setlength{\\dblfloatsep}{2.5mm}\n"
-        "\\captionsetup[figure]{skip=1.5mm}\n\n"
+        "\\setlength{\\parindent}{0pt}\n"
+        "\\setlength{\\parskip}{0pt}\n"
+        "\\setlength{\\textfloatsep}{2.5mm}\n"
+        "\\setlength{\\intextsep}{2.5mm}\n"
+        "\\setlength{\\floatsep}{2.0mm}\n"
+        "\\captionsetup[figure]{skip=1.2mm}\n\n"
     )
 
+    # Title as a simple heading (kept, but should not create blank pages since we use no floats).
     if title:
         parts.append("\\section*{" + title.replace("_", "\\_") + "}\n")
 
@@ -162,7 +178,7 @@ def build_tex_compact(
 
     # panel width per column
     if cols == 1:
-        w = 0.92
+        w = 0.94
     elif cols == 2:
         w = 0.485
     elif cols == 3:
@@ -170,10 +186,18 @@ def build_tex_compact(
     else:
         w = 0.24
 
+    # Figure chunks
     for fig_idx, chunk in enumerate(chunked(panels, panels_per_figure), start=1):
-        parts.append("\\begin{figure*}[t]\n\\centering\n")
+        cap_title = fig_title.strip() or title.strip() or "Results"
+        cap_title_tex = cap_title.replace("_", "\\_")
 
-        # Arrange panels into rows.
+        # --- Fig title ABOVE ---
+        parts.append("\\vspace{1mm}\n")
+        parts.append(f"\\textbf{{Fig. {fig_idx} | {cap_title_tex}}}\\\\[1.5mm]\n")
+
+        # --- Panels grid ---
+        parts.append("\\begin{center}\n")
+
         rows = int(math.ceil(len(chunk) / cols))
         for r in range(rows):
             for c in range(cols):
@@ -184,36 +208,36 @@ def build_tex_compact(
                 group_name, img = chunk[i]
                 letter = chr(ord("a") + i)
 
+                parts.append(f"\\begin{{minipage}}[t]{{{w}\\textwidth}}\\vspace{{0pt}}\n")
+                parts.append("\\centering\n")
+                # overlay letter inside the image (top-left). 2% from left, 94% from bottom.
                 parts.append(
-                    f"\\begin{{minipage}}[t]{{{w}\\textwidth}}\\vspace{{0pt}}\n"
-                    f"\\textbf{{{letter}}}\\\\[-1.0mm]\n"
-                    f"\\includegraphics[width=\\linewidth]{{{img.name}}}\n"
-                    "\\end{minipage}"
+                    f"\\begin{{overpic}}[width=\\linewidth]{{{img.name}}}\n"
+                    f"  \\put(2,94){{\\textbf{{{letter}}}}}\n"
+                    "\\end{overpic}\n"
                 )
+                parts.append("\\end{minipage}")
 
-                # horizontal spacing
                 if c != cols - 1 and (i + 1) < len(chunk):
                     parts.append("\\hfill\n")
 
-            parts.append("\\\\[2.0mm]\n")
+            parts.append("\\\\[2.2mm]\n")
 
-        # Caption: "Fig. X" is handled by LaTeX; we add "| Title" and per-panel descriptions.
-        # Per-panel descriptions default to: "<Type>: <filename-derived caption>".
-        cap_title = fig_title.strip() or title.strip() or "Results"
-        cap_title = cap_title.replace("_", "\\_")
+        parts.append("\\end{center}\n")
 
+        # --- Panel descriptions BELOW ---
         panel_descs: list[str] = []
         for i, (group_name, img) in enumerate(chunk):
             letter = chr(ord("a") + i)
             desc = caption_from_filename(img.name)
             g = nice_title(group_name)
-            panel_descs.append(f"\\textbf{{{letter}}}, {g}: {desc}")
+            panel_descs.append(f"\\textbf{{{letter}}} {g}: {desc}")
 
-        caption = "\\textbf{" + cap_title + "} " + "; ".join(panel_descs) + "."
-        caption = caption.replace("_", "\\_")
+        desc_line = "; ".join(panel_descs).replace("_", "\\_") + "."
+        parts.append("{\\fontsize{8}{9}\\selectfont " + desc_line + "}\\par\n")
 
-        parts.append(f"\\caption{{{caption}}}\n")
-        parts.append("\\end{figure*}\n\n")
+        # Spacing between figures; allow more than one figure per page when small.
+        parts.append("\\vspace{3.0mm}\n\n")
 
     parts.append("\\end{document}\n")
     return "".join(parts)
