@@ -133,8 +133,8 @@ EthoClaw 建立在开源社区大量优秀工作的基础上。
 
 特别感谢以下项目带来的关键支持：
 
-[OpenClaw](https://github.com/openclaw/openclaw)：
-[DeepLabCut](https://github.com/DeepLabCut/DeepLabCut)：
+[OpenClaw](https://github.com/openclaw/openclaw)：运行在个人设备上的强大且开源的AI智能体助手。
+[DeepLabCut](https://github.com/DeepLabCut/DeepLabCut)：应用广泛的基于深度学习的无标记动物姿态估计工具。
 这些项目体现了开源协作真正的力量，我们也很高兴能继续建立在这些基础之上。
 
 ### 开发者
