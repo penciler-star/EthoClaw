@@ -21,7 +21,6 @@ import {
   updateSessionStore,
 } from "../../config/sessions.js";
 import { isSubagentSessionKey } from "../../routing/session-key.js";
-import { detectToolLazyProfile } from "../../agents/tool-lazy-loader.js";
 import { logVerbose } from "../../globals.js";
 import { emitAgentEvent, registerAgentRunContext } from "../../infra/agent-events.js";
 import { defaultRuntime } from "../../runtime.js";
@@ -322,11 +321,6 @@ export async function runAgentTurnWithFallback(params: {
               ...runBaseParams,
               prompt: params.commandBody,
               promptMode: params.promptMode,
-              lazyProfile: detectToolLazyProfile({
-                prompt: params.commandBody,
-                trigger: params.isHeartbeat ? "heartbeat" : "user",
-                isSubagent: isSubagentSessionKey(params.sessionKey),
-              }),
               extraSystemPrompt: params.followupRun.run.extraSystemPrompt,
               toolResultFormat: (() => {
                 const channel = resolveMessageChannel(

@@ -321,8 +321,7 @@ export async function summarizeWithFallback(params: {
     return await summarizeChunks(params);
   } catch (fullError) {
     log.warn(
-      `Full summarization failed, trying partial: ${
-        fullError instanceof Error ? fullError.message : String(fullError)
+      `Full summarization failed, trying partial: ${fullError instanceof Error ? fullError.message : String(fullError)
       }`,
     );
   }
@@ -353,8 +352,7 @@ export async function summarizeWithFallback(params: {
       return partialSummary + notes;
     } catch (partialError) {
       log.warn(
-        `Partial summarization also failed: ${
-          partialError instanceof Error ? partialError.message : String(partialError)
+        `Partial summarization also failed: ${partialError instanceof Error ? partialError.message : String(partialError)
         }`,
       );
     }
