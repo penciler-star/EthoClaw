@@ -36,11 +36,12 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
   <div align=center><img src="docs/clustermap_demo1.png" width="500" /></div>
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
 
-  3. Support CSV/Excel format conversion;
+  3. Support CSV/Excel format conversion to recommended format;
   4. Generate analysis reports including experiment background, sample information, analysis content, and summaries.
 
 - **Tutorial Assistance:**
   1. Provide detailed explanations for beginners on parameter calculation methods, chart data sources, clustering methods and parameters, etc., to facilitate writing the methods section of papers.
+  <div align=center><img src="docs/QA_demo.png" width="500" /></div>
 - **Local Knowledge Base:**
   1. Read local PDF papers and reports, summarize and output them.
   <div align=center><img src="docs/pdf_read_demo.png" width="500" /></div>
@@ -48,7 +49,7 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
   1. Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv/PubMed related papers.
   <div align=center><img src="docs/search_paper_demo.jpg" width="500" /></div>
 - **Note:**
-  Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins.
+  Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins and channels.
 
 ## Quick Start
 
