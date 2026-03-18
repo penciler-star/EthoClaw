@@ -97,6 +97,7 @@ def pick_representatives(imgs: list[Path], k: int) -> list[Path]:
     """Pick up to k representative images from a folder.
 
     Heuristics (in priority order):
+    - prefer real figure images over standalone colorbars
     - group/summary images ("group", "mean", "avg", "summary")
     - then control-like
     - then model-like
@@ -109,6 +110,8 @@ def pick_representatives(imgs: list[Path], k: int) -> list[Path]:
     def score(p: Path) -> tuple[int, list]:
         n = p.name.lower()
         bonus = 0
+        if "colorbar" in n or "color_bar" in n:
+            bonus += 1000
         if any(t in n for t in ["group", "mean", "avg", "summary"]):
             bonus -= 50
         if "control" in n or n.startswith("con"):
@@ -130,6 +133,46 @@ def pick_representatives(imgs: list[Path], k: int) -> list[Path]:
             break
 
     return picked
+
+
+def build_compact_entries(groups: list[tuple[str, list[Path]]], max_per_type: int) -> list[tuple[str, list[Path], bool]]:
+    """Return compact-layout entries.
+
+    Each entry is: (group_name, image_list, is_colorbar_bundle)
+
+    Behavior:
+    - if max_per_type <= 0: include *all* images per group
+    - if a group contains colorbar + >=1 other image, create one special bundled entry:
+      [first up to 3 non-colorbar images] + [colorbar]
+    - remaining images become normal one-image entries
+    """
+
+    entries: list[tuple[str, list[Path], bool]] = []
+
+    for group_name, imgs in groups:
+        imgs0 = sorted(imgs, key=lambda p: natural_key(p.name))
+        colorbars = [p for p in imgs0 if "colorbar" in p.name.lower() or "color_bar" in p.name.lower()]
+        non_color = [p for p in imgs0 if p not in colorbars]
+
+        if max_per_type <= 0:
+            chosen_non_color = non_color
+        else:
+            chosen_non_color = pick_representatives(non_color, max_per_type)
+
+        if colorbars and chosen_non_color:
+            # bundle up to 3 heatmaps + 1 colorbar into one compact panel
+            bundle_imgs = chosen_non_color[:3] + [colorbars[0]]
+            entries.append((group_name, bundle_imgs, True))
+            bundled_set = set(bundle_imgs[:-1])
+            leftovers = [p for p in chosen_non_color if p not in bundled_set]
+            for p in leftovers:
+                entries.append((group_name, [p], False))
+        else:
+            pool = chosen_non_color if non_color else ([] if max_per_type > 0 else imgs0)
+            for p in pool:
+                entries.append((group_name, [p], False))
+
+    return entries
 
 
 def chunked(seq: list, n: int) -> list[list]:
@@ -156,17 +199,20 @@ def tex_sanitize_filename(name: str) -> str:
 
 def build_tex_compact(
     title: str,
-    panels: list[tuple[str, Path]],
+    panels: list[tuple[str, list[Path], bool]],
     fig_title: str,
     cols: int = 2,
     panels_per_figure: int = 6,
 ) -> str:
     """Build a compact, Nature-like multi-panel layout.
 
+    panels entries are: (group_name, image_list, is_colorbar_bundle)
+    - normal panel: image_list has 1 image
+    - colorbar bundle: image_list has N heatmaps + 1 colorbar
+
     Important differences vs LaTeX floats:
     - We avoid figure/figure* floats entirely to prevent "blank first page" issues.
     - We render a manual "Fig. X | Title" line ABOVE the panels.
-    - Panel letters are overlaid INSIDE images (via overpic) to avoid getting clipped/covered.
     - Panel descriptions are printed BELOW as a compact paragraph.
     """
 
@@ -232,14 +278,46 @@ def build_tex_compact(
                 if i >= len(chunk):
                     break
 
-                group_name, img = chunk[i]
+                group_name, img_list, is_bundle = chunk[i]
                 letter = chr(ord("a") + i)
 
                 parts.append(f"\\begin{{minipage}}[t]{{{w}\\textwidth}}\\vspace{{0pt}}\n")
                 # Panel label: white background (no border) + positive spacing so it stays ABOVE the image.
                 parts.append("\\raggedright\\colorbox{white}{\\textbf{" + letter + "}}\\\\[0.8mm]\n")
                 parts.append("\\centering\n")
-                parts.append(f"\\includegraphics[width=\\linewidth]{{{img.name}}}\n")
+                if is_bundle and len(img_list) >= 2:
+                    colorbar = img_list[-1]
+                    heatmaps = img_list[:-1]
+                    if len(heatmaps) == 1:
+                        parts.append(
+                            "\\setlength{\\tabcolsep}{2pt}\n"
+                            "\\begin{tabular}{@{}cc@{}}\n"
+                            f"\\includegraphics[width=0.82\\linewidth]{{{heatmaps[0].name}}} & "
+                            f"\\includegraphics[width=0.10\\linewidth]{{{colorbar.name}}} \\\\n"
+                            "\\end{tabular}\n"
+                        )
+                    elif len(heatmaps) == 2:
+                        parts.append(
+                            "\\setlength{\\tabcolsep}{2pt}\n"
+                            "\\begin{tabular}{@{}ccc@{}}\n"
+                            f"\\includegraphics[width=0.40\\linewidth]{{{heatmaps[0].name}}} & "
+                            f"\\includegraphics[width=0.40\\linewidth]{{{heatmaps[1].name}}} & "
+                            f"\\includegraphics[width=0.08\\linewidth]{{{colorbar.name}}} \\\\n"
+                            "\\end{tabular}\n"
+                        )
+                    else:
+                        parts.append(
+                            "\\setlength{\\tabcolsep}{2pt}\n"
+                            "\\begin{tabular}{@{}cccc@{}}\n"
+                            f"\\includegraphics[width=0.26\\linewidth]{{{heatmaps[0].name}}} & "
+                            f"\\includegraphics[width=0.26\\linewidth]{{{heatmaps[1].name}}} & "
+                            f"\\includegraphics[width=0.26\\linewidth]{{{heatmaps[2].name}}} & "
+                            f"\\includegraphics[width=0.08\\linewidth]{{{colorbar.name}}} \\\\n"
+                            "\\end{tabular}\n"
+                        )
+                else:
+                    img = img_list[0]
+                    parts.append(f"\\includegraphics[width=\\linewidth]{{{img.name}}}\n")
                 parts.append("\\end{minipage}")
 
                 if c != cols - 1 and (i + 1) < len(chunk):
@@ -251,10 +329,15 @@ def build_tex_compact(
 
         # --- Panel descriptions BELOW ---
         panel_descs: list[str] = []
-        for i, (group_name, img) in enumerate(chunk):
+        for i, (group_name, img_list, is_bundle) in enumerate(chunk):
             letter = chr(ord("a") + i)
-            desc = caption_from_filename(img.name)
             g = nice_title(group_name)
+            if is_bundle and len(img_list) >= 2:
+                heat_desc = ", ".join(caption_from_filename(p.name) for p in img_list[:-1])
+                cb_desc = caption_from_filename(img_list[-1].name)
+                desc = f"{heat_desc}; shared {cb_desc}"
+            else:
+                desc = caption_from_filename(img_list[0].name)
             panel_descs.append(f"\\textbf{{{letter}}} {g}: {desc}")
 
         desc_line = "; ".join(panel_descs).replace("_", "\\_") + "."
@@ -372,11 +455,7 @@ def main():
 
     # Build selection (compact) or keep all (foldered)
     if args.mode == "compact":
-        selected: list[tuple[str, Path]] = []
-        for group_name, imgs in groups:
-            reps = pick_representatives(imgs, args.max_per_type)
-            for p in reps:
-                selected.append((group_name, p))
+        selected = build_compact_entries(groups, args.max_per_type)
 
         if not selected:
             raise SystemExit(f"No images selected under: {root}")
@@ -405,33 +484,36 @@ def main():
             i += 1
 
     if args.mode == "compact":
-        for group_name, img in selected:
-            name = unique_safe_name(group_name, img)
-            used.add(name)
-            aux[name] = b64_file(img)
-            renamed.append((img, name))
+        for group_name, img_list, is_bundle in selected:
+            for img in img_list:
+                name = unique_safe_name(group_name, img)
+                used.add(name)
+                aux[name] = b64_file(img)
+                renamed.append((img, name))
 
         name_map = {orig: new for orig, new in renamed}
-        selected2 = [(g, Path(name_map[p])) for (g, p) in selected]
+        selected2 = [(g, [Path(name_map[p]) for p in img_list], is_bundle) for (g, img_list, is_bundle) in selected]
 
         # Sort panels by a preferred type order to stabilize a/b/c...
         preferred = {
+            "speed trajectory heatmap": 10,
             "heatmap_trajectory": 10,
             "heatmap_velocity": 20,
             "radar": 30,
-            "violin": 40,
+            "kinematic parameters": 40,
+            "violin": 50,
         }
 
-        def panel_sort_key(item: tuple[str, Path]):
-            g, p = item
+        def panel_sort_key(item: tuple[str, list[Path], bool]):
+            g, img_list, is_bundle = item
             gl = g.lower()
             k = 999
             for key, pri in preferred.items():
                 if gl.startswith(key):
                     k = pri
                     break
-            # keep deterministic order within a type
-            return (k, natural_key(gl), natural_key(p.name))
+            first_name = img_list[0].name if img_list else ""
+            return (k, natural_key(gl), natural_key(first_name))
 
         selected2 = sorted(selected2, key=panel_sort_key)
 
