@@ -37,14 +37,16 @@ Targeting cumbersome workflows in ethological analysis—such as preprocessing, 
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
 
   3. Support CSV/Excel format conversion;
-  4. Generate PDF analysis reports including experiment background, sample information, analysis content, and summaries.
+  4. Generate analysis reports including experiment background, sample information, analysis content, and summaries.
 
 - **Tutorial Assistance:**
   1. Provide detailed explanations for beginners on parameter calculation methods, chart data sources, clustering methods and parameters, etc., to facilitate writing the methods section of papers.
 - **Local Knowledge Base:**
-  1. Read local PDF papers and reports, summarize and output them, forming local research logs.
+  1. Read local PDF papers and reports, summarize and output them.
+  <div align=center><img src="docs/pdf_read_demo.png" width="500" /></div>
 - **Network Search:**
-  1. Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv papers.
+  1. Obtain the latest papers through web or academic searches, supporting daily scheduled delivery of arxiv/PubMed related papers.
+  <div align=center><img src="docs/search_paper_demo.jpg" width="500" /></div>
 - **Note:**
   Since EthoClaw is built on OpenClaw, it inherits all of OpenClaw’s functionality, uses the same interface, and is fully compatible with all OpenClaw plugins.
 
@@ -110,6 +112,7 @@ pip install --pre deeplabcut
 ## Contributions
 
 ### We thank all developers who have contributed to the EthoClaw project.
+
 <a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
 <a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
 <a href="https://github.com/yichuan1998"><img src="https://avatars.githubusercontent.com/u/91551667?v=4" width="50px;" alt="yichuan1998"/></a>

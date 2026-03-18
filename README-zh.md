@@ -35,14 +35,17 @@
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
 
   3. 支持CSV/Excel格式转换；
-  4. 生成包含实验背景、样本信息、分析内容和总结的PDF分析报告。
+  4. 生成包含实验背景、样本信息、分析内容和总结的分析报告。
 
 - **教程辅助**：
   1. 为初学者提供参数计算方法、图表数据来源、聚类方法及参数等详细说明，便于论文方法部分撰写。
+
 - **本地知识库**：
-  1. 读取本地PDF论文和报告，总结并输出，形成本地研究日志。
+  1. 读取本地PDF论文和报告，总结并输出。
+  <div align=center><img src="docs/pdf_read_demo.png" width="500" /></div>
 - **网络搜索**：
-  1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv论文。
+  1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv/PubMed的相关论文。
+  <div align=center><img src="docs/search_paper_demo.jpg" width="500" /></div>
 - **注**：
   由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件。
 
@@ -108,6 +111,7 @@ pip install --pre deeplabcut
 ## 贡献
 
 ### 感谢所有为EthoClaw项目做出贡献的开发者
+
 <a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
 <a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
 <a href="https://github.com/yichuan1998"><img src="https://avatars.githubusercontent.com/u/91551667?v=4" width="50px;" alt="yichuan1998"/></a>
