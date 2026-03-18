@@ -136,6 +136,24 @@ def chunked(seq: list, n: int) -> list[list]:
     return [seq[i : i + n] for i in range(0, len(seq), n)]
 
 
+def tex_sanitize_filename(name: str) -> str:
+    """Generate a LaTeX-friendly filename.
+
+    Rationale: panel overlay (overpic) + some LaTeX setups can behave badly with
+    spaces / non-ascii in filenames. We always map input images to safe names
+    inside the compilation sandbox.
+    """
+
+    # keep extension
+    p = Path(name)
+    stem = re.sub(r"[^A-Za-z0-9._-]+", "_", p.stem)
+    stem = re.sub(r"_+", "_", stem).strip("_")
+    ext = p.suffix.lower() if p.suffix else ".png"
+    if not stem:
+        stem = "img"
+    return f"{stem}{ext}"
+
+
 def build_tex_compact(
     title: str,
     panels: list[tuple[str, Path]],
@@ -158,9 +176,9 @@ def build_tex_compact(
     # Use 1-column for stable compact layout; keep NatureComm-ish header/geometry.
     preamble = preamble.replace("\\documentclass[9pt,twocolumn]{article}", "\\documentclass[9pt]{article}")
 
-    # Add overlay capability for panel letters.
-    if "\\usepackage{subcaption}" in preamble and "overpic" not in preamble:
-        preamble = preamble.replace("\\usepackage{subcaption}", "\\usepackage{subcaption}\n\\usepackage[percent]{overpic}")
+    # We avoid in-image overlays (overpic) for panel letters because overlays
+    # can get clipped/lost near the top edge depending on PDF renderer/cropping.
+    # Panel letters are rendered as normal text ABOVE each image instead.
 
     parts: list[str] = [preamble, "\\begin{document}\n"]
 
@@ -216,13 +234,9 @@ def build_tex_compact(
                 letter = chr(ord("a") + i)
 
                 parts.append(f"\\begin{{minipage}}[t]{{{w}\\textwidth}}\\vspace{{0pt}}\n")
+                parts.append("\\raggedright\\textbf{" + letter + "}\\\\[-1.0mm]\n")
                 parts.append("\\centering\n")
-                # overlay letter inside the image (top-left). 2% from left, 94% from bottom.
-                parts.append(
-                    f"\\begin{{overpic}}[width=\\linewidth]{{{img.name}}}\n"
-                    f"  \\put(2,94){{\\textbf{{{letter}}}}}\n"
-                    "\\end{overpic}\n"
-                )
+                parts.append(f"\\includegraphics[width=\\linewidth]{{{img.name}}}\n")
                 parts.append("\\end{minipage}")
 
                 if c != cols - 1 and (i + 1) < len(chunk):
@@ -364,23 +378,59 @@ def main():
         if not selected:
             raise SystemExit(f"No images selected under: {root}")
 
-    # Collect aux files: images at root of LaTeX project need unique names.
-    # If filenames collide across folders, we disambiguate by prefixing the folder name.
+    # Collect aux files: images at root of LaTeX project need unique, LaTeX-friendly names.
+    # We always sanitize filenames to avoid issues with spaces / non-ascii.
     aux: dict[str, str] = {}
     renamed: list[tuple[Path, str]] = []
     used: set[str] = set()
 
+    def unique_safe_name(group_name: str, img: Path) -> str:
+        base = tex_sanitize_filename(img.name)
+        # ensure uniqueness across all aux files
+        if base not in used:
+            return base
+        # prefix with group
+        pref = tex_sanitize_filename(f"{group_name}__{img.name}")
+        if pref not in used:
+            return pref
+        # final fallback: add numeric suffix
+        i = 2
+        while True:
+            cand = f"{Path(base).stem}_{i}{Path(base).suffix}"
+            if cand not in used:
+                return cand
+            i += 1
+
     if args.mode == "compact":
         for group_name, img in selected:
-            name = img.name
-            if name in used:
-                name = f"{group_name}__{name}"
+            name = unique_safe_name(group_name, img)
             used.add(name)
             aux[name] = b64_file(img)
             renamed.append((img, name))
 
         name_map = {orig: new for orig, new in renamed}
         selected2 = [(g, Path(name_map[p])) for (g, p) in selected]
+
+        # Sort panels by a preferred type order to stabilize a/b/c...
+        preferred = {
+            "heatmap_trajectory": 10,
+            "heatmap_velocity": 20,
+            "radar": 30,
+            "violin": 40,
+        }
+
+        def panel_sort_key(item: tuple[str, Path]):
+            g, p = item
+            gl = g.lower()
+            k = 999
+            for key, pri in preferred.items():
+                if gl.startswith(key):
+                    k = pri
+                    break
+            # keep deterministic order within a type
+            return (k, natural_key(gl), natural_key(p.name))
+
+        selected2 = sorted(selected2, key=panel_sort_key)
 
         tex = build_tex_compact(
             title=args.title,
@@ -393,9 +443,7 @@ def main():
     else:
         for group_name, imgs in groups:
             for img in imgs:
-                name = img.name
-                if name in used:
-                    name = f"{group_name}__{name}"
+                name = unique_safe_name(group_name, img)
                 used.add(name)
                 aux[name] = b64_file(img)
                 renamed.append((img, name))
