@@ -109,6 +109,14 @@ pnpm gateway:watch
 pip install --pre deeplabcut
 ```
 
+### Recommended Project Structure
+```
+Analysis_Project/
+├── 0_videos/
+└── 1_2Dskeleton/
+└── 2_results/
+```
+
 ## Contributors
 
 ### We thank all developers who have contributed to the EthoClaw project.
