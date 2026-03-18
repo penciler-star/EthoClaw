@@ -148,6 +148,7 @@ EthoClaw 建立在开源社区大量优秀工作的基础上。
 <a href="https://github.com/Liangjh40"><img src="https://avatars.githubusercontent.com/u/166850860?v=4" width="50px;" alt="Liangjh40"/></a>
 <a href="https://github.com/B-Done"><img src="https://avatars.githubusercontent.com/u/44202992?v=4" width="50px;" alt="B-Done"/></a>
 <a href="https://github.com/HiganBanamm"><img src="https://avatars.githubusercontent.com/u/38582938?v=4" width="50px;" alt="HiganBanamm"/></a>
+<a href="https://github.com/Liyeczm"><img src="https://avatars.githubusercontent.com/u/45525852?v=4" width="50px;" alt="Liyeczm"/></a>
 
 ## 反馈
 
