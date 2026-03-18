@@ -4,13 +4,8 @@
   <a href="README-zh.md">中文</a>
 </p>
 
-<p align="center">
-
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](./backend/pyproject.toml)
-[![Node.js](https://img.shields.io/badge/Node.js-24%2B-339933?logo=node.js&logoColor=white)](./Makefile)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-
-</p>
+<font size=4><div align='center'> [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](./backend/pyproject.toml) [![Node.js](https://img.shields.io/badge/Node.js-24%2B-339933?logo=node.js&logoColor=white)](./Makefile)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) </div></font>
 
 **EthoClaw** is an open-source project in the field of Ethology built on OpenClaw, with a core focus on implementing practical skills for behavioral research.Targeting cumbersome workflows in ethological analysis—such as preprocessing, data conversion, format matching, and environment setup—EthoClaw not only automates these tasks for researchers but also supports web information retrieval, analytical report and result figure generation, local literature interpretation, automated object localization, and automatic pose estimation, enabling researchers to focus more on solving scientific questions and significantly improving research efficiency. Additionally, we have conducted performance optimizations for OpenClaw to enhance our user experience.
 
