@@ -4,9 +4,9 @@ import { estimateTokens, generateSummary } from "@mariozechner/pi-coding-agent";
 import type { AgentCompactionIdentifierPolicy } from "../config/types.agent-defaults.js";
 import { retryAsync } from "../infra/retry.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
-import { resolveUserPath } from "../../utils.js";
-import { normalizeMessageChannel } from "../../utils/message-channel.js";
-import { collectTextContentBlocks } from "../content-blocks.js";
+import { resolveUserPath } from "../utils.js";
+import { normalizeMessageChannel } from "../utils/message-channel.js";
+import { collectTextContentBlocks } from "./content-blocks.js";
 import { DEFAULT_CONTEXT_TOKENS } from "./defaults.js";
 import { repairToolUseResultPairing, stripToolResultDetails } from "./session-transcript-repair.js";
 
@@ -104,7 +104,7 @@ export function truncateOversizedToolResults(messages: AgentMessage[]): AgentMes
     touched = true;
     return {
       ...msg,
-      content: [{ type: "text", text: truncatedText }],
+      content: [{ type: "text" as const, text: truncatedText }],
     };
   });
 
