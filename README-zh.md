@@ -139,12 +139,15 @@ EthoClaw 建立在开源社区大量优秀工作的基础上。
 
 ### 开发者
 
+<a href="https://github.com/huangkang314"><img src="https://avatars.githubusercontent.com/u/18696144?v=4" width="50px;" alt="huangkang314"/></a>
 <a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
 <a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
 <a href="https://github.com/yichuan1998"><img src="https://avatars.githubusercontent.com/u/91551667?v=4" width="50px;" alt="yichuan1998"/></a>
 <a href="https://github.com/troyc126"><img src="https://avatars.githubusercontent.com/u/219070938?v=4" width="50px;" alt="troyc126"/></a>
 <a href="https://github.com/LZAndy"><img src="https://avatars.githubusercontent.com/u/87013958?v=4" width="50px;" alt="LZAndy"/></a>
 <a href="https://github.com/Liangjh40"><img src="https://avatars.githubusercontent.com/u/166850860?v=4" width="50px;" alt="Liangjh40"/></a>
+<a href="https://github.com/B-Done"><img src="https://avatars.githubusercontent.com/u/44202992?v=4" width="50px;" alt="B-Done"/></a>
+<a href="https://github.com/HiganBanamm"><img src="https://avatars.githubusercontent.com/u/38582938?v=4" width="50px;" alt="HiganBanamm"/></a>
 
 ## 反馈
 
