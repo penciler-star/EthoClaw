@@ -5,7 +5,7 @@ import { resolveMergedSafeBinProfileFixtures } from "../infra/exec-safe-bin-runt
 import { logWarn } from "../logger.js";
 import { getPluginToolMeta } from "../plugins/tools.js";
 import { isSubagentSessionKey } from "../routing/session-key.js";
-import { resolveGatewayMessageChannel } from "../utils/message-channel.js";
+import { normalizeMessageChannel, resolveGatewayMessageChannel } from "../utils/message-channel.js";
 import { resolveAgentConfig } from "./agent-scope.js";
 import { createApplyPatchTool } from "./apply-patch.js";
 import {
@@ -52,7 +52,9 @@ import {
 import {
   applyOwnerOnlyToolPolicy,
   collectExplicitAllowlist,
+  expandToolGroups,
   mergeAlsoAllowPolicy,
+  normalizeToolName,
   resolveToolProfilePolicy,
 } from "./tool-policy.js";
 import {
@@ -284,7 +286,19 @@ export function createOpenClawCodingTools(options?: {
   const profilePolicy = resolveToolProfilePolicy(profile);
   const providerProfilePolicy = resolveToolProfilePolicy(providerProfile);
 
-  const profilePolicyWithAlsoAllow = mergeAlsoAllowPolicy(profilePolicy, profileAlsoAllow);
+  const messageChannel = normalizeMessageChannel(options?.messageProvider);
+  // Local TUI sessions are trusted operator workflows and should keep fs/runtime tools even when
+  // the global tool profile is configured as "messaging" for safety on public chat channels.
+  const implicitProfileAlsoAllow =
+    messageChannel === "tui" || messageChannel === "webchat"
+      ? (["group:fs", "group:runtime"] as const)
+      : undefined;
+  const effectiveProfileAlsoAllow =
+    implicitProfileAlsoAllow && implicitProfileAlsoAllow.length > 0
+      ? Array.from(new Set([...(profileAlsoAllow ?? []), ...implicitProfileAlsoAllow]))
+      : profileAlsoAllow;
+
+  const profilePolicyWithAlsoAllow = mergeAlsoAllowPolicy(profilePolicy, effectiveProfileAlsoAllow);
   const providerProfilePolicyWithAlsoAllow = mergeAlsoAllowPolicy(
     providerProfilePolicy,
     providerProfileAlsoAllow,
@@ -508,11 +522,31 @@ export function createOpenClawCodingTools(options?: {
     }),
   ];
 
-  if (options?.lazyProfile) {
+  if (options?.lazyProfile && options.lazyProfile !== "full") {
     const profileToolIds = new Set(listCoreToolIdsForProfile(options.lazyProfile));
+    // If an operator explicitly allowlists a core tool, do not let lazyProfile
+    // filtering remove it. Tool policy (allow/deny) is still applied later.
+    const explicitlyAllowed = new Set(
+      expandToolGroups(
+        collectExplicitAllowlist([
+          profilePolicyWithAlsoAllow,
+          providerProfilePolicyWithAlsoAllow,
+          globalPolicy,
+          globalProviderPolicy,
+          agentPolicy,
+          agentProviderPolicy,
+          groupPolicy,
+          sandbox?.tools,
+          subagentPolicy,
+        ]),
+      ),
+    );
     tools = tools.filter((tool) => {
       // Always include non-core tools (plugins, etc.) if they passed other policies
       if (!isKnownCoreToolId(tool.name)) {
+        return true;
+      }
+      if (explicitlyAllowed.has(normalizeToolName(tool.name))) {
         return true;
       }
       return profileToolIds.has(tool.name);

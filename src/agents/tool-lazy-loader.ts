@@ -23,11 +23,16 @@ export function detectToolLazyProfile(params: {
     return "full"; // Cron tasks are unmanaged and unpredictable
   }
 
-  // Subagents often perform specialized tasks, but "minimal" is a safe base.
   // We can scale up if specific keywords are found.
   if (isSubagent) {
     if (isCodingTask(lowerPrompt)) return "coding";
     return "minimal";
+  }
+
+  // Coding/Filesystem intent takes precedence over messaging
+  // because coding tasks often involve reading files before messaging.
+  if (isCodingTask(lowerPrompt)) {
+    return "coding";
   }
 
   // Messaging intent (routing, listing channels, etc.)
@@ -35,13 +40,7 @@ export function detectToolLazyProfile(params: {
     return "messaging";
   }
 
-  // Coding/Filesystem intent
-  if (isCodingTask(lowerPrompt)) {
-    return "coding";
-  }
-
-  // Default to full for user prompts to ensure maximum capability,
-  // unless we want to be more aggressive with Ethoclaw.
+  // Default to full for user prompts to ensure maximum capability
   return "full";
 }
 
@@ -57,7 +56,7 @@ function isCodingTask(prompt: string): boolean {
 
 function isMessagingTask(prompt: string): boolean {
   const keywords = [
-    "send", "message", "reply", "chat", "channel", "group", "room",
+    "send message", "send a message", "reply", "chat", "channel", "group", "room", "telegram", "discord"
   ];
   return keywords.some(k => prompt.includes(k));
 }
