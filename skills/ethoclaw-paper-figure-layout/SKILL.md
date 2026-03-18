@@ -41,6 +41,14 @@ Defaults (can override):
 - `--cols 2`
 - `--panels-per-figure 6`
 
+Useful override:
+- `--max-per-type 0` → include **all images** from each type/folder instead of only 1 representative image.
+
+Special handling:
+- If a folder contains `colorBar` / `color_bar` plus heatmaps, the layout bundles them into one panel:
+  - up to 3 heatmaps + 1 shared colorbar side-by-side
+  - the colorbar is rendered narrow instead of occupying a full panel by itself
+
 ### Legacy foldered
 
 ```bash
