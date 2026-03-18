@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 r"""Auto-layout images into a Nature Communications-ish PDF using the TypeTex LaTeX compiler.
 
-Design goals
-- Group by folder (subdirectories).
-- Auto caption from filename.
-- Stable output (avoid 2-column float weirdness): use 1-column LaTeX + \captionof.
+This script started as a simple "one image per page" foldered layout.
+It has been upgraded to support a compact Nature-style *multi-panel figure* layout:
+- Tight, compact page usage (no "one page per image" by default)
+- Subpanel letters (a, b, c, ...) aligned and consistent
+- One figure caption containing: a short title + per-panel descriptions
+- Sensible defaults: if the user doesn't specify, pick **1 representative image per type**
+  ("type" = subfolder under the input root) instead of dumping everything.
 
 Usage
   python3 layout_results_foldered.py \
-    --input "/home/max/Downloads/results" \
-    --output "/home/max/.openclaw/workspace/tmp_results/results_auto.pdf"
+    --input "/path/to/2_results" \
+    --output "/path/to/out.pdf" \
+    --title "Results"
 
-Options
-- --input: root directory containing subfolders with images
-- --output: output PDF path
-- --title: optional document title
-- --glob: optional file pattern (default: *.png,*.jpg,*.jpeg,*.webp)
+Modes
+- compact (default): multi-panel figures; representative images per folder.
+- foldered: legacy behavior (all images, one per block, page breaks per folder).
 
 Notes
 - The TypeTex LaTeX environment defaults to latexmk+xelatex, but xelatex is not installed.
@@ -26,7 +28,7 @@ from __future__ import annotations
 
 import argparse
 import base64
-import os
+import math
 import re
 from pathlib import Path
 from typing import Iterable
@@ -56,25 +58,174 @@ def caption_from_filename(name: str) -> str:
     return stem
 
 
+def nice_title(s: str) -> str:
+    # folder names like heatmap_velocity -> Heatmap velocity
+    s = s.replace("_", " ").replace("-", " ").strip()
+    return s[:1].upper() + s[1:] if s else s
+
+
 def find_groups(root: Path) -> list[tuple[str, list[Path]]]:
+    """Return [(group_name, [images...])]. group_name is subfolder name.
+
+    Also include images directly under root as a group (root.name).
+    """
+
     groups: list[tuple[str, list[Path]]] = []
+
+    # subfolders
     for d in sorted([p for p in root.iterdir() if p.is_dir()], key=lambda p: natural_key(p.name)):
         imgs = sorted([p for p in d.iterdir() if p.is_file() and is_image(p)], key=lambda p: natural_key(p.name))
         if imgs:
             groups.append((d.name, imgs))
-    # also include images directly under root as a group
+
+    # root images
     root_imgs = sorted([p for p in root.iterdir() if p.is_file() and is_image(p)], key=lambda p: natural_key(p.name))
     if root_imgs:
         groups.insert(0, (root.name, root_imgs))
+
     return groups
 
 
-def build_tex(title: str, groups: list[tuple[str, list[Path]]]) -> str:
-    # Keep this minimal and robust. We reuse the NatureComm-ish preamble file by inlining it.
-    # (No \begin{document} in the template; we append it here.)
+def pick_representatives(imgs: list[Path], k: int) -> list[Path]:
+    """Pick up to k representative images from a folder.
+
+    Heuristics (in priority order):
+    - group/summary images ("group", "mean", "avg", "summary")
+    - then control-like
+    - then model-like
+    - then natural sort order
+    """
+
+    if k <= 0 or not imgs:
+        return []
+
+    def score(p: Path) -> tuple[int, list]:
+        n = p.name.lower()
+        bonus = 0
+        if any(t in n for t in ["group", "mean", "avg", "summary"]):
+            bonus -= 50
+        if "control" in n or n.startswith("con"):
+            bonus -= 10
+        if "model" in n:
+            bonus -= 5
+        return (bonus, natural_key(p.name))
+
+    ranked = sorted(imgs, key=score)
+    picked: list[Path] = []
+    seen: set[str] = set()
+
+    for p in ranked:
+        if p.name in seen:
+            continue
+        picked.append(p)
+        seen.add(p.name)
+        if len(picked) >= k:
+            break
+
+    return picked
+
+
+def chunked(seq: list, n: int) -> list[list]:
+    return [seq[i : i + n] for i in range(0, len(seq), n)]
+
+
+def build_tex_compact(
+    title: str,
+    panels: list[tuple[str, Path]],
+    fig_title: str,
+    cols: int = 2,
+    panels_per_figure: int = 6,
+) -> str:
     preamble_path = Path(__file__).resolve().parents[1] / "assets" / "naturecomm_figures.tex"
     preamble = preamble_path.read_text(encoding="utf-8")
-    # Force one-column: avoid float placement oddities.
+
+    # Keep 2-column; we will use figure* for multi-panel blocks.
+    parts: list[str] = [preamble, "\\begin{document}\n"]
+
+    # Make the whole thing tighter/compact.
+    parts.append(
+        "\\setlength{\\textfloatsep}{3mm}\n"
+        "\\setlength{\\intextsep}{3mm}\n"
+        "\\setlength{\\floatsep}{2.5mm}\n"
+        "\\setlength{\\dbltextfloatsep}{3mm}\n"
+        "\\setlength{\\dblfloatsep}{2.5mm}\n"
+        "\\captionsetup[figure]{skip=1.5mm}\n\n"
+    )
+
+    if title:
+        parts.append("\\section*{" + title.replace("_", "\\_") + "}\n")
+
+    parts.append("% Auto-generated: compact multi-panel figure layout\n\n")
+
+    cols = max(1, min(4, int(cols)))
+    panels_per_figure = max(1, int(panels_per_figure))
+
+    # panel width per column
+    if cols == 1:
+        w = 0.92
+    elif cols == 2:
+        w = 0.485
+    elif cols == 3:
+        w = 0.322
+    else:
+        w = 0.24
+
+    for fig_idx, chunk in enumerate(chunked(panels, panels_per_figure), start=1):
+        parts.append("\\begin{figure*}[t]\n\\centering\n")
+
+        # Arrange panels into rows.
+        rows = int(math.ceil(len(chunk) / cols))
+        for r in range(rows):
+            for c in range(cols):
+                i = r * cols + c
+                if i >= len(chunk):
+                    break
+
+                group_name, img = chunk[i]
+                letter = chr(ord("a") + i)
+
+                parts.append(
+                    f"\\begin{{minipage}}[t]{{{w}\\textwidth}}\\vspace{{0pt}}\n"
+                    f"\\textbf{{{letter}}}\\\\[-1.0mm]\n"
+                    f"\\includegraphics[width=\\linewidth]{{{img.name}}}\n"
+                    "\\end{minipage}"
+                )
+
+                # horizontal spacing
+                if c != cols - 1 and (i + 1) < len(chunk):
+                    parts.append("\\hfill\n")
+
+            parts.append("\\\\[2.0mm]\n")
+
+        # Caption: "Fig. X" is handled by LaTeX; we add "| Title" and per-panel descriptions.
+        # Per-panel descriptions default to: "<Type>: <filename-derived caption>".
+        cap_title = fig_title.strip() or title.strip() or "Results"
+        cap_title = cap_title.replace("_", "\\_")
+
+        panel_descs: list[str] = []
+        for i, (group_name, img) in enumerate(chunk):
+            letter = chr(ord("a") + i)
+            desc = caption_from_filename(img.name)
+            g = nice_title(group_name)
+            panel_descs.append(f"\\textbf{{{letter}}}, {g}: {desc}")
+
+        caption = "\\textbf{" + cap_title + "} " + "; ".join(panel_descs) + "."
+        caption = caption.replace("_", "\\_")
+
+        parts.append(f"\\caption{{{caption}}}\n")
+        parts.append("\\end{figure*}\n\n")
+
+    parts.append("\\end{document}\n")
+    return "".join(parts)
+
+
+def build_tex_foldered(title: str, groups: list[tuple[str, list[Path]]]) -> str:
+    """Legacy mode: folder-by-folder, one image per block, page breaks."""
+
+    preamble_path = Path(__file__).resolve().parents[1] / "assets" / "naturecomm_figures.tex"
+    preamble = preamble_path.read_text(encoding="utf-8")
+
+    # Force one-column (legacy behavior), avoid float placement oddities.
     preamble = preamble.replace("\\documentclass[9pt,twocolumn]{article}", "\\documentclass[9pt]{article}")
 
     parts: list[str] = [preamble, "\\begin{document}\n"]
@@ -82,42 +233,14 @@ def build_tex(title: str, groups: list[tuple[str, list[Path]]]) -> str:
     if title:
         parts.append("\\section*{" + title.replace("_", "\\_") + "}\n")
 
-    parts.append("% Auto-generated: folder-grouped image layout\n")
+    parts.append("% Auto-generated: folder-grouped image layout (legacy)\n")
 
     for group_name, imgs in groups:
         safe_group = group_name.replace("_", "\\_")
         parts.append("\\subsection*{" + safe_group + "}\n")
 
-        # Special-case: heatmap folders with a shared colorbar.
-        # If the folder contains a colorbar image and at least 3 other images,
-        # place 3 heatmaps + colorbar on ONE row.
-        colorbars = [p for p in imgs if "colorbar" in p.name.lower()]
-        if colorbars and len(imgs) >= 4:
-            cb = colorbars[0]
-            others = [p for p in imgs if p != cb]
-            others = sorted(others, key=lambda p: natural_key(p.name))[:3]
-
-            parts.append(
-                "\\begin{center}\n"
-                "\\setlength{\\tabcolsep}{2pt}\n"
-                "\\renewcommand{\\arraystretch}{0}\n"
-                "\\begin{tabular}{@{}ccc c@{}}\n"
-                f"  \\includegraphics[width=0.27\\textwidth]{{{others[0].name}}} &\n"
-                f"  \\includegraphics[width=0.27\\textwidth]{{{others[1].name}}} &\n"
-                f"  \\includegraphics[width=0.27\\textwidth]{{{others[2].name}}} &\n"
-                f"  \\includegraphics[width=0.08\\textwidth]{{{cb.name}}} \\\\ \n"
-                "\\end{tabular}\n"
-                f"\\captionof{{figure}}{{{safe_group}}}\n"
-                "\\end{center}\n\n"
-            )
-
-            parts.append("\\clearpage\n")
-            continue
-
-        # Default: one image per block, caption from filename.
         for img in imgs:
             cap = caption_from_filename(img.name).replace("_", "\\_")
-            # Centered block; \\captionof works without floats.
             parts.append(
                 "\\begin{center}\n"
                 f"\\includegraphics[width=0.92\\textwidth]{{{img.name}}}\\\\[1mm]\n"
@@ -157,7 +280,38 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", required=True, help="Root folder containing subfolders of images")
     ap.add_argument("--output", required=True, help="Output PDF path")
-    ap.add_argument("--title", default="Results", help="Top-level title")
+    ap.add_argument("--title", default="Results", help="Top-level document title")
+
+    ap.add_argument(
+        "--mode",
+        choices=["compact", "foldered"],
+        default="compact",
+        help="compact: Nature-style multi-panel figures (default). foldered: legacy layout.",
+    )
+    ap.add_argument(
+        "--max-per-type",
+        type=int,
+        default=1,
+        help="In compact mode: max images picked per type (type=subfolder). Default: 1.",
+    )
+    ap.add_argument(
+        "--panels-per-figure",
+        type=int,
+        default=6,
+        help="In compact mode: number of subpanels per figure*. Default: 6.",
+    )
+    ap.add_argument(
+        "--cols",
+        type=int,
+        default=2,
+        help="In compact mode: columns per figure*. Default: 2.",
+    )
+    ap.add_argument(
+        "--fig-title",
+        default="",
+        help="In compact mode: figure caption title (bold). If empty, uses --title.",
+    )
+
     args = ap.parse_args()
 
     root = Path(args.input).expanduser().resolve()
@@ -168,14 +322,25 @@ def main():
     if not groups:
         raise SystemExit(f"No images found under: {root}")
 
+    # Build selection (compact) or keep all (foldered)
+    if args.mode == "compact":
+        selected: list[tuple[str, Path]] = []
+        for group_name, imgs in groups:
+            reps = pick_representatives(imgs, args.max_per_type)
+            for p in reps:
+                selected.append((group_name, p))
+
+        if not selected:
+            raise SystemExit(f"No images selected under: {root}")
+
     # Collect aux files: images at root of LaTeX project need unique names.
     # If filenames collide across folders, we disambiguate by prefixing the folder name.
     aux: dict[str, str] = {}
     renamed: list[tuple[Path, str]] = []
     used: set[str] = set()
 
-    for group_name, imgs in groups:
-        for img in imgs:
+    if args.mode == "compact":
+        for group_name, img in selected:
             name = img.name
             if name in used:
                 name = f"{group_name}__{name}"
@@ -183,15 +348,35 @@ def main():
             aux[name] = b64_file(img)
             renamed.append((img, name))
 
-    # Rewrite groups to use the potentially renamed filenames.
-    name_map = {orig: new for orig, new in renamed}
-    groups2: list[tuple[str, list[Path]]] = []
-    for group_name, imgs in groups:
-        # fake Path objects with replaced .name for templating purposes
-        imgs2 = [Path(name_map[p]) for p in imgs]
-        groups2.append((group_name, imgs2))
+        name_map = {orig: new for orig, new in renamed}
+        selected2 = [(g, Path(name_map[p])) for (g, p) in selected]
 
-    tex = build_tex(args.title, groups2)
+        tex = build_tex_compact(
+            title=args.title,
+            panels=selected2,
+            fig_title=args.fig_title,
+            cols=args.cols,
+            panels_per_figure=args.panels_per_figure,
+        )
+
+    else:
+        for group_name, imgs in groups:
+            for img in imgs:
+                name = img.name
+                if name in used:
+                    name = f"{group_name}__{name}"
+                used.add(name)
+                aux[name] = b64_file(img)
+                renamed.append((img, name))
+
+        name_map = {orig: new for orig, new in renamed}
+        groups2: list[tuple[str, list[Path]]] = []
+        for group_name, imgs in groups:
+            imgs2 = [Path(name_map[p]) for p in imgs]
+            groups2.append((group_name, imgs2))
+
+        tex = build_tex_foldered(args.title, groups2)
+
     pdf_bytes = compile_latex(tex, aux)
 
     out = Path(args.output).expanduser().resolve()
