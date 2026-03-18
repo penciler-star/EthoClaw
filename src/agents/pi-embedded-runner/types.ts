@@ -74,6 +74,8 @@ export type EmbeddedPiRunResult = {
   messagingToolSentTargets?: MessagingToolSend[];
   // Count of successful cron.add tool calls in this run.
   successfulCronAdds?: number;
+  /** The prompt mode active during this run. */
+  promptMode?: string;
 };
 
 export type EmbeddedPiCompactResult = {

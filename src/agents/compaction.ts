@@ -260,7 +260,8 @@ async function summarizeChunks(params: {
   }
 
   // SECURITY: never feed toolResult.details into summarization prompts.
-  const safeMessages = stripToolResultDetails(params.messages);
+  // TRUNCATION: shrink oversized content to keep chunks manageable.
+  const safeMessages = truncateOversizedToolResults(stripToolResultDetails(params.messages));
   const chunks = chunkMessagesByMaxTokens(safeMessages, params.maxChunkTokens);
   let summary = params.previousSummary;
   const effectiveInstructions = buildCompactionSummarizationInstructions(
