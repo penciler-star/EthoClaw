@@ -121,9 +121,21 @@ Analysis_Project/
 └── 2_results/
 ```
 
-## Contributors
+## License
 
-### We thank all developers who have contributed to the EthoClaw project.
+This project is released under the MIT License.
+
+## Acknowledgments
+
+EthoClaw is built upon the excellent work of the open-source community.
+We would like to express our special thanks to the following projects for their critical support:
+
+[OpenClaw](https://github.com/openclaw/openclaw):
+[DeepLabCut](https://github.com/DeepLabCut/DeepLabCut):
+
+These projects embody the true power of open-source collaboration, and we are delighted to continue building on these foundations.
+
+### Contributors
 
 <a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
 <a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
