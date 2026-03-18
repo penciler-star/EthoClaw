@@ -1,18 +1,18 @@
-# 组间差异检验规则（约定）
+# Inter-group Difference Testing Rules (Convention)
 
-本 skill 的统计检验选择遵循以下规则：
+The statistical test selection for this skill follows these rules:
 
-- **两组（2 groups）**：
-  - 参数检验：**t 检验（t-test）**（默认：Welch t-test，方差不齐更稳健）
-  - 非参数检验：**Mann–Whitney U 检验**
-  - 直接比较两组间差异
+- **Two groups (2 groups)**:
+  - Parametric test: **t-test** (default: Welch t-test, more robust when variances are unequal)
+  - Non-parametric test: **Mann-Whitney U test**
+  - Directly compare differences between two groups
 
-- **三组及以上（>=3 groups）**：
-  - 参数检验：**单因素方差分析（One-way ANOVA）**
-  - 非参数检验：**Kruskal–Wallis 检验**
-  - 先做整体检验是否存在组间差异；若整体显著（p <= alpha），再做**两两比较**
+- **Three or more groups (>=3 groups)**:
+  - Parametric test: **One-way ANOVA**
+  - Non-parametric test: **Kruskal-Wallis test**
+  - First perform overall test to see if there are differences between groups; if overall is significant (p <= alpha), then perform **pairwise comparisons**
 
-- **两两比较（pairwise）**：
-  - 若整体为参数法：默认使用 **Welch t-test** 做 pairwise
-  - 若整体为非参数法：默认使用 **Mann–Whitney U** 做 pairwise
-  - 多重比较校正：默认 **Holm–Bonferroni**（输出 p_holm）
+- **Pairwise comparisons**:
+  - If overall is parametric: default use **Welch t-test** for pairwise
+  - If overall is non-parametric: default use **Mann-Whitney U** for pairwise
+  - Multiple comparison correction: default **Holm-Bonferroni** (output p_holm)

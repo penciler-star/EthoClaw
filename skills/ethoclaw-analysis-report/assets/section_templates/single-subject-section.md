@@ -1,3 +1,3 @@
-﻿## 单样本结果概览
+## Single-Subject Results Overview
 
 {{ single_subject_body }}

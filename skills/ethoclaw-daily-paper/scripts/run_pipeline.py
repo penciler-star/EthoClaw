@@ -32,9 +32,9 @@ def run_command(command, cwd):
 
 def join_values(values, limit=None):
     if not values:
-        return "未知"
+        return "Unknown"
     selected = values[:limit] if limit else values
-    return "，".join(selected)
+    return ", ".join(selected)
 
 
 def render_candidate_titles(payload):
@@ -65,17 +65,17 @@ def render_candidate_pool(payload):
             [
                 f"## {index}. {item.get('title', '').strip() or '(untitled)'}",
                 "",
-                f"- 来源：{item.get('source_label') or item.get('source', 'unknown')}",
-                f"- 作者：{join_values(item.get('authors', []), limit=10)}",
-                f"- 发表时间：{item.get('published', '')[:10] or '未知'}",
-                f"- 期刊：{item.get('journal') or '未知'}",
-                f"- 文献链接：{item.get('url') or '暂无'}",
-                f"- PDF 链接：{item.get('pdf_url') or '暂无'}",
-                f"- 加权分数：{item.get('weighted_score', '未知')}",
+                f"- Source: {item.get('source_label') or item.get('source', 'unknown')}",
+                f"- Authors: {join_values(item.get('authors', []), limit=10)}",
+                f"- Published: {item.get('published', '')[:10] or 'Unknown'}",
+                f"- Journal: {item.get('journal') or 'Unknown'}",
+                f"- Article Link: {item.get('url') or 'N/A'}",
+                f"- PDF Link: {item.get('pdf_url') or 'N/A'}",
+                f"- Weighted Score: {item.get('weighted_score', 'Unknown')}",
                 "",
-                "### 原始摘要",
+                "### Original Abstract",
                 "",
-                item.get("summary", "").strip() or "暂无摘要",
+                item.get("summary", "").strip() or "No abstract available",
                 "",
             ]
         )
@@ -98,79 +98,3 @@ def main():
 
     arxiv_output = output_dir / "arxiv.json"
     pubmed_output = output_dir / "pubmed.json"
-    merged_output = output_dir / "merged.json"
-    candidate_titles_output = output_dir / "candidate_titles.md"
-    candidate_pool_output = output_dir / "candidate_pool.md"
-    agent_packet_json_output = output_dir / "top5_agent_packet.json"
-    agent_packet_md_output = output_dir / "top5_agent_packet.md"
-
-    run_command(
-        [
-            sys.executable,
-            str(SCRIPTS_DIR / "search_arxiv.py"),
-            "--query-file",
-            str(config_path),
-            "--days",
-            str(args.days),
-            "--output",
-            str(arxiv_output),
-        ],
-        SKILL_DIR,
-    )
-
-    run_command(
-        [
-            sys.executable,
-            str(SCRIPTS_DIR / "search_pubmed.py"),
-            "--query-file",
-            str(config_path),
-            "--days",
-            str(args.days),
-            "--output",
-            str(pubmed_output),
-        ],
-        SKILL_DIR,
-    )
-
-    run_command(
-        [
-            sys.executable,
-            str(SCRIPTS_DIR / "merge_results.py"),
-            str(arxiv_output),
-            str(pubmed_output),
-            "--pubmed-weight",
-            str(coerce_float(config.get("source_weight_pubmed"), 1.25)),
-            "--arxiv-weight",
-            str(coerce_float(config.get("source_weight_arxiv"), 1.0)),
-            "--output",
-            str(merged_output),
-        ],
-        SKILL_DIR,
-    )
-
-    merged_payload = json.loads(merged_output.read_text(encoding="utf-8-sig"))
-    candidate_titles_output.write_text(render_candidate_titles(merged_payload), encoding="utf-8")
-    candidate_pool_output.write_text(render_candidate_pool(merged_payload), encoding="utf-8")
-
-    if args.selected_indexes:
-        run_command(
-            [
-                sys.executable,
-                str(SCRIPTS_DIR / "build_top5_digest.py"),
-                "--input",
-                str(merged_output),
-                "--paper-indexes",
-                args.selected_indexes,
-                "--agent-json-output",
-                str(agent_packet_json_output),
-                "--review-md-output",
-                str(agent_packet_md_output),
-            ],
-            SKILL_DIR,
-        )
-
-    print(output_dir)
-
-
-if __name__ == "__main__":
-    main()

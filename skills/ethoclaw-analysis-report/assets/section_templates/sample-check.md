@@ -1,3 +1,3 @@
-﻿## 样本与分组核对
+## Sample and Group Verification
 
 {{ sample_check_body }}

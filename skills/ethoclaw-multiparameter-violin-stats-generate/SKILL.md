@@ -1,6 +1,6 @@
 ---
 name: ethoclaw-multiparameter-violin-stats-generate
-description: "Read HDF5 (.h5/.hdf5) data, compare groups with appropriate statistical tests (2 groups: t-test/Mann–Whitney; 3+ groups: ANOVA/Kruskal–Wallis + post-hoc pairwise), and generate violin plots + summary table/JSON. Use when the user asks for 多参数小提琴图生成/组间差异检验/批量参数统计画图。"
+description: "Read HDF5 (.h5/.hdf5) data, compare groups with appropriate statistical tests (2 groups: t-test/Mann–Whitney; 3+ groups: ANOVA/Kruskal–Wallis + post-hoc pairwise), and generate violin plots + summary table/JSON. Use when the user asks for multi-parameter violin plot generation/group difference testing/batch parameter statistical plotting."
 ---
 
 # H5 Multi-parameter Violin + Stats

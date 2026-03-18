@@ -1,45 +1,45 @@
 # Interpretation Guardrails
 
-在需要生成结果解释和总结文本时读取本文件。
+Read this file when generating result interpretation and summary text.
 
-## 一般原则
+## General Principles
 
-- 先给出最直接的结果结论，再补一句依据来自哪些图或表。
-- 优先总结“当前数据最明显的特征”，不要因为背景不完整就放弃正常总结。
-- 把“观察到的事实”和“基于实验范式的解释”分开写，但不必每一段都重复限制说明。
-- 如果确实存在关键限制，把它集中放在一节里简短交代，不要通篇反复写免责声明。
+- First give the most direct result conclusions, then add a sentence about which figures or tables they are based on.
+- Prioritize summarizing "the most obvious characteristics of current data", do not give up normal summarization just because background is incomplete.
+- Separate "observed facts" from "interpretations based on experimental paradigm", but do not repeat limitation statements in every paragraph.
+- If key limitations truly exist, concentrate them in one section briefly, do not repeatedly write disclaimers throughout.
 
-## 允许直接写出的结论类型
+## Allowed Conclusion Types to Write Directly
 
-- 单样本的主要活动区域、偏好方向、进入模式、停留模式
-- 多组之间在图像或统计表中已经明显呈现的高低差异
-- 只有原始骨架数据时，基于轨迹主轴分布、活动范围和路径长度给出的简单总结
-- 与实验范式直接对应的 readout 结论，例如开放臂探索增加、中心区探索下降、对新物体偏好增强
+- Main activity areas, preference directions, entry patterns, residence patterns of single samples
+- High/low differences already clearly presented between multiple groups in images or statistical tables
+- Simple summaries based on trajectory axis distribution, activity range, and path length when only raw skeleton data exists
+- Readout conclusions directly corresponding to experimental paradigm, e.g., increased open-arm exploration, decreased center exploration, enhanced novel object preference
 
-## 不允许越界的情况
+## Not Allowed to Overstep Situations
 
-- 只有含义不明的缩写标签时，不要解释组间关系
-- 没有统计表时，不要写“显著升高 / 显著降低”
-- 聚类图显示分离，不等于统计显著差异
-- 热图展示活动分布，不等于机制结论
-- 单样本结果不应写成群体规律
-- `control`、`model`、`sham`、`vehicle` 这类明显文件名前缀可以先作为候选分组；其余缩写不要直接当作生物学分组解释
+- When only ambiguous abbreviation labels exist, do not explain inter-group relationships
+- When no statistical tables exist, do not write "significantly increased / significantly decreased"
+- Cluster plot showing separation does not equal statistical significant difference
+- Heatmap showing activity distribution does not equal mechanistic conclusions
+- Single-sample results should not be written as group-level patterns
+- Obvious file name prefixes like `control`, `model`, `sham`, `vehicle` can be used as candidate groupings first; other abbreviations should not be directly interpreted as biological groupings
 
-## 推荐表述风格
+## Recommended Expression Style
 
-- “结果显示……”
-- “图像和统计结果共同表明……”
-- “该样本主要表现为……”
-- “在该实验范式下，这通常对应……”
-- “如果只看当前项目路径内的证据，最明显的特征是……”
+- "Results show..."
+- "Images and statistical results together indicate..."
+- "This sample mainly exhibits..."
+- "Under this experimental paradigm, this typically corresponds to..."
+- "If looking only at evidence within the current project path, the most obvious characteristic is..."
 
-## 结论层级
+## Conclusion Levels
 
-优先按以下强度输出：
+Prioritize output with the following strength:
 
-1. 直接结果总结
-2. 有统计支撑的比较
-3. 结合实验范式的解释
-4. 机制性总结
+1. Direct result summary
+2. Comparisons with statistical support
+3. Interpretations combined with experimental paradigm
+4. Mechanistic conclusions
 
-默认应覆盖前 1 到 3 级。只有在用户明确允许且证据充分时，才进入第 4 级。
+Default should cover levels 1 to 3. Only enter level 4 when user explicitly allows and evidence is sufficient.

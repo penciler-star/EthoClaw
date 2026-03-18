@@ -1,6 +1,6 @@
 ---
 name: ethoclaw-daily-paper
-description: "Search arXiv and PubMed for neuroethology and behavioral neuroscience papers, merge the candidate pool, prepare title-only and abstract review packets for in-agent ranking, and render a final Chinese Markdown digest without using an external summarization API. Use when Codex needs a reusable neuroethology literature-monitoring workflow, especially when it should run retrieval and digest assembly in an automatically spawned sub-session/subagent so the main session reads only the final Markdown deliverable."
+description: "Search arXiv and PubMed for neuroethology and behavioral neuroscience papers, merge the candidate pool, prepare title-only and abstract review packets for in-agent ranking, and render a final Markdown digest without using an external summarization API. Use when Codex needs a reusable neuroethology literature-monitoring workflow, especially when it should run retrieval and digest assembly in an automatically spawned sub-session/subagent so the main session reads only the final Markdown deliverable."
 ---
 
 # Neuroethology Top5 Digest
@@ -12,7 +12,7 @@ Use the bundled scripts. Keep the parent conversation lean.
 Prefer a two-layer workflow:
 
 - **Main session**: define scope, spawn the sub-session/subagent, then read only the final deliverable in `return/`.
-- **Sub-session**: run retrieval, inspect candidates, choose Top 5, write the Chinese导读, render the final digest, and finalize the return contract.
+- **Sub-session**: run retrieval, inspect candidates, choose Top 5, write the abstract review packets for in-agent ranking, render the final digest, and finalize the return contract.
 
 Do **not** bounce `candidate_pool.md`, full abstract packets, or large intermediate JSON back to the main session unless the user explicitly asks.
 
@@ -152,7 +152,7 @@ python3 scripts/subsession_contract.py finalize \
 ### `scripts/build_top5_digest.py`
 
 - Build the selected-paper packet after choosing candidate indexes.
-- Add per-paper guidance prompts so the sub-session can write richer Chinese导读 with less repeated thinking.
+- Add per-paper guidance prompts so the sub-session can write richer abstract review packets with less repeated thinking.
 - Render the final Markdown with `assets/top5_digest_template.md` after the JSON packet is completed.
 - Do not call any external summarization API; the agent/sub-session performs the reading and writing.
 
@@ -165,19 +165,19 @@ python3 scripts/subsession_contract.py finalize \
 - Use as the final Markdown wrapper.
 - Keep placeholder names unchanged unless the rendering script changes too.
 
-## Writing guidance for Chinese导读
+## Writing guidance for abstract review packets
 
 When filling the packet, do not stop at a one-paragraph generic summary.
 
 For each paper:
 
-- explain the core question in plain but precise Chinese
+- explain the core question in plain but precise English
 - mention species / brain region / behavioral paradigm / recording or manipulation method when available
 - state the main findings concretely, not just “the study found important differences”
 - explain why it matters for neuroethology or behavioral neuroscience
 - mention uncertainty or limitations when the abstract alone is insufficient
 
-Keep `chinese_summary` as the polished overview, and use the structured fields to preserve detail.
+Keep `summary` as the polished overview, and use the structured fields to preserve detail.
 
 ## Notes
 

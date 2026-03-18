@@ -4,7 +4,7 @@
   <a href="README.md">English</a>
 </p>
 
-**EthoClaw** 是基于 OpenClaw 构建的 Ethology 领域开源项目，核心聚焦于行为学领域实用技能的落地实现；针对行为学分析中预处理、数据转换、格式匹配、环境配置等繁琐流程，EthoClaw 不仅能帮助研究人员自动完成这些操作，还可实现网络信息检索、分析报告与结果图生成、本地文献解读、自动化目标定位、自动姿态估计等功能，从而让研究人员更专注于解决科学问题，大幅提升科研效率。
+**EthoClaw** 是基于 OpenClaw 构建的 Ethology 领域开源项目，核心聚焦于行为学领域实用技能的落地实现。针对行为学分析中预处理、数据转换、格式匹配、环境配置等繁琐流程，EthoClaw 不仅能帮助研究人员自动完成这些操作，还可实现网络信息检索、分析报告与结果图生成、本地文献解读、自动化目标定位、自动姿态估计等功能，从而让研究人员更专注于解决科学问题，大幅提升科研效率。此外，我们针对OpenClaw进行了性能优化，可改善我们的使用体验。
 
 ## 已支持物种
 
@@ -34,17 +34,20 @@
   <div align=center><img src="docs/clustermap_demo1.png" width="500" /></div>
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
 
-  3. 支持CSV/Excel格式转换；
-  4. 生成包含实验背景、样本信息、分析内容和总结的PDF分析报告。
+  3. 支持CSV/Excel格式转换到推荐格式；
+  4. 生成包含实验背景、样本信息、分析内容和总结的分析报告。
 
 - **教程辅助**：
   1. 为初学者提供参数计算方法、图表数据来源、聚类方法及参数等详细说明，便于论文方法部分撰写。
+  <div align=center><img src="docs/QA_demo.png" width="500" /></div>
 - **本地知识库**：
-  1. 读取本地PDF论文和报告，总结并输出，形成本地研究日志。
+  1. 读取本地PDF论文和报告，总结并输出。
+  <div align=center><img src="docs/pdf_read_demo.png" width="500" /></div>
 - **网络搜索**：
-  1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv论文。
+  1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv/PubMed的相关论文。
+  <div align=center><img src="docs/search_paper_demo.jpg" width="500" /></div>
 - **注**：
-  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件。
+  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件（例如ClawHub或第三方插件市场）和channel（例如WhatsApp, Telegram, Slack, Discord, Google Chat, Signal, iMessage, BlueBubbles, IRC, Microsoft Teams, Matrix, Feishu, LINE, Mattermost, Nextcloud Talk, Nostr, Synology Chat, Tlon, Twitch, Zalo, Zalo Personal, WebChat等）。
 
 ## 快速开始
 
@@ -105,9 +108,10 @@ pnpm gateway:watch
 pip install --pre deeplabcut
 ```
 
-## 贡献
+## 贡献者
 
 ### 感谢所有为EthoClaw项目做出贡献的开发者
+
 <a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
 <a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
 <a href="https://github.com/yichuan1998"><img src="https://avatars.githubusercontent.com/u/91551667?v=4" width="50px;" alt="yichuan1998"/></a>
