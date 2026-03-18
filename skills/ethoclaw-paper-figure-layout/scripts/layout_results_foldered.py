@@ -93,44 +93,70 @@ def find_groups(root: Path) -> list[tuple[str, list[Path]]]:
     return groups
 
 
-def pick_representatives(imgs: list[Path], k: int) -> list[Path]:
-    """Pick up to k representative images from a folder.
+def _rep_score(p: Path) -> tuple[int, list]:
+    n = p.name.lower()
+    bonus = 0
+    if "colorbar" in n or "color_bar" in n:
+        bonus += 1000
+    if any(t in n for t in ["group", "mean", "avg", "summary"]):
+        bonus -= 50
+    if "control" in n or n.startswith("con"):
+        bonus -= 10
+    if "model" in n:
+        bonus -= 5
+    return (bonus, natural_key(p.name))
 
-    Heuristics (in priority order):
-    - prefer real figure images over standalone colorbars
-    - group/summary images ("group", "mean", "avg", "summary")
-    - then control-like
-    - then model-like
-    - then natural sort order
+
+def infer_subtype_key(p: Path) -> str:
+    """Infer a semantic subtype key from filename.
+
+    Goal: default compact layout should keep one representative of each *kind* of figure,
+    not merely one per folder. Example: x-Axis / y-Axis / z-Axis should all survive.
+    """
+
+    stem = caption_from_filename(p.name).lower()
+    tokens = [t for t in re.split(r"\s+", stem) if t]
+
+    # remove obvious sample/id/timestamp markers from the edges
+    drop_words = {"rec", "sample", "subject", "mouse", "rat", "control", "model", "con"}
+
+    def droppable(tok: str) -> bool:
+        return (
+            tok in drop_words
+            or tok.isdigit()
+            or re.fullmatch(r"\d{6,}", tok) is not None
+            or re.fullmatch(r"[a-z]*\d+[a-z\d]*", tok) is not None
+        )
+
+    while tokens and droppable(tokens[0]):
+        tokens.pop(0)
+    while tokens and droppable(tokens[-1]):
+        tokens.pop()
+
+    if not tokens:
+        return "sample"
+    return " ".join(tokens)
+
+
+def pick_representatives(imgs: list[Path], k: int) -> list[Path]:
+    """Pick representatives from a folder.
+
+    Default semantics: keep up to k representatives *per inferred subtype* rather than
+    blindly taking only k files for the whole folder.
     """
 
     if k <= 0 or not imgs:
         return []
 
-    def score(p: Path) -> tuple[int, list]:
-        n = p.name.lower()
-        bonus = 0
-        if "colorbar" in n or "color_bar" in n:
-            bonus += 1000
-        if any(t in n for t in ["group", "mean", "avg", "summary"]):
-            bonus -= 50
-        if "control" in n or n.startswith("con"):
-            bonus -= 10
-        if "model" in n:
-            bonus -= 5
-        return (bonus, natural_key(p.name))
+    buckets: dict[str, list[Path]] = {}
+    for p in imgs:
+        key = infer_subtype_key(p)
+        buckets.setdefault(key, []).append(p)
 
-    ranked = sorted(imgs, key=score)
     picked: list[Path] = []
-    seen: set[str] = set()
-
-    for p in ranked:
-        if p.name in seen:
-            continue
-        picked.append(p)
-        seen.add(p.name)
-        if len(picked) >= k:
-            break
+    for key in sorted(buckets, key=natural_key):
+        ranked = sorted(buckets[key], key=_rep_score)
+        picked.extend(ranked[:k])
 
     return picked
 

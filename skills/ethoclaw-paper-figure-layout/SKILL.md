@@ -41,8 +41,12 @@ Defaults (can override):
 - `--cols 2`
 - `--panels-per-figure 6`
 
+Default representative logic:
+- `--max-per-type 1` means: keep **1 representative per inferred subtype**, not just 1 file for the whole folder.
+- Example: if a folder contains `x-Axis`, `y-Axis`, `z-Axis`, the default compact layout should keep all 3 because they are three subtypes of the same figure family.
+
 Useful override:
-- `--max-per-type 0` → include **all images** from each type/folder instead of only 1 representative image.
+- `--max-per-type 0` → include **all images** from each type/folder instead of representative selection.
 
 Special handling:
 - If a folder contains `colorBar` / `color_bar` plus heatmaps, the layout bundles them into one panel:
