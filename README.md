@@ -16,12 +16,12 @@
 
 ## Highlighted Features
 
-- **Automated Target Localization:**
+- **Animal Target Localization:**
   1. Based on image processing methods, automatically locate experimental targets (such as animals, environmental elements, etc.).
   <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
 
-- **Automatic Pose Estimation:**
+- **Animal Pose Estimation:**
   1. Access open-source deep learning pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.). Currently, it has supported the **SuperAnimal** framework.
   <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
