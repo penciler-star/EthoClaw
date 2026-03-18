@@ -47,7 +47,7 @@
   1. 通过网页或学术搜索获取最新论文，支持每日定时推送arxiv/PubMed的相关论文。
   <div align=center><img src="docs/search_paper_demo.jpg" width="500" /></div>
 - **注**：
-  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件和channel。
+  由于EthoClaw基于OpenClaw构建，因此继承了OpenClaw的所有功能，且和OpenClaw的使用方式相同，兼容OpenClaw的所有插件（例如ClawHub或第三方插件市场）和channel（例如WhatsApp, Telegram, Slack, Discord, Google Chat, Signal, iMessage, BlueBubbles, IRC, Microsoft Teams, Matrix, Feishu, LINE, Mattermost, Nextcloud Talk, Nostr, Synology Chat, Tlon, Twitch, Zalo, Zalo Personal, WebChat等）。
 
 ## 快速开始
 
