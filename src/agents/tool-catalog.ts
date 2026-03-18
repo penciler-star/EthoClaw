@@ -38,7 +38,7 @@ const CORE_TOOL_SECTION_ORDER: Array<{ id: string; label: string }> = [
   { id: "media", label: "Media" },
 ];
 
-export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
+const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
   {
     id: "read",
     label: "read",
@@ -86,7 +86,7 @@ export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
     label: "web_search",
     description: "Search the web",
     sectionId: "web",
-    profiles: ["coding", "messaging"],
+    profiles: [],
     includeInOpenClawGroup: true,
   },
   {
@@ -94,7 +94,7 @@ export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
     label: "web_fetch",
     description: "Fetch web content",
     sectionId: "web",
-    profiles: ["coding", "messaging"],
+    profiles: [],
     includeInOpenClawGroup: true,
   },
   {
@@ -166,7 +166,7 @@ export const CORE_TOOL_DEFINITIONS: CoreToolDefinition[] = [
     label: "browser",
     description: "Control web browser",
     sectionId: "ui",
-    profiles: ["coding"],
+    profiles: [],
     includeInOpenClawGroup: true,
   },
   {
@@ -239,7 +239,7 @@ const CORE_TOOL_BY_ID = new Map<string, CoreToolDefinition>(
   CORE_TOOL_DEFINITIONS.map((tool) => [tool.id, tool]),
 );
 
-export function listCoreToolIdsForProfile(profile: ToolProfileId): string[] {
+function listCoreToolIdsForProfile(profile: ToolProfileId): string[] {
   return CORE_TOOL_DEFINITIONS.filter((tool) => tool.profiles.includes(profile)).map(
     (tool) => tool.id,
   );

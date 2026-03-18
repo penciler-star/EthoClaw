@@ -724,8 +724,8 @@ export async function runEmbeddedPiAgent(
               `(max=${MAX_RUN_LOOP_ITERATIONS}).`;
             log.error(
               `[run-retry-limit] sessionKey=${params.sessionKey ?? params.sessionId} ` +
-              `provider=${provider}/${modelId} attempts=${runLoopIterations} ` +
-              `maxAttempts=${MAX_RUN_LOOP_ITERATIONS}`,
+                `provider=${provider}/${modelId} attempts=${runLoopIterations} ` +
+                `maxAttempts=${MAX_RUN_LOOP_ITERATIONS}`,
             );
             return {
               payloads: [
@@ -800,7 +800,6 @@ export async function runEmbeddedPiAgent(
             execOverrides: params.execOverrides,
             bashElevated: params.bashElevated,
             timeoutMs: params.timeoutMs,
-            lazyProfile: params.lazyProfile,
             runId: params.runId,
             abortSignal: params.abortSignal,
             shouldEmitToolResult: params.shouldEmitToolResult,
@@ -837,11 +836,11 @@ export async function runEmbeddedPiAgent(
             attempt.bootstrapPromptWarningSignaturesSeen ??
             (attempt.bootstrapPromptWarningSignature
               ? Array.from(
-                new Set([
-                  ...bootstrapPromptWarningSignaturesSeen,
-                  attempt.bootstrapPromptWarningSignature,
-                ]),
-              )
+                  new Set([
+                    ...bootstrapPromptWarningSignaturesSeen,
+                    attempt.bootstrapPromptWarningSignature,
+                  ]),
+                )
               : bootstrapPromptWarningSignaturesSeen);
           const lastAssistantUsage = normalizeUsage(lastAssistant?.usage as UsageLike);
           const attemptUsage = attempt.attemptUsage ?? lastAssistantUsage;
@@ -859,11 +858,11 @@ export async function runEmbeddedPiAgent(
           });
           const formattedAssistantErrorText = lastAssistant
             ? formatAssistantErrorText(lastAssistant, {
-              cfg: params.config,
-              sessionKey: params.sessionKey ?? params.sessionId,
-              provider: activeErrorContext.provider,
-              model: activeErrorContext.model,
-            })
+                cfg: params.config,
+                sessionKey: params.sessionKey ?? params.sessionId,
+                provider: activeErrorContext.provider,
+                model: activeErrorContext.model,
+              })
             : undefined;
           const assistantErrorText =
             lastAssistant?.stopReason === "error"
@@ -872,20 +871,20 @@ export async function runEmbeddedPiAgent(
 
           const contextOverflowError = !aborted
             ? (() => {
-              if (promptError) {
-                const errorText = describeUnknownError(promptError);
-                if (isLikelyContextOverflowError(errorText)) {
-                  return { text: errorText, source: "promptError" as const };
+                if (promptError) {
+                  const errorText = describeUnknownError(promptError);
+                  if (isLikelyContextOverflowError(errorText)) {
+                    return { text: errorText, source: "promptError" as const };
+                  }
+                  // Prompt submission failed with a non-overflow error. Do not
+                  // inspect prior assistant errors from history for this attempt.
+                  return null;
                 }
-                // Prompt submission failed with a non-overflow error. Do not
-                // inspect prior assistant errors from history for this attempt.
+                if (assistantErrorText && isLikelyContextOverflowError(assistantErrorText)) {
+                  return { text: assistantErrorText, source: "assistantError" as const };
+                }
                 return null;
-              }
-              if (assistantErrorText && isLikelyContextOverflowError(assistantErrorText)) {
-                return { text: assistantErrorText, source: "assistantError" as const };
-              }
-              return null;
-            })()
+              })()
             : null;
 
           if (contextOverflowError) {
@@ -894,10 +893,10 @@ export async function runEmbeddedPiAgent(
             const msgCount = attempt.messagesSnapshot?.length ?? 0;
             log.warn(
               `[context-overflow-diag] sessionKey=${params.sessionKey ?? params.sessionId} ` +
-              `provider=${provider}/${modelId} source=${contextOverflowError.source} ` +
-              `messages=${msgCount} sessionFile=${params.sessionFile} ` +
-              `diagId=${overflowDiagId} compactionAttempts=${overflowCompactionAttempts} ` +
-              `error=${errorText.slice(0, 200)}`,
+                `provider=${provider}/${modelId} source=${contextOverflowError.source} ` +
+                `messages=${msgCount} sessionFile=${params.sessionFile} ` +
+                `diagId=${overflowDiagId} compactionAttempts=${overflowCompactionAttempts} ` +
+                `error=${errorText.slice(0, 200)}`,
             );
             const isCompactionFailure = isCompactionFailureError(errorText);
             const hadAttemptLevelCompaction = attemptCompactionCount > 0;
@@ -924,8 +923,8 @@ export async function runEmbeddedPiAgent(
               if (log.isEnabled("debug")) {
                 log.debug(
                   `[compaction-diag] decision diagId=${overflowDiagId} branch=compact ` +
-                  `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=unknown ` +
-                  `attempt=${overflowCompactionAttempts + 1} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
+                    `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=unknown ` +
+                    `attempt=${overflowCompactionAttempts + 1} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
                 );
               }
               overflowCompactionAttempts++;
@@ -974,23 +973,23 @@ export async function runEmbeddedPiAgent(
               const contextWindowTokens = ctxInfo.tokens;
               const hasOversized = attempt.messagesSnapshot
                 ? sessionLikelyHasOversizedToolResults({
-                  messages: attempt.messagesSnapshot,
-                  contextWindowTokens,
-                })
+                    messages: attempt.messagesSnapshot,
+                    contextWindowTokens,
+                  })
                 : false;
 
               if (hasOversized) {
                 if (log.isEnabled("debug")) {
                   log.debug(
                     `[compaction-diag] decision diagId=${overflowDiagId} branch=truncate_tool_results ` +
-                    `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=${hasOversized} ` +
-                    `attempt=${overflowCompactionAttempts} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
+                      `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=${hasOversized} ` +
+                      `attempt=${overflowCompactionAttempts} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
                   );
                 }
                 toolResultTruncationAttempted = true;
                 log.warn(
                   `[context-overflow-recovery] Attempting tool result truncation for ${provider}/${modelId} ` +
-                  `(contextWindow=${contextWindowTokens} tokens)`,
+                    `(contextWindow=${contextWindowTokens} tokens)`,
                 );
                 const truncResult = await truncateOversizedToolResultsInSession({
                   sessionFile: params.sessionFile,
@@ -1012,8 +1011,8 @@ export async function runEmbeddedPiAgent(
               } else if (log.isEnabled("debug")) {
                 log.debug(
                   `[compaction-diag] decision diagId=${overflowDiagId} branch=give_up ` +
-                  `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=${hasOversized} ` +
-                  `attempt=${overflowCompactionAttempts} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
+                    `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=${hasOversized} ` +
+                    `attempt=${overflowCompactionAttempts} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
                 );
               }
             }
@@ -1025,8 +1024,8 @@ export async function runEmbeddedPiAgent(
             ) {
               log.debug(
                 `[compaction-diag] decision diagId=${overflowDiagId} branch=give_up ` +
-                `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=unknown ` +
-                `attempt=${overflowCompactionAttempts} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
+                  `isCompactionFailure=${isCompactionFailure} hasOversizedToolResults=unknown ` +
+                  `attempt=${overflowCompactionAttempts} maxAttempts=${MAX_OVERFLOW_COMPACTION_ATTEMPTS}`,
               );
             }
             const kind = isCompactionFailure ? "compaction_failure" : "context_overflow";
@@ -1245,11 +1244,11 @@ export async function runEmbeddedPiAgent(
               const message =
                 (lastAssistant
                   ? formatAssistantErrorText(lastAssistant, {
-                    cfg: params.config,
-                    sessionKey: params.sessionKey ?? params.sessionId,
-                    provider: activeErrorContext.provider,
-                    model: activeErrorContext.model,
-                  })
+                      cfg: params.config,
+                      sessionKey: params.sessionKey ?? params.sessionId,
+                      provider: activeErrorContext.provider,
+                      model: activeErrorContext.model,
+                    })
                   : undefined) ||
                 lastAssistant?.errorMessage?.trim() ||
                 (timedOut
@@ -1258,9 +1257,9 @@ export async function runEmbeddedPiAgent(
                     ? "LLM request rate limited."
                     : billingFailure
                       ? formatBillingErrorMessage(
-                        activeErrorContext.provider,
-                        activeErrorContext.model,
-                      )
+                          activeErrorContext.provider,
+                          activeErrorContext.model,
+                        )
                       : authFailure
                         ? "LLM request unauthorized."
                         : "LLM request failed.");
@@ -1339,7 +1338,6 @@ export async function runEmbeddedPiAgent(
               messagingToolSentMediaUrls: attempt.messagingToolSentMediaUrls,
               messagingToolSentTargets: attempt.messagingToolSentTargets,
               successfulCronAdds: attempt.successfulCronAdds,
-              promptMode: attempt.promptMode ?? params.promptMode,
             };
           }
 
@@ -1374,12 +1372,12 @@ export async function runEmbeddedPiAgent(
                 : (lastAssistant?.stopReason as string | undefined),
               pendingToolCalls: attempt.clientToolCall
                 ? [
-                  {
-                    id: randomBytes(5).toString("hex").slice(0, 9),
-                    name: attempt.clientToolCall.name,
-                    arguments: JSON.stringify(attempt.clientToolCall.params),
-                  },
-                ]
+                    {
+                      id: randomBytes(5).toString("hex").slice(0, 9),
+                      name: attempt.clientToolCall.name,
+                      arguments: JSON.stringify(attempt.clientToolCall.params),
+                    },
+                  ]
                 : undefined,
             },
             didSendViaMessagingTool: attempt.didSendViaMessagingTool,
@@ -1387,7 +1385,6 @@ export async function runEmbeddedPiAgent(
             messagingToolSentMediaUrls: attempt.messagingToolSentMediaUrls,
             messagingToolSentTargets: attempt.messagingToolSentTargets,
             successfulCronAdds: attempt.successfulCronAdds,
-            promptMode: attempt.promptMode ?? params.promptMode,
           };
         }
       } finally {

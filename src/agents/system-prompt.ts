@@ -7,22 +7,14 @@ import type { ResolvedTimeFormat } from "./date-time.js";
 import type { EmbeddedContextFile } from "./pi-embedded-helpers.js";
 import type { EmbeddedSandboxInfo } from "./pi-embedded-runner/types.js";
 import { sanitizeForPromptLiteral } from "./sanitize-for-prompt.js";
-import { CORE_TOOL_DEFINITIONS } from "./tool-catalog.js";
-
-// Build a lightweight id→description map from the canonical tool catalog.
-// This eliminates the duplicated coreToolSummaries dictionary.
-const CATALOG_TOOL_DESCRIPTIONS: ReadonlyMap<string, string> = new Map(
-  CORE_TOOL_DEFINITIONS.map((t) => [t.id, t.description]),
-);
 
 /**
  * Controls which hardcoded sections are included in the system prompt.
  * - "full": All sections (default, for main agent)
  * - "minimal": Reduced sections (Tooling, Workspace, Runtime) - used for subagents
- * - "ethoclaw": Ethoclaw-optimised — strips ACP, Reaction, Voice, CLI-ref, Docs links, Self-Update
  * - "none": Just basic identity line, no sections
  */
-export type PromptMode = "full" | "minimal" | "ethoclaw" | "none";
+export type PromptMode = "full" | "minimal" | "none";
 type OwnerIdDisplay = "raw" | "hash";
 
 function buildSkillsSection(params: { skillsPrompt?: string; readToolName: string }) {
@@ -108,8 +100,8 @@ function buildTimeSection(params: { userTimezone?: string }) {
   return ["## Current Date & Time", `Time zone: ${params.userTimezone}`, ""];
 }
 
-function buildReplyTagsSection(isMinimal: boolean, isEthoclaw?: boolean) {
-  if (isMinimal || isEthoclaw) {
+function buildReplyTagsSection(isMinimal: boolean) {
+  if (isMinimal) {
     return [];
   }
   return [
@@ -126,14 +118,13 @@ function buildReplyTagsSection(isMinimal: boolean, isEthoclaw?: boolean) {
 
 function buildMessagingSection(params: {
   isMinimal: boolean;
-  isEthoclaw?: boolean;
   availableTools: Set<string>;
   messageChannelOptions: string;
   inlineButtonsEnabled: boolean;
   runtimeChannel?: string;
   messageToolHints?: string[];
 }) {
-  if (params.isMinimal || params.isEthoclaw) {
+  if (params.isMinimal) {
     return [];
   }
   return [
@@ -145,28 +136,28 @@ function buildMessagingSection(params: {
     "- Never use exec/curl for provider messaging; OpenClaw handles all routing internally.",
     params.availableTools.has("message")
       ? [
-        "",
-        "### message tool",
-        "- Use `message` for proactive sends + channel actions (polls, reactions, etc.).",
-        "- For `action=send`, include `to` and `message`.",
-        `- If multiple channels are configured, pass \`channel\` (${params.messageChannelOptions}).`,
-        `- If you use \`message\` (\`action=send\`) to deliver your user-visible reply, respond with ONLY: ${SILENT_REPLY_TOKEN} (avoid duplicate replies).`,
-        params.inlineButtonsEnabled
-          ? "- Inline buttons supported. Use `action=send` with `buttons=[[{text,callback_data,style?}]]`; `style` can be `primary`, `success`, or `danger`."
-          : params.runtimeChannel
-            ? `- Inline buttons not enabled for ${params.runtimeChannel}. If you need them, ask to set ${params.runtimeChannel}.capabilities.inlineButtons ("dm"|"group"|"all"|"allowlist").`
-            : "",
-        ...(params.messageToolHints ?? []),
-      ]
-        .filter(Boolean)
-        .join("\n")
+          "",
+          "### message tool",
+          "- Use `message` for proactive sends + channel actions (polls, reactions, etc.).",
+          "- For `action=send`, include `to` and `message`.",
+          `- If multiple channels are configured, pass \`channel\` (${params.messageChannelOptions}).`,
+          `- If you use \`message\` (\`action=send\`) to deliver your user-visible reply, respond with ONLY: ${SILENT_REPLY_TOKEN} (avoid duplicate replies).`,
+          params.inlineButtonsEnabled
+            ? "- Inline buttons supported. Use `action=send` with `buttons=[[{text,callback_data,style?}]]`; `style` can be `primary`, `success`, or `danger`."
+            : params.runtimeChannel
+              ? `- Inline buttons not enabled for ${params.runtimeChannel}. If you need them, ask to set ${params.runtimeChannel}.capabilities.inlineButtons ("dm"|"group"|"all"|"allowlist").`
+              : "",
+          ...(params.messageToolHints ?? []),
+        ]
+          .filter(Boolean)
+          .join("\n")
       : "",
     "",
   ];
 }
 
-function buildVoiceSection(params: { isMinimal: boolean; isEthoclaw?: boolean; ttsHint?: string }) {
-  if (params.isMinimal || params.isEthoclaw) {
+function buildVoiceSection(params: { isMinimal: boolean; ttsHint?: string }) {
+  if (params.isMinimal) {
     return [];
   }
   const hint = params.ttsHint?.trim();
@@ -176,13 +167,10 @@ function buildVoiceSection(params: { isMinimal: boolean; isEthoclaw?: boolean; t
   return ["## Voice (TTS)", hint, ""];
 }
 
-function buildDocsSection(params: { docsPath?: string; isMinimal: boolean; isEthoclaw?: boolean; readToolName: string }) {
+function buildDocsSection(params: { docsPath?: string; isMinimal: boolean; readToolName: string }) {
   const docsPath = params.docsPath?.trim();
   if (!docsPath || params.isMinimal) {
     return [];
-  }
-  if (params.isEthoclaw) {
-    return ["## Documentation", `Local docs: ${docsPath}`, ""];
   }
   return [
     "## Documentation",
@@ -248,19 +236,39 @@ export function buildAgentSystemPrompt(params: {
   const acpEnabled = params.acpEnabled !== false;
   const sandboxedRuntime = params.sandboxInfo?.enabled === true;
   const acpSpawnRuntimeEnabled = acpEnabled && !sandboxedRuntime;
-  // Derive per-call overrides that can't be pre-baked into the catalog (ACP runtime description).
-  const acpSuffix = acpSpawnRuntimeEnabled
-    ? ` (runtime="acp" requires \`agentId\` unless \`acp.defaultAgent\` configured)`
-    : "";
-  function getCoreToolSummary(tool: string): string | undefined {
-    if (tool === "sessions_spawn" && acpSuffix) {
-      return `Spawn isolated sub-agent or ACP coding session${acpSuffix}`;
-    }
-    if (tool === "agents_list" && acpSpawnRuntimeEnabled) {
-      return 'List agent ids for sessions_spawn (runtime="subagent" only; not ACP harness ids)';
-    }
-    return CATALOG_TOOL_DESCRIPTIONS.get(tool);
-  }
+  const coreToolSummaries: Record<string, string> = {
+    read: "Read file contents",
+    write: "Create or overwrite files",
+    edit: "Make precise edits to files",
+    apply_patch: "Apply multi-file patches",
+    grep: "Search file contents for patterns",
+    find: "Find files by glob pattern",
+    ls: "List directory contents",
+    exec: "Run shell commands (pty available for TTY-required CLIs)",
+    process: "Manage background exec sessions",
+    web_search: "Search the web (Brave API)",
+    web_fetch: "Fetch and extract readable content from a URL",
+    // Channel docking: add login tools here when a channel needs interactive linking.
+    browser: "Control web browser",
+    canvas: "Present/eval/snapshot the Canvas",
+    nodes: "List/describe/notify/camera/screen on paired nodes",
+    cron: "Manage cron jobs and wake events (use for reminders; when scheduling a reminder, write the systemEvent text as something that will read like a reminder when it fires, and mention that it is a reminder depending on the time gap between setting and firing; include recent context in reminder text if appropriate)",
+    message: "Send messages and channel actions",
+    gateway: "Restart, apply config, or run updates on the running OpenClaw process",
+    agents_list: acpSpawnRuntimeEnabled
+      ? 'List OpenClaw agent ids allowed for sessions_spawn when runtime="subagent" (not ACP harness ids)'
+      : "List OpenClaw agent ids allowed for sessions_spawn",
+    sessions_list: "List other sessions (incl. sub-agents) with filters/last",
+    sessions_history: "Fetch history for another session/sub-agent",
+    sessions_send: "Send a message to another session/sub-agent",
+    sessions_spawn: acpSpawnRuntimeEnabled
+      ? 'Spawn an isolated sub-agent or ACP coding session (runtime="acp" requires `agentId` unless `acp.defaultAgent` is configured; ACP harness ids follow acp.allowedAgents, not agents_list)'
+      : "Spawn an isolated sub-agent session",
+    subagents: "List, steer, or kill sub-agent runs for this requester session",
+    session_status:
+      "Show a /status-equivalent status card (usage + time + Reasoning/Verbose/Elevated); use for model-use questions (📊 session_status); optional per-session model override",
+    image: "Analyze an image with the configured image model",
+  };
 
   const toolOrder = [
     "read",
@@ -319,12 +327,12 @@ export function buildAgentSystemPrompt(params: {
   );
   const enabledTools = toolOrder.filter((tool) => availableTools.has(tool));
   const toolLines = enabledTools.map((tool) => {
-    const summary = getCoreToolSummary(tool) ?? externalToolSummaries.get(tool);
+    const summary = coreToolSummaries[tool] ?? externalToolSummaries.get(tool);
     const name = resolveToolName(tool);
     return summary ? `- ${name}: ${summary}` : `- ${name}`;
   });
   for (const tool of extraTools.toSorted()) {
-    const summary = getCoreToolSummary(tool) ?? externalToolSummaries.get(tool);
+    const summary = coreToolSummaries[tool] ?? externalToolSummaries.get(tool);
     const name = resolveToolName(tool);
     toolLines.push(summary ? `- ${name}: ${summary}` : `- ${name}`);
   }
@@ -342,15 +350,15 @@ export function buildAgentSystemPrompt(params: {
   );
   const reasoningHint = params.reasoningTagHint
     ? [
-      "ALL internal reasoning MUST be inside <think>...</think>.",
-      "Do not output any analysis outside <think>.",
-      "Format every reply as <think>...</think> then <final>...</final>, with no other text.",
-      "Only the final user-visible reply may appear inside <final>.",
-      "Only text inside <final> is shown to the user; everything else is discarded and never seen by the user.",
-      "Example:",
-      "<think>Short internal reasoning.</think>",
-      "<final>Hey there! What would you like to do next?</final>",
-    ].join(" ")
+        "ALL internal reasoning MUST be inside <think>...</think>.",
+        "Do not output any analysis outside <think>.",
+        "Format every reply as <think>...</think> then <final>...</final>, with no other text.",
+        "Only the final user-visible reply may appear inside <final>.",
+        "Only text inside <final> is shown to the user; everything else is discarded and never seen by the user.",
+        "Example:",
+        "<think>Short internal reasoning.</think>",
+        "<final>Hey there! What would you like to do next?</final>",
+      ].join(" ")
     : undefined;
   const reasoningLevel = params.reasoningLevel ?? "off";
   const userTimezone = params.userTimezone?.trim();
@@ -369,9 +377,6 @@ export function buildAgentSystemPrompt(params: {
   const messageChannelOptions = listDeliverableMessageChannels().join("|");
   const promptMode = params.promptMode ?? "full";
   const isMinimal = promptMode === "minimal" || promptMode === "none";
-  const isEthoclaw = promptMode === "ethoclaw";
-  // Ethoclaw mode is like "full" for most guards but strips OpenClaw-specific housekeeping sections.
-  const isMinimalOrEthoclaw = isMinimal || isEthoclaw;
   const sandboxContainerWorkspace = params.sandboxInfo?.containerWorkspaceDir?.trim();
   const sanitizedWorkspaceDir = sanitizeForPromptLiteral(params.workspaceDir);
   const sanitizedSandboxContainerWorkspace = sandboxContainerWorkspace
@@ -404,7 +409,6 @@ export function buildAgentSystemPrompt(params: {
   const docsSection = buildDocsSection({
     docsPath: params.docsPath,
     isMinimal,
-    isEthoclaw,
     readToolName,
   });
   const workspaceNotes = (params.workspaceNotes ?? []).map((note) => note.trim()).filter(Boolean);
@@ -423,75 +427,68 @@ export function buildAgentSystemPrompt(params: {
     toolLines.length > 0
       ? toolLines.join("\n")
       : [
-        "Pi lists the standard tools above. This runtime enables:",
-        "- grep: search file contents for patterns",
-        "- find: find files by glob pattern",
-        "- ls: list directory contents",
-        "- apply_patch: apply multi-file patches",
-        `- ${execToolName}: run shell commands (supports background via yieldMs/background)`,
-        `- ${processToolName}: manage background exec sessions`,
-        "- browser: control OpenClaw's dedicated browser",
-        "- canvas: present/eval/snapshot the Canvas",
-        "- nodes: list/describe/notify/camera/screen on paired nodes",
-        "- cron: manage cron jobs and wake events (use for reminders; when scheduling a reminder, write the systemEvent text as something that will read like a reminder when it fires, and mention that it is a reminder depending on the time gap between setting and firing; include recent context in reminder text if appropriate)",
-        "- sessions_list: list sessions",
-        "- sessions_history: fetch session history",
-        "- sessions_send: send to another session",
-        "- subagents: list/steer/kill sub-agent runs",
-        '- session_status: show usage/time/model state and answer "what model are we using?"',
-      ].join("\n"),
+          "Pi lists the standard tools above. This runtime enables:",
+          "- grep: search file contents for patterns",
+          "- find: find files by glob pattern",
+          "- ls: list directory contents",
+          "- apply_patch: apply multi-file patches",
+          `- ${execToolName}: run shell commands (supports background via yieldMs/background)`,
+          `- ${processToolName}: manage background exec sessions`,
+          "- browser: control OpenClaw's dedicated browser",
+          "- canvas: present/eval/snapshot the Canvas",
+          "- nodes: list/describe/notify/camera/screen on paired nodes",
+          "- cron: manage cron jobs and wake events (use for reminders; when scheduling a reminder, write the systemEvent text as something that will read like a reminder when it fires, and mention that it is a reminder depending on the time gap between setting and firing; include recent context in reminder text if appropriate)",
+          "- sessions_list: list sessions",
+          "- sessions_history: fetch session history",
+          "- sessions_send: send to another session",
+          "- subagents: list/steer/kill sub-agent runs",
+          '- session_status: show usage/time/model state and answer "what model are we using?"',
+        ].join("\n"),
     "TOOLS.md does not control tool availability; it is user guidance for how to use external tools.",
     `For long waits, avoid rapid poll loops: use ${execToolName} with enough yieldMs or ${processToolName}(action=poll, timeout=<ms>).`,
     "If a task is more complex or takes longer, spawn a sub-agent. Completion is push-based: it will auto-announce when done.",
-    // ACP harness routing — only shown in full mode where ACP is actually enabled
-    ...(!isEthoclaw && acpHarnessSpawnAllowed
+    ...(acpHarnessSpawnAllowed
       ? [
-        'For requests like "do this in codex/claude code/gemini", treat it as ACP harness intent and call `sessions_spawn` with `runtime: "acp"`.',
-        'On Discord, default ACP harness requests to thread-bound persistent sessions (`thread: true`, `mode: "session"`) unless the user asks otherwise.',
-        "Set `agentId` explicitly unless `acp.defaultAgent` is configured, and do not route ACP harness requests through `subagents`/`agents_list` or local PTY exec flows.",
-        'For ACP harness thread spawns, do not call `message` with `action=thread-create`; use `sessions_spawn` (`runtime: "acp"`, `thread: true`) as the single thread creation path.',
-      ]
+          'For requests like "do this in codex/claude code/gemini", treat it as ACP harness intent and call `sessions_spawn` with `runtime: "acp"`.',
+          'On Discord, default ACP harness requests to thread-bound persistent sessions (`thread: true`, `mode: "session"`) unless the user asks otherwise.',
+          "Set `agentId` explicitly unless `acp.defaultAgent` is configured, and do not route ACP harness requests through `subagents`/`agents_list` or local PTY exec flows.",
+          'For ACP harness thread spawns, do not call `message` with `action=thread-create`; use `sessions_spawn` (`runtime: "acp"`, `thread: true`) as the single thread creation path.',
+        ]
       : []),
     "Do not poll `subagents list` / `sessions_list` in a loop; only check status on-demand (for intervention, debugging, or when explicitly asked).",
     "",
     "## Tool Call Style",
-    "Default: do not narrate routine tool calls (just call the tool). Narrate only for multi-step, sensitive, or user-requested context.",
-    "Use plain language; when a first-class tool exists, use it directly.",
+    "Default: do not narrate routine, low-risk tool calls (just call the tool).",
+    "Narrate only when it helps: multi-step work, complex/challenging problems, sensitive actions (e.g., deletions), or when the user explicitly asks.",
+    "Keep narration brief and value-dense; avoid repeating obvious steps.",
+    "Use plain human language for narration unless in a technical context.",
+    "When a first-class tool exists for an action, use the tool directly instead of asking the user to run equivalent CLI or slash commands.",
     "",
     ...safetySection,
-    // CLI Quick Reference — condensed for ethoclaw, full for other modes
-    ...(isEthoclaw
-      ? ["CLI: run `openclaw help` if you need gateway commands.", ""]
-      : [
-        "## OpenClaw CLI Quick Reference",
-        "OpenClaw is controlled via subcommands. Do not invent commands.",
-        "To manage the Gateway daemon service (start/stop/restart):",
-        "- openclaw gateway status",
-        "- openclaw gateway start",
-        "- openclaw gateway stop",
-        "- openclaw gateway restart",
-        "If unsure, ask the user to run `openclaw help` (or `openclaw gateway --help`) and paste the output.",
-        "",
-      ]),
+    "## OpenClaw CLI Quick Reference",
+    "OpenClaw is controlled via subcommands. Do not invent commands.",
+    "To manage the Gateway daemon service (start/stop/restart):",
+    "- openclaw gateway status",
+    "- openclaw gateway start",
+    "- openclaw gateway stop",
+    "- openclaw gateway restart",
+    "If unsure, ask the user to run `openclaw help` (or `openclaw gateway --help`) and paste the output.",
+    "",
     ...skillsSection,
     ...memorySection,
-    // Self-update — condensed for ethoclaw, full for other modes
-    ...(hasGateway && !isMinimal
-      ? isEthoclaw
-        ? [
-          "Updates: only on explicit user request. Use config.schema before config changes.",
-          "",
-        ]
-        : [
-          "## OpenClaw Self-Update",
+    // Skip self-update for subagent/none modes
+    hasGateway && !isMinimal ? "## OpenClaw Self-Update" : "",
+    hasGateway && !isMinimal
+      ? [
           "Get Updates (self-update) is ONLY allowed when the user explicitly asks for it.",
           "Do not run config.apply or update.run unless the user explicitly requests an update or config change; if it's not explicit, ask first.",
           "Use config.schema to fetch the current JSON Schema (includes plugins/channels) before making config changes or answering config-field questions; avoid guessing field names/types.",
           "Actions: config.get, config.schema, config.apply (validate + write full config, then restart), update.run (update deps or git, then restart).",
           "After restart, OpenClaw pings the last active session automatically.",
-          "",
-        ]
-      : []),
+        ].join("\n")
+      : "",
+    hasGateway && !isMinimal ? "" : "",
+    "",
     // Skip model aliases for subagent/none modes
     params.modelAliasLines && params.modelAliasLines.length > 0 && !isMinimal
       ? "## Model Aliases"
@@ -515,48 +512,49 @@ export function buildAgentSystemPrompt(params: {
     params.sandboxInfo?.enabled ? "## Sandbox" : "",
     params.sandboxInfo?.enabled
       ? [
-        "You are running in a sandboxed runtime (tools execute in Docker).",
-        "Some tools may be unavailable due to sandbox policy.",
-        "Sub-agents stay sandboxed (no elevated/host access). Need outside-sandbox read/write? Don't spawn; ask first.",
-        hasSessionsSpawn && acpEnabled
-          ? 'ACP harness spawns are blocked from sandboxed sessions (`sessions_spawn` with `runtime: "acp"`). Use `runtime: "subagent"` instead.'
-          : "",
-        params.sandboxInfo.containerWorkspaceDir
-          ? `Sandbox container workdir: ${sanitizeForPromptLiteral(params.sandboxInfo.containerWorkspaceDir)}`
-          : "",
-        params.sandboxInfo.workspaceDir
-          ? `Sandbox host mount source (file tools bridge only; not valid inside sandbox exec): ${sanitizeForPromptLiteral(params.sandboxInfo.workspaceDir)}`
-          : "",
-        params.sandboxInfo.workspaceAccess
-          ? `Agent workspace access: ${params.sandboxInfo.workspaceAccess}${params.sandboxInfo.agentWorkspaceMount
-            ? ` (mounted at ${sanitizeForPromptLiteral(params.sandboxInfo.agentWorkspaceMount)})`
-            : ""
-          }`
-          : "",
-        params.sandboxInfo.browserBridgeUrl ? "Sandbox browser: enabled." : "",
-        params.sandboxInfo.browserNoVncUrl
-          ? `Sandbox browser observer (noVNC): ${sanitizeForPromptLiteral(params.sandboxInfo.browserNoVncUrl)}`
-          : "",
-        params.sandboxInfo.hostBrowserAllowed === true
-          ? "Host browser control: allowed."
-          : params.sandboxInfo.hostBrowserAllowed === false
-            ? "Host browser control: blocked."
+          "You are running in a sandboxed runtime (tools execute in Docker).",
+          "Some tools may be unavailable due to sandbox policy.",
+          "Sub-agents stay sandboxed (no elevated/host access). Need outside-sandbox read/write? Don't spawn; ask first.",
+          hasSessionsSpawn && acpEnabled
+            ? 'ACP harness spawns are blocked from sandboxed sessions (`sessions_spawn` with `runtime: "acp"`). Use `runtime: "subagent"` instead.'
             : "",
-        params.sandboxInfo.elevated?.allowed
-          ? "Elevated exec is available for this session."
-          : "",
-        params.sandboxInfo.elevated?.allowed
-          ? "User can toggle with /elevated on|off|ask|full."
-          : "",
-        params.sandboxInfo.elevated?.allowed
-          ? "You may also send /elevated on|off|ask|full when needed."
-          : "",
-        params.sandboxInfo.elevated?.allowed
-          ? `Current elevated level: ${params.sandboxInfo.elevated.defaultLevel} (ask runs exec on host with approvals; full auto-approves).`
-          : "",
-      ]
-        .filter(Boolean)
-        .join("\n")
+          params.sandboxInfo.containerWorkspaceDir
+            ? `Sandbox container workdir: ${sanitizeForPromptLiteral(params.sandboxInfo.containerWorkspaceDir)}`
+            : "",
+          params.sandboxInfo.workspaceDir
+            ? `Sandbox host mount source (file tools bridge only; not valid inside sandbox exec): ${sanitizeForPromptLiteral(params.sandboxInfo.workspaceDir)}`
+            : "",
+          params.sandboxInfo.workspaceAccess
+            ? `Agent workspace access: ${params.sandboxInfo.workspaceAccess}${
+                params.sandboxInfo.agentWorkspaceMount
+                  ? ` (mounted at ${sanitizeForPromptLiteral(params.sandboxInfo.agentWorkspaceMount)})`
+                  : ""
+              }`
+            : "",
+          params.sandboxInfo.browserBridgeUrl ? "Sandbox browser: enabled." : "",
+          params.sandboxInfo.browserNoVncUrl
+            ? `Sandbox browser observer (noVNC): ${sanitizeForPromptLiteral(params.sandboxInfo.browserNoVncUrl)}`
+            : "",
+          params.sandboxInfo.hostBrowserAllowed === true
+            ? "Host browser control: allowed."
+            : params.sandboxInfo.hostBrowserAllowed === false
+              ? "Host browser control: blocked."
+              : "",
+          params.sandboxInfo.elevated?.allowed
+            ? "Elevated exec is available for this session."
+            : "",
+          params.sandboxInfo.elevated?.allowed
+            ? "User can toggle with /elevated on|off|ask|full."
+            : "",
+          params.sandboxInfo.elevated?.allowed
+            ? "You may also send /elevated on|off|ask|full when needed."
+            : "",
+          params.sandboxInfo.elevated?.allowed
+            ? `Current elevated level: ${params.sandboxInfo.elevated.defaultLevel} (ask runs exec on host with approvals; full auto-approves).`
+            : "",
+        ]
+          .filter(Boolean)
+          .join("\n")
       : "",
     params.sandboxInfo?.enabled ? "" : "",
     ...buildUserIdentitySection(ownerLine, isMinimal),
@@ -566,17 +564,16 @@ export function buildAgentSystemPrompt(params: {
     "## Workspace Files (injected)",
     "These user-editable files are loaded by OpenClaw and included below in Project Context.",
     "",
-    ...buildReplyTagsSection(isMinimal, isEthoclaw),
+    ...buildReplyTagsSection(isMinimal),
     ...buildMessagingSection({
       isMinimal,
-      isEthoclaw,
       availableTools,
       messageChannelOptions,
       inlineButtonsEnabled,
       runtimeChannel,
       messageToolHints: params.messageToolHints,
     }),
-    ...buildVoiceSection({ isMinimal, isEthoclaw, ttsHint: params.ttsHint }),
+    ...buildVoiceSection({ isMinimal, ttsHint: params.ttsHint }),
   ];
 
   if (extraSystemPrompt) {
@@ -585,28 +582,27 @@ export function buildAgentSystemPrompt(params: {
       promptMode === "minimal" ? "## Subagent Context" : "## Group Chat Context";
     lines.push(contextHeader, extraSystemPrompt, "");
   }
-  // Skip reaction guidance in ethoclaw mode
-  if (params.reactionGuidance && !isEthoclaw) {
+  if (params.reactionGuidance) {
     const { level, channel } = params.reactionGuidance;
     const guidanceText =
       level === "minimal"
         ? [
-          `Reactions are enabled for ${channel} in MINIMAL mode.`,
-          "React ONLY when truly relevant:",
-          "- Acknowledge important user requests or confirmations",
-          "- Express genuine sentiment (humor, appreciation) sparingly",
-          "- Avoid reacting to routine messages or your own replies",
-          "Guideline: at most 1 reaction per 5-10 exchanges.",
-        ].join("\n")
+            `Reactions are enabled for ${channel} in MINIMAL mode.`,
+            "React ONLY when truly relevant:",
+            "- Acknowledge important user requests or confirmations",
+            "- Express genuine sentiment (humor, appreciation) sparingly",
+            "- Avoid reacting to routine messages or your own replies",
+            "Guideline: at most 1 reaction per 5-10 exchanges.",
+          ].join("\n")
         : [
-          `Reactions are enabled for ${channel} in EXTENSIVE mode.`,
-          "Feel free to react liberally:",
-          "- Acknowledge messages with appropriate emojis",
-          "- Express sentiment and personality through reactions",
-          "- React to interesting content, humor, or notable events",
-          "- Use reactions to confirm understanding or agreement",
-          "Guideline: react whenever it feels natural.",
-        ].join("\n");
+            `Reactions are enabled for ${channel} in EXTENSIVE mode.`,
+            "Feel free to react liberally:",
+            "- Acknowledge messages with appropriate emojis",
+            "- Express sentiment and personality through reactions",
+            "- React to interesting content, humor, or notable events",
+            "- Use reactions to confirm understanding or agreement",
+            "Guideline: react whenever it feels natural.",
+          ].join("\n");
     lines.push("## Reactions", guidanceText, "");
   }
   if (reasoningHint) {
@@ -648,51 +644,35 @@ export function buildAgentSystemPrompt(params: {
     }
   }
 
-  // Skip silent replies for subagent/none modes; condense for ethoclaw
+  // Skip silent replies for subagent/none modes
   if (!isMinimal) {
-    if (isEthoclaw) {
-      lines.push(
-        "## Silent Replies",
-        `When nothing to say: respond with ONLY \`${SILENT_REPLY_TOKEN}\` (entire message, no other text).`,
-        "",
-      );
-    } else {
-      lines.push(
-        "## Silent Replies",
-        `When you have nothing to say, respond with ONLY: ${SILENT_REPLY_TOKEN}`,
-        "",
-        "⚠️ Rules:",
-        "- It must be your ENTIRE message — nothing else",
-        `- Never append it to an actual response (never include "${SILENT_REPLY_TOKEN}" in real replies)`,
-        "- Never wrap it in markdown or code blocks",
-        "",
-        `❌ Wrong: "Here's help... ${SILENT_REPLY_TOKEN}"`,
-        `❌ Wrong: "${SILENT_REPLY_TOKEN}"`,
-        `✅ Right: ${SILENT_REPLY_TOKEN}`,
-        "",
-      );
-    }
+    lines.push(
+      "## Silent Replies",
+      `When you have nothing to say, respond with ONLY: ${SILENT_REPLY_TOKEN}`,
+      "",
+      "⚠️ Rules:",
+      "- It must be your ENTIRE message — nothing else",
+      `- Never append it to an actual response (never include "${SILENT_REPLY_TOKEN}" in real replies)`,
+      "- Never wrap it in markdown or code blocks",
+      "",
+      `❌ Wrong: "Here's help... ${SILENT_REPLY_TOKEN}"`,
+      `❌ Wrong: "${SILENT_REPLY_TOKEN}"`,
+      `✅ Right: ${SILENT_REPLY_TOKEN}`,
+      "",
+    );
   }
 
-  // Skip heartbeats for subagent/none modes; condense for ethoclaw
+  // Skip heartbeats for subagent/none modes
   if (!isMinimal) {
-    if (isEthoclaw) {
-      lines.push(
-        "## Heartbeats",
-        `${heartbeatPromptLine}. Reply HEARTBEAT_OK if nothing needs attention; otherwise reply with the alert.`,
-        "",
-      );
-    } else {
-      lines.push(
-        "## Heartbeats",
-        heartbeatPromptLine,
-        "If you receive a heartbeat poll (a user message matching the heartbeat prompt above), and there is nothing that needs attention, reply exactly:",
-        "HEARTBEAT_OK",
-        'OpenClaw treats a leading/trailing "HEARTBEAT_OK" as a heartbeat ack (and may discard it).',
-        'If something needs attention, do NOT include "HEARTBEAT_OK"; reply with the alert text instead.',
-        "",
-      );
-    }
+    lines.push(
+      "## Heartbeats",
+      heartbeatPromptLine,
+      "If you receive a heartbeat poll (a user message matching the heartbeat prompt above), and there is nothing that needs attention, reply exactly:",
+      "HEARTBEAT_OK",
+      'OpenClaw treats a leading/trailing "HEARTBEAT_OK" as a heartbeat ack (and may discard it).',
+      'If something needs attention, do NOT include "HEARTBEAT_OK"; reply with the alert text instead.',
+      "",
+    );
   }
 
   lines.push(

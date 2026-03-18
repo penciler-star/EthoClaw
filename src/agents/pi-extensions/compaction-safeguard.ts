@@ -602,8 +602,8 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
         missedModelWarningSessions.add(ctx.sessionManager);
         console.warn(
           "[compaction-safeguard] Both ctx.model and runtime.model are undefined. " +
-          "Compaction summarization will not run. This indicates extensionRunner.initialize() " +
-          "was not called and model was not passed through runtime registry.",
+            "Compaction summarization will not run. This indicates extensionRunner.initialize() " +
+            "was not called and model was not passed through runtime registry.",
         );
       }
       return { cancel: true };
@@ -622,8 +622,7 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
       const contextWindowTokens = runtime?.contextWindowTokens ?? modelContextWindow;
       const turnPrefixMessages = preparation.turnPrefixMessages ?? [];
       let messagesToSummarize = preparation.messagesToSummarize;
-      const isEthoclaw = runtime?.promptMode === "ethoclaw";
-      const recentTurnsPreserve = resolveRecentTurnsPreserve(isEthoclaw ? 6 : runtime?.recentTurnsPreserve);
+      const recentTurnsPreserve = resolveRecentTurnsPreserve(runtime?.recentTurnsPreserve);
       const structuredInstructions = buildCompactionStructureInstructions(
         customInstructions,
         summarizationInstructions,
@@ -658,7 +657,7 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
               `Compaction safeguard: new content uses ${newContentRatio.toFixed(
                 1,
               )}% of context; dropped ${pruned.droppedChunks} older chunk(s) ` +
-              `(${pruned.droppedMessages} messages) to fit history budget.`,
+                `(${pruned.droppedMessages} messages) to fit history budget.`,
             );
             messagesToSummarize = pruned.messages;
 
@@ -672,7 +671,7 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
                 const droppedMaxChunkTokens = Math.max(
                   1,
                   Math.floor(contextWindowTokens * droppedChunkRatio) -
-                  SUMMARIZATION_OVERHEAD_TOKENS,
+                    SUMMARIZATION_OVERHEAD_TOKENS,
                 );
                 droppedSummary = await summarizeInStages({
                   messages: pruned.droppedMessagesList,
@@ -688,7 +687,8 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
                 });
               } catch (droppedError) {
                 log.warn(
-                  `Compaction safeguard: failed to summarize dropped messages, continuing without: ${droppedError instanceof Error ? droppedError.message : String(droppedError)
+                  `Compaction safeguard: failed to summarize dropped messages, continuing without: ${
+                    droppedError instanceof Error ? droppedError.message : String(droppedError)
                   }`,
                 );
               }
@@ -725,17 +725,17 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
       const historySummary =
         messagesToSummarize.length > 0
           ? await summarizeInStages({
-            messages: messagesToSummarize,
-            model,
-            apiKey,
-            signal,
-            reserveTokens,
-            maxChunkTokens,
-            contextWindow: contextWindowTokens,
-            customInstructions: structuredInstructions,
-            summarizationInstructions,
-            previousSummary: effectivePreviousSummary,
-          })
+              messages: messagesToSummarize,
+              model,
+              apiKey,
+              signal,
+              reserveTokens,
+              maxChunkTokens,
+              contextWindow: contextWindowTokens,
+              customInstructions: structuredInstructions,
+              summarizationInstructions,
+              previousSummary: effectivePreviousSummary,
+            })
           : buildStructuredFallbackSummary(effectivePreviousSummary, summarizationInstructions);
 
       let summary = historySummary;
@@ -778,7 +778,8 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
       };
     } catch (error) {
       log.warn(
-        `Compaction summarization failed; cancelling compaction to preserve history: ${error instanceof Error ? error.message : String(error)
+        `Compaction summarization failed; cancelling compaction to preserve history: ${
+          error instanceof Error ? error.message : String(error)
         }`,
       );
       return { cancel: true };

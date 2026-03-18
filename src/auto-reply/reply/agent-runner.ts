@@ -157,20 +157,20 @@ export async function runReplyAgent(params: {
   const blockReplyCoalescing =
     blockStreamingEnabled && opts?.onBlockReply
       ? resolveEffectiveBlockStreamingConfig({
-        cfg,
-        provider: sessionCtx.Provider,
-        accountId: sessionCtx.AccountId,
-        chunking: blockReplyChunking,
-      }).coalescing
+          cfg,
+          provider: sessionCtx.Provider,
+          accountId: sessionCtx.AccountId,
+          chunking: blockReplyChunking,
+        }).coalescing
       : undefined;
   const blockReplyPipeline =
     blockStreamingEnabled && opts?.onBlockReply
       ? createBlockReplyPipeline({
-        onBlockReply: opts.onBlockReply,
-        timeoutMs: blockReplyTimeoutMs,
-        coalescing: blockReplyCoalescing,
-        buffer: createAudioAsVoiceBuffer({ isAudioPayload }),
-      })
+          onBlockReply: opts.onBlockReply,
+          timeoutMs: blockReplyTimeoutMs,
+          coalescing: blockReplyCoalescing,
+          buffer: createAudioAsVoiceBuffer({ isAudioPayload }),
+        })
       : null;
   const touchActiveSessionEntry = async () => {
     if (!activeSessionEntry || !activeSessionStore || !sessionKey) {
@@ -515,9 +515,9 @@ export async function runReplyAgent(params: {
     const coveredByExistingCron =
       hasReminderCommitment && successfulCronAdds === 0
         ? await hasSessionRelatedCronJobs({
-          cronStorePath: cfg.cron?.store,
-          sessionKey,
-        })
+            cronStorePath: cfg.cron?.store,
+            sessionKey,
+          })
         : false;
     const guardedReplyPayloads =
       hasReminderCommitment && successfulCronAdds === 0 && !coveredByExistingCron
@@ -573,10 +573,10 @@ export async function runReplyAgent(params: {
       const showCost = authMode === "api-key";
       const costConfig = showCost
         ? resolveModelCostConfig({
-          provider: providerUsed,
-          model: modelUsed,
-          config: cfg,
-        })
+            provider: providerUsed,
+            model: modelUsed,
+            config: cfg,
+          })
         : undefined;
       let formatted = formatResponseUsageLine({
         usage,
@@ -666,8 +666,7 @@ export async function runReplyAgent(params: {
       // Inject post-compaction workspace context for the next agent turn
       if (sessionKey) {
         const workspaceDir = process.cwd();
-        const promptMode = runResult?.promptMode;
-        readPostCompactionContext(workspaceDir, cfg, undefined, promptMode)
+        readPostCompactionContext(workspaceDir, cfg)
           .then((contextContent) => {
             if (contextContent) {
               enqueueSystemEvent(contextContent, { sessionKey });
