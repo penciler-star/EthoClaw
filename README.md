@@ -23,7 +23,7 @@
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
 
 - **Animal Pose Estimation:**
-  1. Access open-source deep learning pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.). Currently, it has supported the **SuperAnimal** framework.
+  1. Access open-source deep learning pose estimation models/projects to automatically estimate the pose of experimental targets (such as head, back, tail, etc.). Currently, it has supported the [SuperAnimal](https://github.com/AdaptiveMotorControlLab/modelzoo-figures).
   <div align=center><img src="docs/animal_pose_estimation_demo.png" width="500" /></div>
   <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
