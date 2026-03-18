@@ -123,9 +123,21 @@ Analysis_Project/
 └── 2_results/
 ```
 
-## 贡献者
+## 许可证
 
-### 感谢所有为EthoClaw项目做出贡献的开发者
+本项目采用 MIT License 开源发布。
+
+## 致谢
+
+EthoClaw 建立在开源社区大量优秀工作的基础上。
+
+特别感谢以下项目带来的关键支持：
+
+[OpenClaw](https://github.com/openclaw/openclaw)：
+[DeepLabCut](https://github.com/DeepLabCut/DeepLabCut)：
+这些项目体现了开源协作真正的力量，我们也很高兴能继续建立在这些基础之上。
+
+### 开发者
 
 <a href="https://github.com/penciler-star"><img src="https://avatars.githubusercontent.com/u/56993500?v=4" width="50px;" alt="penciler-star"/></a>
 <a href="https://github.com/fxqaq"><img src="https://avatars.githubusercontent.com/u/107977693?v=4" width="50px;" alt="fxqaq"/></a>
