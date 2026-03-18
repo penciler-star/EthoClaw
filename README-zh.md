@@ -4,10 +4,13 @@
   <a href="README.md">English</a>
 </p>
 
+<p align="center">
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](./backend/pyproject.toml)
 [![Node.js](https://img.shields.io/badge/Node.js-24%2B-339933?logo=node.js&logoColor=white)](./Makefile)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
+</p>
 **EthoClaw** 是基于 OpenClaw 构建的 Ethology 领域开源项目，核心聚焦于行为学领域实用技能的落地实现。针对行为学分析中预处理、数据转换、格式匹配、环境配置等繁琐流程，EthoClaw 不仅能帮助研究人员自动完成这些操作，还可实现网络信息检索、分析报告与结果图生成、本地文献解读、自动化目标定位、自动姿态估计等功能，从而让研究人员更专注于解决科学问题，大幅提升科研效率。此外，我们针对OpenClaw进行了性能优化，可改善我们的使用体验。
 
 ## 已支持物种
