@@ -260,7 +260,8 @@ async function summarizeChunks(params: {
   }
 
   // SECURITY: never feed toolResult.details into summarization prompts.
-  const safeMessages = stripToolResultDetails(params.messages);
+  // TRUNCATION: shrink oversized content to keep chunks manageable.
+  const safeMessages = truncateOversizedToolResults(stripToolResultDetails(params.messages));
   const chunks = chunkMessagesByMaxTokens(safeMessages, params.maxChunkTokens);
   let summary = params.previousSummary;
   const effectiveInstructions = buildCompactionSummarizationInstructions(
@@ -320,8 +321,7 @@ export async function summarizeWithFallback(params: {
     return await summarizeChunks(params);
   } catch (fullError) {
     log.warn(
-      `Full summarization failed, trying partial: ${
-        fullError instanceof Error ? fullError.message : String(fullError)
+      `Full summarization failed, trying partial: ${fullError instanceof Error ? fullError.message : String(fullError)
       }`,
     );
   }
@@ -352,8 +352,7 @@ export async function summarizeWithFallback(params: {
       return partialSummary + notes;
     } catch (partialError) {
       log.warn(
-        `Partial summarization also failed: ${
-          partialError instanceof Error ? partialError.message : String(partialError)
+        `Partial summarization also failed: ${partialError instanceof Error ? partialError.message : String(partialError)
         }`,
       );
     }
