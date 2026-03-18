@@ -60,23 +60,30 @@ def caption_from_filename(name: str) -> str:
 
 def nice_title(s: str) -> str:
     # folder names like heatmap_velocity -> Heatmap velocity
+    # nested names like radar/group_means -> Radar / group means
+    s = s.replace("/", " / ")
     s = s.replace("_", " ").replace("-", " ").strip()
+    s = re.sub(r"\s+", " ", s)
     return s[:1].upper() + s[1:] if s else s
 
 
 def find_groups(root: Path) -> list[tuple[str, list[Path]]]:
-    """Return [(group_name, [images...])]. group_name is subfolder name.
+    """Return [(group_name, [images...])]. group_name is folder name relative to root.
+
+    We recurse to include nested result folders like:
+      2_results/radar/group_means
 
     Also include images directly under root as a group (root.name).
     """
 
     groups: list[tuple[str, list[Path]]] = []
 
-    # subfolders
-    for d in sorted([p for p in root.iterdir() if p.is_dir()], key=lambda p: natural_key(p.name)):
+    # include any directory (including nested) that contains at least 1 image
+    for d in sorted([p for p in root.rglob("*") if p.is_dir()], key=lambda p: natural_key(str(p.relative_to(root)))):
         imgs = sorted([p for p in d.iterdir() if p.is_file() and is_image(p)], key=lambda p: natural_key(p.name))
         if imgs:
-            groups.append((d.name, imgs))
+            rel = str(d.relative_to(root))
+            groups.append((rel, imgs))
 
     # root images
     root_imgs = sorted([p for p in root.iterdir() if p.is_file() and is_image(p)], key=lambda p: natural_key(p.name))
