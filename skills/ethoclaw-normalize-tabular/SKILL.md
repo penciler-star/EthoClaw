@@ -1,7 +1,7 @@
 ---
-name: normalize-tabular
+name: ethoclaw-normalize-tabular
 description: Check environment, inspect, and normalize local CSV, Excel, and HDF5 files into analysis-ready tabular outputs.
-metadata: {"openclaw":{"emoji":"🧾","requires":{"bins":["python3"]}}}
+metadata: { "openclaw": { "emoji": "🧾", "requires": { "bins": ["python3"] } } }
 ---
 
 # Normalize Tabular

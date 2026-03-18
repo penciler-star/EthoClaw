@@ -1,6 +1,7 @@
 ---
 name: ethoclaw-methods-explainer
 description: Used to explain methods / methodology / statistical methods in papers or analysis results to beginners, focusing on explaining how an indicator, model, statistical result, or chart was obtained, including: what data was used, what preprocessing was done, what statistical or mathematical methods were adopted, how parameters were calculated, why these settings were chosen, and how results were generated. Applicable to ethology (animal behavior) and related statistical modeling, clustering, dimensionality reduction, regression, Bayesian analysis, network analysis, and other tasks. Users may trigger this with English requests like "help me understand the methods section", "how was this chart made", "what method was used for clustering", "how are parameters calculated", "help me write methods for a paper".
+metadata: { "openclaw": { "emoji": "🧾", "requires": { "bins": ["python3"] } } }
 ---
 
 # Ethoclaw Methods Explainer
@@ -126,7 +127,7 @@ If user only asks a single question, still retain at least these three parts:
 ## Expression Requirements
 
 - First say "what is the input", then "what was done", finally "how the result was obtained".
-- For terminology, prioritize using "Chinese (English)" format, especially for statistical and mathematical method names.
+- For terminology, use English directly; if the user is using Chinese, then use "English (Chinese)" format, especially for statistical and mathematical method names.
 - After technical blocks, add a layperson explanation suitable for beginners, but do not write as long tutorials.
 - Separate "facts explicitly stated in the paper" from "content inferred from context".
 - If seeing images, screenshots, or paper paragraphs, infer only based on visible content and mark inference basis.

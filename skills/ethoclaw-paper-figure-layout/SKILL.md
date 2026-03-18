@@ -1,5 +1,5 @@
 ---
-name: paper-figure-layout
+name: ethoclaw-paper-figure-layout
 description: "Auto-layout folders of result images into a paper-like PDF (LaTeX) with captions derived from filenames and optional heatmap+colorbar grouping. Use when the user says: use images in this folder to help with layout/generate paper figures/arrange figures into PDF by folder grouping; or when there are many PNG/JPG figures that need consistent captions and pagination."
 ---
 
