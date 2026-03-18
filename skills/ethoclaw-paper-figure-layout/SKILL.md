@@ -32,12 +32,14 @@ Auto-generate a Nature-Communications-ish **compact multi-panel figure PDF** fro
 python3 scripts/layout_results_foldered.py \
   --input "/path/to/2_results" \
   --output "/path/to/out.pdf" \
-  --title "Results" \
-  --mode compact \
-  --max-per-type 1 \
-  --cols 2 \
-  --panels-per-figure 6
+  --title "Results"
 ```
+
+Defaults (can override):
+- `--mode compact`
+- `--max-per-type 1`
+- `--cols 2`
+- `--panels-per-figure 6`
 
 ### Legacy foldered
 
