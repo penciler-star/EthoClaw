@@ -4,6 +4,9 @@ import { estimateTokens, generateSummary } from "@mariozechner/pi-coding-agent";
 import type { AgentCompactionIdentifierPolicy } from "../config/types.agent-defaults.js";
 import { retryAsync } from "../infra/retry.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
+import { resolveUserPath } from "../utils.js";
+import { normalizeMessageChannel } from "../utils/message-channel.js";
+import { collectTextContentBlocks } from "./content-blocks.js";
 import { DEFAULT_CONTEXT_TOKENS } from "./defaults.js";
 import { repairToolUseResultPairing, stripToolResultDetails } from "./session-transcript-repair.js";
 
@@ -73,6 +76,39 @@ export function estimateMessagesTokens(messages: AgentMessage[]): number {
   // SECURITY: toolResult.details can contain untrusted/verbose payloads; never include in LLM-facing compaction.
   const safe = stripToolResultDetails(messages);
   return safe.reduce((sum, message) => sum + estimateTokens(message), 0);
+}
+
+const MAX_TOOL_CONTENT_CHARS_FOR_SUMMARY = 2000;
+
+/**
+ * Truncate oversized tool result content to reduce token weight before LLM summarization.
+ * Preserves the beginning and end of the output, noting the truncation.
+ */
+export function truncateOversizedToolResults(messages: AgentMessage[]): AgentMessage[] {
+  let touched = false;
+  const out = messages.map((msg) => {
+    if (msg.role !== "toolResult") {
+      return msg;
+    }
+    const contentBlocks = collectTextContentBlocks(msg.content);
+    const fullText = contentBlocks.join("\n");
+    if (fullText.length <= MAX_TOOL_CONTENT_CHARS_FOR_SUMMARY) {
+      return msg;
+    }
+
+    const truncatedText =
+      fullText.slice(0, MAX_TOOL_CONTENT_CHARS_FOR_SUMMARY / 2) +
+      `\n\n...[TRUNCATED ${fullText.length - MAX_TOOL_CONTENT_CHARS_FOR_SUMMARY} CHARS for summary]...\n\n` +
+      fullText.slice(-MAX_TOOL_CONTENT_CHARS_FOR_SUMMARY / 2);
+
+    touched = true;
+    return {
+      ...msg,
+      content: [{ type: "text" as const, text: truncatedText }],
+    };
+  });
+
+  return touched ? out : messages;
 }
 
 function estimateCompactionMessageTokens(message: AgentMessage): number {
