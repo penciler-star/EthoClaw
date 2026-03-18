@@ -236,8 +236,8 @@ def build_tex_compact(
                 letter = chr(ord("a") + i)
 
                 parts.append(f"\\begin{{minipage}}[t]{{{w}\\textwidth}}\\vspace{{0pt}}\n")
-                # Panel label: add a white box so it won't be visually "covered" by dark plot backgrounds.
-                parts.append("\\raggedright\\fcolorbox{black}{white}{\\textbf{" + letter + "}}\\\\[-1.0mm]\n")
+                # Panel label: white background (no border) + positive spacing so it stays ABOVE the image.
+                parts.append("\\raggedright\\colorbox{white}{\\textbf{" + letter + "}}\\\\[0.8mm]\n")
                 parts.append("\\centering\n")
                 parts.append(f"\\includegraphics[width=\\linewidth]{{{img.name}}}\n")
                 parts.append("\\end{minipage}")
