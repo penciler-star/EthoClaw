@@ -1,0 +1,171 @@
+{
+  "query": "(((neuroethology[tiab] OR neuroscience[tiab] OR \"behavioral neuroscience\"[tiab] OR \"behavioural neuroscience\"[tiab] OR \"Neural Circuits\"[mh] OR electrophysiology[tiab] OR \"calcium imaging\"[tiab] OR \"neural recording\"[tiab] OR \"neural decoding\"[tiab])) AND ((\"Behavior, Animal\"[mh] OR behavior[tiab] OR behaviour[tiab] OR \"animal behavior\"[tiab] OR \"animal behaviour\"[tiab] OR locomotion[tiab] OR vocalization[tiab] OR courtship[tiab] OR foraging[tiab] OR decision-making[tiab]) AND (zebrafish[tiab] OR drosophila[tiab] OR rodent[tiab] OR mouse[tiab] OR songbird[tiab] OR bat[tiab] OR primate[tiab] OR animal[tiab])))",
+  "generated_at": "2026-03-18T10:51:56.149891+00:00",
+  "days": 7,
+  "count": 4,
+  "source": "pubmed",
+  "items": [
+    {
+      "id": "41817421",
+      "pmid": "41817421",
+      "doi": "10.7554/eLife.106033",
+      "title": "Precision cutaneous stimulation in freely moving mice.",
+      "summary": "Somatosensation connects animals to their immediate environment, shaping critical behaviors essential for adaptation, learning, and survival. Probing the relationships between somatosensory inputs and behavior in mice presents substantial challenges, primarily due to the practical difficulties of delivering stimuli to the skin during movement. To address this problem, we have developed a system for precise cutaneous stimulation of mice as they walk and run through environments. The system employs real-time body part tracking and targeted optical stimuli, offering precision while preserving the naturalistic context of the behaviors studied, thereby overcoming the traditional trade-offs between precision and animal behavior. We demonstrate the system from nociceptive testing conducted in standard small chambers to behavior in large complex environments, such as mazes. We observed that cutaneous inputs evoke rapid responses, which modify behavior when stimuli are applied during motion. This system provides a means to explore the diverse and integrative nature of somatosensation, from reflexes to decision-making, in naturalistic settings.",
+      "published": "2026-03-12",
+      "updated": "2026-03-12",
+      "authors": [
+        "Isobel Parkes",
+        "Ara Schorscher-Petcu",
+        "Qinyi Gan",
+        "Liam E Browne"
+      ],
+      "journal": "eLife",
+      "mesh_terms": [
+        "Animals",
+        "Mice",
+        "Behavior, Animal",
+        "Physical Stimulation",
+        "Skin",
+        "Movement",
+        "Male"
+      ],
+      "keywords": [
+        "behavior",
+        "closed-loop",
+        "mouse",
+        "neuroscience",
+        "nociception",
+        "optogenetics",
+        "pain",
+        "somatosensation"
+      ],
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41817421/",
+      "pdf_url": "",
+      "search_blob": "precision cutaneous stimulation in freely moving mice. somatosensation connects animals to their immediate environment, shaping critical behaviors essential for adaptation, learning, and survival. probing the relationships between somatosensory inputs and behavior in mice presents substantial challenges, primarily due to the practical difficulties of delivering stimuli to the skin during movement. to address this problem, we have developed a system for precise cutaneous stimulation of mice as they walk and run through environments. the system employs real-time body part tracking and targeted optical stimuli, offering precision while preserving the naturalistic context of the behaviors studied, thereby overcoming the traditional trade-offs between precision and animal behavior. we demonstrate the system from nociceptive testing conducted in standard small chambers to behavior in large complex environments, such as mazes. we observed that cutaneous inputs evoke rapid responses, which modify behavior when stimuli are applied during motion. this system provides a means to explore the diverse and integrative nature of somatosensation, from reflexes to decision-making, in naturalistic settings. elife animals mice behavior, animal physical stimulation skin movement male behavior closed-loop mouse neuroscience nociception optogenetics pain somatosensation",
+      "source": "pubmed",
+      "source_label": "PubMed",
+      "keyword_score": 3,
+      "relevance_score": 5
+    },
+    {
+      "id": "41571080",
+      "pmid": "41571080",
+      "doi": "10.1016/j.neuroscience.2026.01.020",
+      "title": "Bibliometric analysis of neuroinflammation in Alzheimer's Disease: Insights from APP/PS1 mouse model research in the past two decades.",
+      "summary": "The APP/PS1 transgenic mouse is a foundational model in Alzheimer's disease (AD) research, particularly for investigating the pivotal role of neuroinflammation in disease pathogenesis. Although substantial experimental work has explored inflammatory mechanisms in AD, the field still lacks a comprehensive overview of how research hotspots have evolved, which key scientific questions remain unresolved, and how global research efforts align with existing mechanistic gaps. Therefore, this investigation systematically evaluated scholarly trends, geographic contributions, institutional productivity, and thematic evolution to synthesize actionable insights that will guide subsequent experimental designs. Bibliometric analysis was conducted on peer-reviewed articles indexed in the Web of Science Core Collection (2005-2024). Analytical tools, including VOSviewer, CiteSpace, and Bibliometrix, were employed to quantify research output, collaborative networks, citation metrics, and keyword co-occurrence patterns. Annual publication numbers exhibited exponential growth post-2015, reflecting an intensified focus on neuroinflammatory mechanisms in AD. China and the United States contributed 83.4 % of total publications, with the University of Barcelona as the most productive institution. High-impact journals such as Nature, Nature Neuroscience, and Brain Behavior Immunity. The analysis identified key scientific issues and evolving research fronts, with current hot topics focusing on oxidative stress, activated microglia releasing inflammatory cytokines, and abnormal autophagy-lysosome pathways. The APP/PS1 mice have a significantly enhanced mechanistic understanding of neuroimmune interactions in AD pathogenesis. Future research should explore microglia-mediated neuroinflammation and brain-gut microbiome interactions to uncover novel diagnostic and therapeutic strategies for AD. This study offers an evidence-based framework to guide researchers using APP/PS1 mice model.",
+      "published": "2026-03-17",
+      "updated": "2026-03-17",
+      "authors": [
+        "Li Yan",
+        "Haibin Wang",
+        "Jianrong Shi",
+        "Hongsheng Tan",
+        "Qing Liu"
+      ],
+      "journal": "Neuroscience",
+      "mesh_terms": [
+        "Animals",
+        "Alzheimer Disease",
+        "Bibliometrics",
+        "Mice",
+        "Disease Models, Animal",
+        "Mice, Transgenic",
+        "Amyloid beta-Protein Precursor",
+        "Neuroinflammatory Diseases",
+        "Presenilin-1",
+        "Humans"
+      ],
+      "keywords": [
+        "APP/PS1 mice",
+        "Alzheimer’s disease",
+        "Bibliometrics",
+        "Neuroinflammation",
+        "Visual analysis."
+      ],
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41571080/",
+      "pdf_url": "",
+      "search_blob": "bibliometric analysis of neuroinflammation in alzheimer's disease: insights from app/ps1 mouse model research in the past two decades. the app/ps1 transgenic mouse is a foundational model in alzheimer's disease (ad) research, particularly for investigating the pivotal role of neuroinflammation in disease pathogenesis. although substantial experimental work has explored inflammatory mechanisms in ad, the field still lacks a comprehensive overview of how research hotspots have evolved, which key scientific questions remain unresolved, and how global research efforts align with existing mechanistic gaps. therefore, this investigation systematically evaluated scholarly trends, geographic contributions, institutional productivity, and thematic evolution to synthesize actionable insights that will guide subsequent experimental designs. bibliometric analysis was conducted on peer-reviewed articles indexed in the web of science core collection (2005-2024). analytical tools, including vosviewer, citespace, and bibliometrix, were employed to quantify research output, collaborative networks, citation metrics, and keyword co-occurrence patterns. annual publication numbers exhibited exponential growth post-2015, reflecting an intensified focus on neuroinflammatory mechanisms in ad. china and the united states contributed 83.4 % of total publications, with the university of barcelona as the most productive institution. high-impact journals such as nature, nature neuroscience, and brain behavior immunity. the analysis identified key scientific issues and evolving research fronts, with current hot topics focusing on oxidative stress, activated microglia releasing inflammatory cytokines, and abnormal autophagy-lysosome pathways. the app/ps1 mice have a significantly enhanced mechanistic understanding of neuroimmune interactions in ad pathogenesis. future research should explore microglia-mediated neuroinflammation and brain-gut microbiome interactions to uncover novel diagnostic and therapeutic strategies for ad. this study offers an evidence-based framework to guide researchers using app/ps1 mice model. neuroscience animals alzheimer disease bibliometrics mice disease models, animal mice, transgenic amyloid beta-protein precursor neuroinflammatory diseases presenilin-1 humans app/ps1 mice alzheimer’s disease bibliometrics neuroinflammation visual analysis.",
+      "source": "pubmed",
+      "source_label": "PubMed",
+      "keyword_score": 1,
+      "relevance_score": 3
+    },
+    {
+      "id": "41821488",
+      "pmid": "41821488",
+      "doi": "10.1242/jeb.252160",
+      "title": "The hidden sweet tooth of the black soldier fly (Hermetia illucens).",
+      "summary": "The black soldier fly Hermetia illucens (BSF) is increasingly studied for its ability to convert organic waste into protein, offering solutions for waste valorisation and livestock feeding. Adult performance is critical for egg production, yet the behavioural and molecular bases of sugar feeding in adult BSF remain poorly understood. To fill this gap, we combined behavioural assays, morphological analyses, electrophysiological recordings, and gustatory receptor (GR) repertoires and expression. All the experimental tests conducted in this study converge to show that the adults can detect and consume sucrose, with females responding more strongly than males. Genome analysis identified 28 GRs, a surprisingly small number for a generalist fly, including only three putative sugar-specific GRs homologous to those of the eight known sugar GRs in Drosophila. Moreover, one of these GRs show a general high level of expression including in the head and in the antennae whereas the two others display tissue-specific patterns of expression. We also identify a high number of GR pseudogenes, including four putative sugar receptor pseudogenes, indicating multiple gene loss events of GRs compared to other dipterans sharing a similar ecological niche. Despite this reduced GR repertoire, adult BSF retain strong behavioural and physiological sensitivity to sugars in their environment. The set of behavioural, morphological, and electrophysiological tools developed here provides a foundation for deeper investigations into feeding behaviour in this species of growing agroecological importance.",
+      "published": "2026-03-13",
+      "updated": "2026-03-13",
+      "authors": [
+        "Marie Merle",
+        "Tasnim Gueddes",
+        "Mouhamadou Moustapha Gueye",
+        "Meroua Foughar",
+        "Jessica Jiogue-Lacdo",
+        "Pierre-Olivier Maquart",
+        "Frédéric Marion-Poll",
+        "Jonathan Filée"
+      ],
+      "journal": "The Journal of experimental biology",
+      "mesh_terms": [],
+      "keywords": [
+        "Black Soldier Fly",
+        "Chemoreception",
+        "Electrophysiology",
+        "Gustatory Receptors",
+        "Sugar tasting"
+      ],
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41821488/",
+      "pdf_url": "",
+      "search_blob": "the hidden sweet tooth of the black soldier fly (hermetia illucens). the black soldier fly hermetia illucens (bsf) is increasingly studied for its ability to convert organic waste into protein, offering solutions for waste valorisation and livestock feeding. adult performance is critical for egg production, yet the behavioural and molecular bases of sugar feeding in adult bsf remain poorly understood. to fill this gap, we combined behavioural assays, morphological analyses, electrophysiological recordings, and gustatory receptor (gr) repertoires and expression. all the experimental tests conducted in this study converge to show that the adults can detect and consume sucrose, with females responding more strongly than males. genome analysis identified 28 grs, a surprisingly small number for a generalist fly, including only three putative sugar-specific grs homologous to those of the eight known sugar grs in drosophila. moreover, one of these grs show a general high level of expression including in the head and in the antennae whereas the two others display tissue-specific patterns of expression. we also identify a high number of gr pseudogenes, including four putative sugar receptor pseudogenes, indicating multiple gene loss events of grs compared to other dipterans sharing a similar ecological niche. despite this reduced gr repertoire, adult bsf retain strong behavioural and physiological sensitivity to sugars in their environment. the set of behavioural, morphological, and electrophysiological tools developed here provides a foundation for deeper investigations into feeding behaviour in this species of growing agroecological importance. the journal of experimental biology black soldier fly chemoreception electrophysiology gustatory receptors sugar tasting",
+      "source": "pubmed",
+      "source_label": "PubMed",
+      "keyword_score": 2,
+      "relevance_score": 2
+    },
+    {
+      "id": "41842974",
+      "pmid": "41842974",
+      "doi": "10.1172/JCI178630",
+      "title": "Sex and ovarian hormone cycles alter effects of stimulant drugs on mouse dopaminergic signaling.",
+      "summary": "Stimulant medications are widely prescribed for attention deficit hyperactivity disorder (ADHD) and have significant abuse liability. Here we show that - consistent with clinical data - females exhibit enhanced behavioral sensitivity to stimulants and define sex- and hormone-dependent adaptations in the dopamine system that contribute to these effects. Single-nucleus RNA sequencing of ventral tegmental area dopamine neurons revealed that projections to the nucleus accumbens (NAc) core - compared to other projection populations - were a hub of sexually dimorphic gene expression, including transcripts regulating dopamine synthesis, and transport. These molecular differences coincided with enhanced dopamine release and clearance in females, particularly during phases of the estrous cycle when estradiol levels were high. The stimulants amphetamine (a releaser) and methylphenidate (a reuptake inhibitor) more effectively increased dopamine levels in females under certain conditions. However, amphetamine showed more robust hormone-sensitive regulation, with potency reduced by ovariectomy and restored by direct estradiol replacement in the NAc core. Together, the findings indicate that even within a drug class, drugs with different mechanisms of action can leverage different aspects of sexually dimorphic dopamine function. This distinction highlights that sex differences are not uniform but can be differentially sensitive to drug pharmacology.",
+      "published": "2026-03-17",
+      "updated": "2026-03-17",
+      "authors": [
+        "Brooke A Christensen",
+        "Jennifer Tat",
+        "Michael Z Leonard",
+        "Soren D Emerson",
+        "Shemuel Roberts",
+        "Eleanor B Holmgren",
+        "Ainoa Konomi-Pilkati",
+        "Hannah B Elam",
+        "Devan M Gomez",
+        "Lin Zheng",
+        "Hye Jean Yoon",
+        "Sofia H Lago",
+        "Abigail L Carr",
+        "Lillian J Brady",
+        "Maxime Chevée",
+        "Erin S Calipari"
+      ],
+      "journal": "The Journal of clinical investigation",
+      "mesh_terms": [],
+      "keywords": [
+        "Addiction",
+        "Behavior",
+        "Cell biology",
+        "Neuroscience"
+      ],
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41842974/",
+      "pdf_url": "",
+      "search_blob": "sex and ovarian hormone cycles alter effects of stimulant drugs on mouse dopaminergic signaling. stimulant medications are widely prescribed for attention deficit hyperactivity disorder (adhd) and have significant abuse liability. here we show that - consistent with clinical data - females exhibit enhanced behavioral sensitivity to stimulants and define sex- and hormone-dependent adaptations in the dopamine system that contribute to these effects. single-nucleus rna sequencing of ventral tegmental area dopamine neurons revealed that projections to the nucleus accumbens (nac) core - compared to other projection populations - were a hub of sexually dimorphic gene expression, including transcripts regulating dopamine synthesis, and transport. these molecular differences coincided with enhanced dopamine release and clearance in females, particularly during phases of the estrous cycle when estradiol levels were high. the stimulants amphetamine (a releaser) and methylphenidate (a reuptake inhibitor) more effectively increased dopamine levels in females under certain conditions. however, amphetamine showed more robust hormone-sensitive regulation, with potency reduced by ovariectomy and restored by direct estradiol replacement in the nac core. together, the findings indicate that even within a drug class, drugs with different mechanisms of action can leverage different aspects of sexually dimorphic dopamine function. this distinction highlights that sex differences are not uniform but can be differentially sensitive to drug pharmacology. the journal of clinical investigation addiction behavior cell biology neuroscience",
+      "source": "pubmed",
+      "source_label": "PubMed",
+      "keyword_score": 1,
+      "relevance_score": 1
+    }
+  ]
+}

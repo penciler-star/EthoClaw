@@ -1,0 +1,79 @@
+{
+  "query": "all:((neuroethology OR neuroscience OR \"behavioral neuroscience\" OR \"behavioural neuroscience\" OR \"neural circuit\" OR electrophysiology OR \"calcium imaging\" OR \"neural recording\" OR \"neural decoding\") AND (behavior OR behaviour OR \"animal behavior\" OR \"animal behaviour\" OR locomotion OR vocalization OR courtship OR foraging OR decision-making OR zebrafish OR drosophila OR rodent OR mouse OR songbird OR bat OR primate))",
+  "generated_at": "2026-03-18T10:51:52.882851+00:00",
+  "days": 7,
+  "count": 3,
+  "items": [
+    {
+      "id": "2603.11435v1",
+      "title": "Miniaturized microscopes to study neural dynamics in freely-behaving animals",
+      "summary": "Head-mounted miniaturized microscopes, commonly known as miniscopes, have undergone rapid development and seen widespread adoption over the past two decades, enabling the imaging of neural activity in freely-behaving animals such as rodents, songbirds, and non-human primates. These miniscopes facilitate numerous studies that are not feasible with head-fixed preparations. Recent advancements have enhanced their capabilities, allowing for faster imaging, larger fields of view, and deeper brain penetration. In this review, we examine the latest progress in one-photon and multi-photon miniscopes. We highlight the unique opportunities these devices present for neuroscience research, discuss the current technical challenges, and explore emerging technologies that promise to advance the development of miniscopes.",
+      "published": "2026-03-12T01:59:59Z",
+      "updated": "2026-03-12T01:59:59Z",
+      "authors": [
+        "Weijian Zong",
+        "Weijian Yang"
+      ],
+      "categories": [
+        "q-bio.NC",
+        "physics.optics"
+      ],
+      "url": "http://arxiv.org/abs/2603.11435v1",
+      "pdf_url": "https://arxiv.org/pdf/2603.11435v1",
+      "search_blob": "miniaturized microscopes to study neural dynamics in freely-behaving animals head-mounted miniaturized microscopes, commonly known as miniscopes, have undergone rapid development and seen widespread adoption over the past two decades, enabling the imaging of neural activity in freely-behaving animals such as rodents, songbirds, and non-human primates. these miniscopes facilitate numerous studies that are not feasible with head-fixed preparations. recent advancements have enhanced their capabilities, allowing for faster imaging, larger fields of view, and deeper brain penetration. in this review, we examine the latest progress in one-photon and multi-photon miniscopes. we highlight the unique opportunities these devices present for neuroscience research, discuss the current technical challenges, and explore emerging technologies that promise to advance the development of miniscopes. q-bio.nc physics.optics",
+      "source": "arxiv",
+      "source_label": "arXiv",
+      "keyword_score": 4,
+      "relevance_score": 7
+    },
+    {
+      "id": "2603.11032v1",
+      "title": "Uncovering statistical structure in large-scale neural activity with Restricted Boltzmann Machines",
+      "summary": "Large-scale electrophysiological recordings now allow simultaneous monitoring of thousands of neurons across multiple brain regions, revealing structured variability in neural population activity. Understanding how these collective patterns emerge from microscopic neural interactions requires models that are scalable, predictive, and interpretable. Statistical physics provides principled frameworks to address this complexity, including maximum-entropy models that offer transparent descriptions of collective neural activity but remain largely limited to pairwise interactions and modest system sizes. Here, we use Restricted Boltzmann Machines (RBMs) to model the activity of $\\sim1500$-$2000$ simultaneously recorded neurons from the Allen Institute Visual Behavior Neuropixels dataset, spanning multiple cortical and subcortical regions of the mouse brain. RBMs extend the maximum-entropy framework through latent variables, enabling the capture of higher-order dependencies while allowing explicit extraction of effective interaction networks. Recent advances in efficient Markov Chain sampling and training enable accurate learning of these models at this scale. RBMs reproduce the complex statistics of neural recordings with high accuracy. Generated samples match empirical pairwise and higher-order correlations, as well as global statistics such as the distribution of population activity. The inferred parameters provide direct access to effective neuronal interactions, revealing coordination patterns in population activity. These couplings display clear anatomical structure: neurons within visual cortical areas show stronger interactions, consistent with visually driven behavior, while cross-area couplings are weaker. Despite being trained on temporally shuffled data, Markov Chain Monte Carlo simulations also reproduce the global relaxation dynamics of neural activity.",
+      "published": "2026-03-11T17:55:45Z",
+      "updated": "2026-03-11T17:55:45Z",
+      "authors": [
+        "Nicolas Béreux",
+        "Giovanni Catania",
+        "Aurélien Decelle",
+        "Francesca Mignacco",
+        "Alfonso de Jesús Navas Gómez",
+        "Beatriz Seoane"
+      ],
+      "categories": [
+        "q-bio.NC",
+        "cond-mat.dis-nn",
+        "cond-mat.stat-mech"
+      ],
+      "url": "http://arxiv.org/abs/2603.11032v1",
+      "pdf_url": "https://arxiv.org/pdf/2603.11032v1",
+      "search_blob": "uncovering statistical structure in large-scale neural activity with restricted boltzmann machines large-scale electrophysiological recordings now allow simultaneous monitoring of thousands of neurons across multiple brain regions, revealing structured variability in neural population activity. understanding how these collective patterns emerge from microscopic neural interactions requires models that are scalable, predictive, and interpretable. statistical physics provides principled frameworks to address this complexity, including maximum-entropy models that offer transparent descriptions of collective neural activity but remain largely limited to pairwise interactions and modest system sizes. here, we use restricted boltzmann machines (rbms) to model the activity of $\\sim1500$-$2000$ simultaneously recorded neurons from the allen institute visual behavior neuropixels dataset, spanning multiple cortical and subcortical regions of the mouse brain. rbms extend the maximum-entropy framework through latent variables, enabling the capture of higher-order dependencies while allowing explicit extraction of effective interaction networks. recent advances in efficient markov chain sampling and training enable accurate learning of these models at this scale. rbms reproduce the complex statistics of neural recordings with high accuracy. generated samples match empirical pairwise and higher-order correlations, as well as global statistics such as the distribution of population activity. the inferred parameters provide direct access to effective neuronal interactions, revealing coordination patterns in population activity. these couplings display clear anatomical structure: neurons within visual cortical areas show stronger interactions, consistent with visually driven behavior, while cross-area couplings are weaker. despite being trained on temporally shuffled data, markov chain monte carlo simulations also reproduce the global relaxation dynamics of neural activity. q-bio.nc cond-mat.dis-nn cond-mat.stat-mech",
+      "source": "arxiv",
+      "source_label": "arXiv",
+      "keyword_score": 3,
+      "relevance_score": 6
+    },
+    {
+      "id": "2603.11000v1",
+      "title": "Cross-Species Transfer Learning for Electrophysiology-to-Transcriptomics Mapping in Cortical GABAergic Interneurons",
+      "summary": "Single-cell electrophysiological recordings provide a powerful window into neuronal functional diversity and offer an interpretable route for linking intrinsic physiology to transcriptomic identity. Here, we replicate and extend the electrophysiology-to-transcriptomics framework introduced by Gouwens et al. (2020) using publicly available Allen Institute Patch-seq datasets from both mouse and human cortex. We focus on GABAergic inhibitory interneurons to target a subclass structure (Lamp5, Pvalb, Sst, Vip) that is comparable and conserved across species. After quality control, we analyzed 3,699 mouse visual cortex neurons and 506 human neocortical neurons from neurosurgical resections. Using standardized electrophysiological features and sparse PCA, we reproduced the major class-level separations reported in the original mouse study. For supervised prediction, a class-balanced random forest provided a strong feature-engineered baseline in mouse data and a reduced but still informative baseline in human data. We then developed an attention-based BiLSTM that operates directly on the structured IPFX feature-family representation, avoiding sPCA and providing feature-family-level interpretability via learned attention weights. Finally, we evaluated a cross-species transfer setting in which the sequence model is pretrained on mouse data and fine-tuned on human data for an aligned 4-class task, improving human macro-F1 relative to a human-only training baseline. Together, these results confirm reproducibility of the Gouwens pipeline in mouse data, demonstrate that sequence models can match feature-engineered baselines, and show that mouse-to-human transfer learning can provide measurable gains for human subclass prediction.",
+      "published": "2026-03-11T17:23:54Z",
+      "updated": "2026-03-11T17:23:54Z",
+      "authors": [
+        "Theo Schwider",
+        "Ramin Ramezani"
+      ],
+      "categories": [
+        "cs.LG",
+        "q-bio.NC"
+      ],
+      "url": "http://arxiv.org/abs/2603.11000v1",
+      "pdf_url": "https://arxiv.org/pdf/2603.11000v1",
+      "search_blob": "cross-species transfer learning for electrophysiology-to-transcriptomics mapping in cortical gabaergic interneurons single-cell electrophysiological recordings provide a powerful window into neuronal functional diversity and offer an interpretable route for linking intrinsic physiology to transcriptomic identity. here, we replicate and extend the electrophysiology-to-transcriptomics framework introduced by gouwens et al. (2020) using publicly available allen institute patch-seq datasets from both mouse and human cortex. we focus on gabaergic inhibitory interneurons to target a subclass structure (lamp5, pvalb, sst, vip) that is comparable and conserved across species. after quality control, we analyzed 3,699 mouse visual cortex neurons and 506 human neocortical neurons from neurosurgical resections. using standardized electrophysiological features and sparse pca, we reproduced the major class-level separations reported in the original mouse study. for supervised prediction, a class-balanced random forest provided a strong feature-engineered baseline in mouse data and a reduced but still informative baseline in human data. we then developed an attention-based bilstm that operates directly on the structured ipfx feature-family representation, avoiding spca and providing feature-family-level interpretability via learned attention weights. finally, we evaluated a cross-species transfer setting in which the sequence model is pretrained on mouse data and fine-tuned on human data for an aligned 4-class task, improving human macro-f1 relative to a human-only training baseline. together, these results confirm reproducibility of the gouwens pipeline in mouse data, demonstrate that sequence models can match feature-engineered baselines, and show that mouse-to-human transfer learning can provide measurable gains for human subclass prediction. cs.lg q-bio.nc",
+      "source": "arxiv",
+      "source_label": "arXiv",
+      "keyword_score": 2,
+      "relevance_score": 5
+    }
+  ]
+}
