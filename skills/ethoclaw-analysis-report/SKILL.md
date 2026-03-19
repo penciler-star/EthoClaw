@@ -56,10 +56,23 @@ Do not assume the project must have groupings, nor that all charts must be compl
   - HTML embeds images as compressed data URIs by default, not relying on external image files
   - Only responsible for rendering, not for automatically filling in body text
 
+## Language Detection
+
+Before starting any report generation, determine the report language based on the following priority:
+
+1. **Explicit user specification**: If the user explicitly states "生成中文报告" (generate Chinese report) or "generate English report", or any equivalent direct instruction specifying the language, follow the user's specification
+2. **Default - detect from conversation**: If no explicit language is specified, detect the language from the user's latest message or the overall conversation context
+   - If the user's question/request is primarily in Chinese → generate Chinese report
+   - If the user's question/request is primarily in English → generate English report
+3. **Fallback**: If detection is ambiguous, default to English
+
+After determining the language, set the internal report language flag and use it consistently throughout the report generation process when selecting templates and writing body text.
+
 ## Standard Workflow
 
 Execute in the following order:
 
+0. **Detect report language**: Apply the language detection rules above to determine whether to generate Chinese or English report
 1. Confirm the user has provided `project_path`
 2. Run `build_report_manifest.py --project-path <project_path> --output <manifest.json>`
 3. Read `manifest.json`
