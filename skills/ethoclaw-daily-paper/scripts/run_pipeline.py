@@ -32,9 +32,9 @@ def run_command(command, cwd):
 
 def join_values(values, limit=None):
     if not values:
-        return "未知"
+        return "Unknown"
     selected = values[:limit] if limit else values
-    return "，".join(selected)
+    return ", ".join(selected)
 
 
 def render_candidate_titles(payload):
@@ -65,17 +65,17 @@ def render_candidate_pool(payload):
             [
                 f"## {index}. {item.get('title', '').strip() or '(untitled)'}",
                 "",
-                f"- 来源：{item.get('source_label') or item.get('source', 'unknown')}",
-                f"- 作者：{join_values(item.get('authors', []), limit=10)}",
-                f"- 发表时间：{item.get('published', '')[:10] or '未知'}",
-                f"- 期刊：{item.get('journal') or '未知'}",
-                f"- 文献链接：{item.get('url') or '暂无'}",
-                f"- PDF 链接：{item.get('pdf_url') or '暂无'}",
-                f"- 加权分数：{item.get('weighted_score', '未知')}",
+                f"- Source: {item.get('source_label') or item.get('source', 'unknown')}",
+                f"- Authors: {join_values(item.get('authors', []), limit=10)}",
+                f"- Published: {item.get('published', '')[:10] or 'Unknown'}",
+                f"- Journal: {item.get('journal') or 'Unknown'}",
+                f"- Link: {item.get('url') or 'N/A'}",
+                f"- PDF Link: {item.get('pdf_url') or 'N/A'}",
+                f"- Weighted Score: {item.get('weighted_score', 'Unknown')}",
                 "",
-                "### 原始摘要",
+                "### Original Abstract",
                 "",
-                item.get("summary", "").strip() or "暂无摘要",
+                item.get("summary", "").strip() or "No abstract available",
                 "",
             ]
         )
@@ -174,3 +174,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```

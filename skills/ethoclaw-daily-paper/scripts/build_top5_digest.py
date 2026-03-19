@@ -4,15 +4,15 @@ import json
 from pathlib import Path
 
 
-REQUIRED_AGENT_FIELDS = [
-    "chinese_title",
-    "chinese_summary",
+REQUIRED_AGENT_FIELDS =[
+    "title",
+    "summary",
     "selection_reason",
 ]
 
 
 def parse_index_list(raw_value):
-    values = []
+    values =[]
     for chunk in (raw_value or "").split(","):
         chunk = chunk.strip()
         if not chunk:
@@ -35,11 +35,11 @@ def load_json(path):
 
 
 def selected_papers_from_merged(merged_payload, selected_indexes):
-    items = merged_payload.get("items", [])
+    items = merged_payload.get("items",[])
     if not items:
         raise SystemExit("Merged input contains no papers.")
 
-    selected_papers = []
+    selected_papers =[]
     seen = set()
     for slot, candidate_index in enumerate(selected_indexes, start=1):
         if candidate_index in seen:
@@ -64,8 +64,8 @@ def selected_papers_from_merged(merged_payload, selected_indexes):
                 "pdf_url": item.get("pdf_url", ""),
                 "abstract": item.get("summary", ""),
                 "weighted_score": item.get("weighted_score", item.get("relevance_score", "")),
-                "chinese_title": "",
-                "chinese_summary": "",
+                "title": "",
+                "summary": "",
                 "selection_reason": "",
             }
         )
@@ -83,24 +83,24 @@ def build_agent_packet(merged_payload, selected_indexes):
             "draft_in_single_session": True,
         },
         "agent_guidance": {
-            "goal": "先只看候选标题筛选 Top 5，再在同一会话中逐篇阅读英文标题和摘要，写出中文标题与中文导读。",
-            "recommended_process": [
-                "先阅读 candidate_titles.md，仅根据标题决定 Top 5。",
-                "确定 Top 5 后，再读取这 5 篇的标题和英文摘要，不回读完整候选池。",
-                "逐篇完成中文标题、入选理由和中文导读。",
-                "中文导读用一段或少量自然段写完，不用小标题分段，但内容要覆盖背景、方法、发现、意义和局限。",
-                "将内容直接写入最终 Markdown，或先填 JSON 再渲染 Markdown。",
+            "goal": "First filter the Top 5 by looking only at candidate titles, then read the English titles and abstracts one by one in the same session, and write the  titles and  summaries.",
+            "recommended_process":[
+                "First, read candidate_titles.md and determine the Top 5 based solely on the titles.",
+                "After determining the Top 5, read the titles and English abstracts of these 5 papers. Do not re-read the full candidate pool.",
+                "Complete the  title, selection reason, and  summary one by one.",
+                "Write the  summary in one or a few natural paragraphs without using subheadings, but ensure the content covers the background, methods, findings, significance, and limitations.",
+                "Write the content directly into the final Markdown, or fill in the JSON first and then render the Markdown.",
             ],
             "required_sections": [
-                "chinese_title",
-                "chinese_summary",
+                "title",
+                "summary",
                 "selection_reason",
             ],
-            "style_rules": [
-                "中文导读必须覆盖背景、方法、发现、意义和局限，不能只写泛泛摘要。",
-                "中文导读不要用“背景/方法/发现”等小标题切开，可用自然段换行提升观感。",
-                "优先保留物种、脑区、行为范式、记录或操控方法等关键信息。",
-                "摘要证据不足时明确写出限制，不要脑补。",
+            "style_rules":[
+                "The  summary must cover the background, methods, findings, significance, and limitations. Do not just write a generic abstract.",
+                "Do not split the  summary with subheadings like 'Background/Methods/Findings'. Use natural paragraph breaks to improve readability.",
+                "Prioritize retaining key information such as species, brain regions, behavioral paradigms, and recording or manipulation methods.",
+                "Explicitly state limitations when the abstract lacks sufficient evidence; do not fabricate information.",
             ],
         },
         "selected_papers": selected_papers_from_merged(merged_payload, selected_indexes),
@@ -108,45 +108,44 @@ def build_agent_packet(merged_payload, selected_indexes):
 
 
 def render_agent_review_markdown(packet):
-    lines = [
+    lines =[
         "# Top 5 Review Packet",
         "",
         f"- Generated At: {packet.get('generated_at', '')}",
         f"- Candidate Count: {packet.get('candidate_count', 0)}",
         f"- Selected Indexes: {', '.join(str(value) for value in packet.get('selected_indexes', []))}",
         "",
-        "> 先用标题完成 Top 5 筛选。确定入选后，只读取这 5 篇的英文标题与摘要，并在同一会话中完成中文导读。",
+        "> First complete the Top 5 screening using only titles. Once selected, read only the English titles and abstracts of these 5 papers, and complete the  summaries in the same session.",
         "",
     ]
 
     guidance = packet.get("agent_guidance", {})
     if guidance:
-        lines.extend(
-            [
+        lines.extend([
                 "## Packet Guidance",
                 "",
                 f"- Goal: {guidance.get('goal', '')}",
                 "- Recommended Process:",
             ]
         )
-        for step in guidance.get("recommended_process", []):
+        for step in guidance.get("recommended_process",[]):
             lines.append(f"  - {step}")
         lines.append("- Style Rules:")
-        for rule in guidance.get("style_rules", []):
+        for rule in guidance.get("style_rules",[]):
             lines.append(f"  - {rule}")
         lines.extend(["", "## Required JSON Fields", ""])
-        for field in guidance.get("required_sections", []):
+        for field in guidance.get("required_sections",[]):
             lines.append(f"- {field}")
         lines.append("")
 
-    for paper in packet.get("selected_papers", []):
+    for paper in packet.get("selected_papers",[]):
         lines.extend(
             [
                 f"## Slot {paper['slot']}: {paper.get('title', '').strip() or '(untitled)'}",
                 "",
                 f"- Candidate Index: {paper['candidate_index']}",
                 f"- Source: {paper.get('source', 'unknown')}",
-                f"- Authors: {join_authors(paper.get('authors', []))}",
+                f"- Authors: {join_authors(paper.get('authors',[]))}",
                 f"- Published: {paper.get('published', '') or 'Unknown'}",
                 f"- Journal: {paper.get('journal') or 'Unknown'}",
                 f"- URL: {paper.get('url') or 'N/A'}",
@@ -161,8 +160,8 @@ def render_agent_review_markdown(packet):
                 "",
                 "### JSON Fields To Fill",
                 "",
-                "- chinese_title:",
-                "- chinese_summary:",
+                "- title:",
+                "- summary:",
                 "- selection_reason:",
                 "",
             ]
@@ -175,28 +174,28 @@ def render_paper_block(paper):
         [
             f"## {paper['slot']}. {paper.get('title', '').strip() or '(untitled)'}",
             "",
-            f"- 中文标题：{paper.get('chinese_title', '').strip() or '待补充'}",
-            f"- 来源：{paper.get('source', 'unknown')}",
-            f"- 作者：{join_authors(paper.get('authors', []))}",
-            f"- 发表时间：{paper.get('published', '') or '未知'}",
-            f"- 入选理由：{paper.get('selection_reason', '').strip() or '待补充'}",
-            f"- 文献链接：{paper.get('url') or '暂无'}",
-            f"- PDF 链接：{paper.get('pdf_url') or '暂无'}",
+            f"- Title: {paper.get('title', '').strip() or 'To be added'}",
+            f"- Source: {paper.get('source', 'unknown')}",
+            f"- Authors: {join_authors(paper.get('authors',[]))}",
+            f"- Published: {paper.get('published', '') or 'Unknown'}",
+            f"- Selection Reason: {paper.get('selection_reason', '').strip() or 'To be added'}",
+            f"- URL: {paper.get('url') or 'N/A'}",
+            f"- PDF URL: {paper.get('pdf_url') or 'N/A'}",
             "",
-            "### 中文导读",
+            "### Summary",
             "",
-            paper.get("chinese_summary", "").strip() or "待补充",
+            paper.get("summary", "").strip() or "To be added",
             "",
-            "### 原始摘要",
+            "### Original Abstract",
             "",
-            paper.get("abstract", "").strip() or "暂无摘要",
+            paper.get("abstract", "").strip() or "No abstract available",
             "",
         ]
     )
 
 
 def render_final_markdown(template_text, packet, generator_label):
-    papers_blocks = [render_paper_block(paper) for paper in packet.get("selected_papers", [])]
+    papers_blocks =[render_paper_block(paper) for paper in packet.get("selected_papers", [])]
     return (
         template_text.replace("{{generated_at}}", packet.get("generated_at", ""))
         .replace("{{candidate_count}}", str(packet.get("candidate_count", 0)))
@@ -217,7 +216,7 @@ def render_direct_markdown(merged_payload, selected_indexes, template_text, gene
 
 
 def ensure_agent_fields(packet):
-    papers = packet.get("selected_papers", [])
+    papers = packet.get("selected_papers",[])
     if not papers:
         raise SystemExit("Agent packet contains no selected papers.")
     for paper in papers:
@@ -253,10 +252,10 @@ def main():
     template_path = Path(args.template) if args.template else default_template_path()
     template_text = template_path.read_text(encoding="utf-8")
 
-    if args.from_agent_json:
+    if args.from-agent_json:
         if not args.output:
             raise SystemExit("`--output` is required when using `--from-agent-json`.")
-        packet = load_json(args.from_agent_json)
+        packet = load_json(args.from-agent_json)
         ensure_agent_fields(packet)
         markdown = render_final_markdown(template_text, packet, args.generator_label)
         write_output(args.output, markdown)

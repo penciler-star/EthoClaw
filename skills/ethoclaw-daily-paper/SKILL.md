@@ -1,6 +1,6 @@
 ---
-name: Etho-daily-paper
-description: "Search arXiv and PubMed for neuroethology and behavioral neuroscience papers, rank candidates by title only, then read the English title and abstract of the selected Top 5 in a single session and write a Chinese Markdown digest directly."
+name: ethoclaw-daily-paper
+description: "Search arXiv and PubMed for neuroethology and behavioral neuroscience papers, rank candidates by title only, then read the English title and abstract of the selected Top 5 in a single session and write a Markdown digest directly."
 ---
 
 # Neuroethology Top 5 Digest
@@ -14,8 +14,7 @@ The default flow is:
 1. Run retrieval once.
 2. Read `candidate_titles.md` only and choose Top 5 by title.
 3. After Top 5 is fixed, read only those 5 papers' English titles and abstracts.
-4. In the same session, translate titles into Chinese and write the Chinese digest.
-5. Write or render the final Markdown directly.
+4. Write or render the final Markdown directly.
 
 Do not default to a parent session plus sub-session split.
 Do not default to reading the full candidate pool for ranking.
@@ -25,11 +24,11 @@ Do not default to building large intermediate review artifacts unless the user a
 
 For each selected paper, the output should include:
 
-- Chinese title
+- title
 - selection reason
-- one Chinese digest block
+- one digest block
 
-That single Chinese digest block should still cover the background, methods, main findings, significance, and limitations, but it should be written as one continuous explanation. You may use natural paragraph breaks for readability, but do not split it with subheadings like "背景" or "方法".
+That single digest block should still cover the background, methods, main findings, significance, and limitations, but it should be written as one continuous explanation. You may use natural paragraph breaks for readability.
 
 The digest should be written from the English title and abstract. If the abstract is not enough to support a strong claim, say so explicitly inside the digest.
 
@@ -62,7 +61,7 @@ The digest should be written from the English title and abstract. If the abstrac
 7. For each selected paper:
    - read the English title already present in the section header
    - read the English abstract already embedded in that section
-   - write the Chinese title, selection reason, and a single Chinese digest block directly into the same Markdown file
+   - write the title, selection reason, and a single digest block directly into the same Markdown file
 
 8. When complete, copy the Markdown into the desired output path.
 
@@ -114,7 +113,7 @@ Use this only when a structured intermediate artifact is genuinely helpful.
 
 ## Writing guidance
 
-When drafting the Chinese digest:
+When drafting the digest:
 
 - keep the wording precise rather than promotional
 - preserve species, brain regions, behavioral paradigms, and recording or manipulation methods when available
