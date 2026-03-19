@@ -124,7 +124,8 @@ pip install --pre deeplabcut
 请使用ethoclaw-pose_estimation这个skill对/home/xx/Analysis_Project/0_videos/video.mp4进行姿态估计，结果保存到/home/xx/Analysis_Project/1_2Dskeletons/文件夹下。
 或
 请使用ethoclaw-trajectory-velocity-heatmap-generate这个skill对/home/xx/Analysis_Project/1_2Dskeletons/文件夹下的结果进行速度热图生成，结果保存到/home/xx/Analysis_Project/2_results文件夹下。
-
+# 你也可以不指定技能，直接说出需求，例如：
+请对/home/xx/Analysis_Project/0_videos/video.mp4进行姿态估计，结果保存到/home/xx/Analysis_Project/1_2Dskeletons/文件夹下。
 ```
 
 ### 推荐工程结构
