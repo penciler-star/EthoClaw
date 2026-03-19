@@ -1,21 +1,21 @@
-﻿# {{ 报告标题 }}
+﻿# {{ report_title }}
 
-{{ 报告摘要小节 }}
+{{ project_summary_body }}
 
-{{ 报告概览小节 }}
+{{ overview_body }}
 
-{{ 样本检查小节 }}
+{{ sample_check_body }}
 
-{{ 原始轨迹小节 }}
+{{ raw_trajectory_body }}
 
-{{ 热图小节 }}
+{{ heatmap_body }}
 
-{{ 雷达图小节 }}
+{{ radar_body }}
 
-{{ 统计小节 }}
+{{ stats_body }}
 
-{{ 聚类分析小节 }}
+{{ cluster_body }}
 
-{{ 单个体分析小节 }}
+{{ single_subject_body }}
 
-{{ 整合解释小节 }}
+{{ integrated_interpretation_body }}
