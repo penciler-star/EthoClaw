@@ -85,6 +85,8 @@ IDENTITY.md
 USER.md
 .tgz
 .idea
+.history/
+.vscode/
 
 # local tooling
 .serena/
