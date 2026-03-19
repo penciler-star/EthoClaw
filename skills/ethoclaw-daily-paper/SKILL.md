@@ -1,9 +1,9 @@
 ---
 name: ethoclaw-daily-paper
-description: "Search arXiv and PubMed for neuroethology and behavioral neuroscience papers, rank candidates by title only, then read the English title and abstract of the selected Top 5 in a single session and write a Markdown digest directly."
+description: "Search arXiv and PubMed for research papers, rank candidates by title only, then read the title and abstract of the selected Top 5 in a single session and write a Markdown digest directly."
 ---
 
-# Neuroethology Top 5 Digest
+# Top 5 Digest
 
 Use the bundled scripts. Prefer a single-session workflow.
 
@@ -13,7 +13,7 @@ The default flow is:
 
 1. Run retrieval once.
 2. Read `candidate_titles.md` only and choose Top 5 by title.
-3. After Top 5 is fixed, read only those 5 papers' English titles and abstracts.
+3. After Top 5 is fixed, read only those 5 papers' titles and abstracts.
 4. Write or render the final Markdown directly.
 
 Do not default to a parent session plus sub-session split.
