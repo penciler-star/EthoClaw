@@ -1,21 +1,21 @@
 ﻿# {{ report_title }}
 
-{{ project_summary_section }}
+{{ project_summary_body }}
 
-{{ overview_section }}
+{{ overview_body }}
 
-{{ sample_check_section }}
+{{ sample_check_body }}
 
-{{ raw_trajectory_section }}
+{{ raw_trajectory_body }}
 
-{{ heatmap_section }}
+{{ heatmap_body }}
 
-{{ radar_section }}
+{{ radar_body }}
 
-{{ stats_section }}
+{{ stats_body }}
 
-{{ cluster_section }}
+{{ cluster_body }}
 
-{{ single_subject_section }}
+{{ single_subject_body }}
 
-{{ integrated_interpretation_section }}
+{{ integrated_interpretation_body }}

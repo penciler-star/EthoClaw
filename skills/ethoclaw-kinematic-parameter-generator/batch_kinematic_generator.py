@@ -395,7 +395,7 @@ def run_generate_kinematic_parameter(h5_path, video_path=None, fps_default=30.0,
     time.sleep(1)
     
     # Get the path to the generate_kinematic_parameter.py script in the workspace
-    script_path = Path(__file__).parent.parent / ".." / "generate_kinematic_parameter.py"
+    script_path = Path(__file__).parent / "generate_kinematic_parameter.py"
     
     # If we have video info, we'll use the generate_kinematic_parameter script to add it,
     # since that script already handles both video info and kinematic parameter generation

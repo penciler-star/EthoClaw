@@ -1,4 +1,4 @@
-## {{ stats_title }}
+## Statistical Summary Plot Results
 
 {{ stats_body }}
 

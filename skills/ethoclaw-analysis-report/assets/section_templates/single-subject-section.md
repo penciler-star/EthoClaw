@@ -1,3 +1,3 @@
-## {{ single_subject_title }}
+## Single-Subject Results Overview
 
 {{ single_subject_body }}

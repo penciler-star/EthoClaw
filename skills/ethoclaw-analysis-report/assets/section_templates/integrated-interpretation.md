@@ -1,3 +1,3 @@
-## {{ integrated_interpretation_title }}
+## Integrated Interpretation
 
 {{ integrated_interpretation_body }}
