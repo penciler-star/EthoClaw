@@ -41,7 +41,10 @@
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
 
   3. Support CSV/Excel format conversion to recommended format;
-  4. Generate analysis reports including experiment background, sample information, analysis content, and summaries.
+  4. Generate figures for papers automatically;
+  <div align=center><img src="docs/figure_demo.png" width="500" /></div>
+
+  5. Generate analysis reports including experiment background, sample information, analysis content, and summaries.
   <div align=center><img src="docs/report_demo.png" width="500" /></div>
 
 - **Tutorial Assistance:**
