@@ -59,20 +59,13 @@ Do not assume the project must have groupings, nor that all charts must be compl
 ## Language Detection
 
 Before starting any report generation, determine the report language based on the following priority:
-
-1. **Explicit user specification**: If the user explicitly states "生成中文报告" (generate Chinese report) or "generate English report", or any equivalent direct instruction specifying the language, follow the user's specification
-2. **Default - detect from conversation**: If no explicit language is specified, detect the language from the user's latest message or the overall conversation context
-   - If the user's question/request is primarily in Chinese → generate Chinese report
-   - If the user's question/request is primarily in English → generate English report
-3. **Fallback**: If detection is ambiguous, default to English
-
-After determining the language, set the internal report language flag and use it consistently throughout the report generation process when selecting templates and writing body text.
+default to English
 
 ## Standard Workflow
 
 Execute in the following order:
 
-0. **Detect report language**: Apply the language detection rules above to determine whether to generate Chinese or English report
+0. **Detect report language**: Apply the language detection rules above to determine whether to generate report
 1. Confirm the user has provided `project_path`
 2. Run `build_report_manifest.py --project-path <project_path> --output <manifest.json>`
 3. Read `manifest.json`
@@ -86,8 +79,6 @@ Execute in the following order:
 Do not render an empty report first and then fill it in.
 When filling in body text, directly edit the existing `manifest.json` file, not through shell inline text, command arguments, redirection, or pipes to write large text into JSON.
 Also do not first assemble body text into `python -c`, `python -`, `node -e`, PowerShell here-string, `jq` filters, environment variables, or any command line string, and then have the script write it back to `manifest.json`; these are text injection, not "direct file editing".
-This is to avoid encoding differences across different systems and shells, especially on Windows PowerShell where large Chinese text passed through command line channels can easily be replaced with `?`.
-If step 8 finds the body text has become `?`, garbled text, or abnormal escaping, stop rendering, directly re-edit the `manifest.json` file itself and verify again, do not continue generating the report with corrupted content.
 
 ## Confirm project_path First
 
@@ -256,12 +247,12 @@ Read the following files as needed based on task phase, do not load all at once:
   - `EPM`: `references/experiment-types/epm.md`
   - `FST`: `references/experiment-types/fst.md`
   - `NOR`: `references/experiment-types/nor.md`
-- When needing to view display templates: if the user communicates in Chinese, read `assets/report_template_cn.md` and related `assets/section_templates/*.md`; If the user communicates in English, read `assets/report_template_en.md` and related `assets/section_templates/*.md`
+- When needing to view display templates: read `assets/report_template_en.md` and related `assets/section_templates/*.md`
 
 ## Expression Requirements
 
-- The default language of body should match the current user's conversation language; write in Chinese if the user communicates in Chinese, write in English if the user communicates in English; if the user explicitly specifies the report language, prioritize the user's specification.
-- When terms first appear, prioritize using "Chinese (English)" format, especially for statistical methods, figure types, ethology metrics, and experimental paradigm names; subsequent text can keep one writing style as long as it doesn't cause ambiguity.
+- The default language of body should match the current user's conversation language; write in English if the user communicates in English; if the user explicitly specifies the report language, prioritize the user's specification.
+- When terms first appear, prioritize using "English" format, especially for statistical methods, figure types, ethology metrics, and experimental paradigm names; subsequent text can keep one writing style as long as it doesn't cause ambiguity.
 - File names, group labels, column names, and original metric names that come from project files can retain original English, do not forcibly translate and then rewrite the original values.
 - Prioritize giving the most direct and informative summary based on current data, do not avoid obvious result characteristics just because of lacking complete background.
 - If limitations need to be stated, concentrate them in `project_summary_body`, `overview_body`, or `integrated_interpretation_body` briefly once, do not repeat disclaimers in every section.
