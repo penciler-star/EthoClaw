@@ -58,6 +58,7 @@
   <div align=center><img src="docs/search_paper_demo.jpg" width="500" /></div>
 - **Note:**
   Since EthoClaw is built on top of OpenClaw, it inherits all features of OpenClaw and uses the same interface. It is fully compatible with all OpenClaw plugins (such as ClawHub or third-party plugin marketplaces) and channels (including WhatsApp, Telegram, Slack, Discord, Google Chat, Signal, iMessage, BlueBubbles, IRC, Microsoft Teams, Matrix, Feishu, LINE, Mattermost, Nextcloud Talk, Nostr, Synology Chat, Tlon, Twitch, Zalo, Zalo Personal, WebChat, etc.).
+  <div align=center><img src="docs/feishu_demo.png" width="300" /></div>
 
 ## Quick Start
 
