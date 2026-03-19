@@ -1,121 +1,123 @@
 ---
 name: ethoclaw-analysis-report
-description: Used to generate a structured analysis report based on existing skeleton data, behavioral data, statistical tables, and result figures under a single project path (project_path). First generates manifest.json, then the agent directly fills in the section bodies in the manifest, and finally renders a structured analysis report. Applicable to scenarios such as heatmaps, trajectory plots, radar plots, violin plots, cluster plots, and statistical result summaries. Default output is a single-file HTML report. Users may trigger this with English requests like "generate a report based on this project folder", "organize these results into an HTML report", "generate an analysis summary based on existing charts", or "help me check the groupings and produce a report".
+description: 用于基于单个项目路径（project_path）下已有的骨架数据、行为数据、统计表和结果图，先生成 manifest.json，再由 agent 直接回填 manifest 内的 section bodies，最后渲染结构化分析报告。适用于热图、轨迹图、雷达图、小提琴图、聚类图、统计结果汇总等场景。默认输出单文件 HTML 报告。用户可能会用“根据这个项目文件夹生成报告”“把这些结果整理成 HTML 报告”“基于现有图表生成分析总结”“帮我核对分组并出一份报告”这类中文请求触发。
 ---
 
 # Ethoclaw Analysis Report
 
-Generate a structured analysis report based on existing data and figures under a single `project_path`. The main workflow is fixed as follows:
+基于单个 `project_path` 下的现有数据和图表生成结构化分析报告。主流程固定为：
 
-1. Use `build_report_manifest.py` to generate `manifest.json`
-2. The agent only reads `manifest.json` and directly fills in `manifest["section_bodies"][...]["body"]`
-3. Use `render_report.py --manifest manifest.json` to render `report.md` and single-file `report.html`
+1. 用 `build_report_manifest.py` 生成 `manifest.json`
+2. agent 读取 `manifest.json`，先确认并设置 `report_language` 与 `report_title`，再直接回填 `manifest["section_bodies"][...]["body"]`
+3. 用 `render_report.py --manifest manifest.json` 渲染 `report.md` 和单文件 `report.html`
 
-Do not create `sections.json`. Do not write the main text to other intermediate files. `manifest.json` is the only intermediate product.
+不要创建 `sections.json`。不要把正文写到其他中间文件。`manifest.json` 是唯一的中间产物。
 
-## Environment Requirements
+## 环境要求
 
 - Python `>=3.10`
-  - The current scripts use modern type annotation syntax like `str | None`, `list[...]`, which cannot be run directly on interpreters below 3.10
-- Required dependency: `Pillow`
-  - `report_utils.py` directly depends on `PIL.Image`
-  - Used to compress and embed `.png` / `.jpg` / `.jpeg` images when rendering HTML
-- File encoding: Must read/write `manifest.json`, `report.md`, `report.html` in `UTF-8`
-- Shell/platform notes:
-  - Under Windows PowerShell, long Chinese text passed through command line arguments, pipes, here-strings, environment variables, or `python -c` / `python -` injection can easily be replaced with `?` or produce garbled text
-  - Therefore, text filling must directly edit the `manifest.json` file itself, not through shell text channels
+  - 当前脚本使用了 `str | None`、`list[...]` 等现代类型注解语法，低于 3.10 的解释器无法直接运行
+- 必需依赖：`Pillow`
+  - `report_utils.py` 顶层直接依赖 `PIL.Image`
+  - 用于在渲染 HTML 时压缩并内嵌 `.png` / `.jpg` / `.jpeg` 图片
+- 文件编码：必须按 `UTF-8` 读写 `manifest.json`、`report.md`、`report.html`
+- shell / 平台注意事项：
+  - 在 Windows PowerShell 下，长段中文正文经命令行参数、管道、here-string、环境变量或 `python -c` / `python -` 注入后，容易被替换成 `?` 或产生乱码
+  - 因此正文回填必须直接编辑 `manifest.json` 文件本身，不要通过 shell 文本通道回写
 
-## Core Scope
+## 核心范围
 
-Process only one project directory. The user must provide `project_path`, and only files under that path can be read.
+仅处理一个项目目录。用户必须提供 `project_path`，且只允许读取该路径下的文件。
 
-Allowed inputs include but are not limited to:
+允许的输入包括但不限于：
 
-- Skeleton or trajectory data: `.h5`, `.csv`, keypoint coordinate tables
-- Behavioral or statistical data: summary tables, event tables, significance test tables, parameter tables, single-sample statistical JSON
-- Image results: heatmaps, trajectory plots, radar plots, violin plots, cluster plots, atlas, time-series plots
-- Project metadata: description text, same-directory notes files, experimental information supplemented by the user in conversation
+- 骨架或轨迹数据：`.h5`、`.csv`、关键点坐标表
+- 行为或统计数据：summary 表、事件表、显著性检验表、参数表、单样本统计 JSON
+- 图像结果：热图、轨迹图、雷达图、小提琴图、聚类图、atlas、时序图
+- 项目元数据：说明文本、同目录备注文件、用户在对话中补充的实验信息
 
-Do not assume the project must have groupings, nor that all charts must be complete.
+不要默认项目一定包含分组，也不要默认所有图表都齐全。
 
-## Script Responsibilities
+## 脚本职责
 
 - `scripts/build_report_manifest.py`
-  - Input: `project_path`
-  - Output: `manifest.json`
-  - Responsible for scanning the project, summarizing facts, determining report mode, and generating fillable `section_bodies`
+  - 输入：`project_path`
+  - 输出：`manifest.json`
+  - 负责扫描项目、汇总事实、判定报告模式、生成可填写的 `section_bodies`
 
-- Agent
-  - Input: `manifest.json`
-  - Responsible for reading instructions in `facts`, `galleries`, and `section_bodies`
-  - Directly fills in `manifest["section_bodies"][body_key]["body"]`
+- agent
+  - 输入：`manifest.json`
+  - 负责阅读 `facts`、`galleries` 和 `section_bodies` 中的写作说明
+  - 在写正文前先决定 `report_language`（`zh-CN` 或 `en-US`）与 `report_title`
+  - 直接回填 `manifest["section_bodies"][body_key]["body"]`
 
 - `scripts/render_report.py`
-  - Input: `manifest.json` with filled body text
-  - Output: `report.md`, single-file `report.html`
-  - HTML embeds images as compressed data URIs by default, not relying on external image files
-  - Only responsible for rendering, not for automatically filling in body text
+  - 输入：已经回填正文的 `manifest.json`
+  - 输出：`report.md`、单文件 `report.html`
+  - HTML 默认把图片压缩后内嵌为 data URI，不依赖外部图片文件
+  - 只负责渲染，不负责自动补写正文
 
-## Standard Workflow
+## 标准工作流
 
-Execute in the following order:
+按下面顺序执行：
 
-1. Confirm the user has provided `project_path`
-2. Run `build_report_manifest.py --project-path <project_path> --output <manifest.json>`
-3. Read `manifest.json`
-4. Check `facts.unconfirmed_items` and `facts.sample_check`
-5. If there are key metadata missing, first ask the user questions
-6. Fill in each `manifest["section_bodies"][body_key]["body"]`
-7. Save back to the same `manifest.json`
-8. Re-read the just-written `manifest.json` in UTF-8, check each filled `body` to ensure it is still normal text, not `?`, `\uFFFD`, garbled text, or truncated text
-9. Only after confirming step 8 is correct, run `render_report.py --manifest <manifest.json> --output-dir <report_output>`
+1. 确认用户提供了 `project_path`
+2. 运行 `build_report_manifest.py --project-path <project_path> --output <manifest.json>`
+3. 读取 `manifest.json`
+4. 检查 `facts.unconfirmed_items` 和 `facts.sample_check`
+5. 如有关键元数据缺失，先向用户提问
+6. 先设置 `manifest["report_language"]` 与 `manifest["report_title"]`
+7. 逐个填写 `manifest["section_bodies"][body_key]["body"]`
+8. 保存回同一个 `manifest.json`
+9. 用 UTF-8 重新读取刚写回的 `manifest.json`，逐项检查已填写的 `body` 是否仍为正常正文，而不是 `?`、`\uFFFD`、乱码或被截断的文本
+10. 仅在第 9 步确认无误后，运行 `render_report.py --manifest <manifest.json> --output-dir <report_output>`
+不要先渲染一个空报告再回填。
+回填正文时，直接编辑现有 `manifest.json` 文件，不要通过 shell 内联文本、命令参数、重定向或管道把大段正文写入 JSON。
+也不要把正文先拼进 `python -c`、`python -`、`node -e`、PowerShell here-string、`jq` 过滤器、环境变量或任何命令行字符串里，再由脚本回写到 `manifest.json`；这些都属于正文注入，不属于“直接编辑文件”。
+这样做是为了避免不同系统和 shell 的默认编码差异，尤其是在 Windows PowerShell 下，大段中文正文经过命令行通道时容易被替换成 `?`。
+如果第 8 步发现正文已经变成 `?`、乱码或异常转义，停止渲染，直接重新编辑 `manifest.json` 文件本身并再次校验，不要带着损坏内容继续生成报告。
 
-Do not render an empty report first and then fill it in.
-When filling in body text, directly edit the existing `manifest.json` file, not through shell inline text, command arguments, redirection, or pipes to write large text into JSON.
-Also do not first assemble body text into `python -c`, `python -`, `node -e`, PowerShell here-string, `jq` filters, environment variables, or any command line string, and then have the script write it back to `manifest.json`; these are text injection, not "direct file editing".
-This is to avoid encoding differences across different systems and shells, especially on Windows PowerShell where large Chinese text passed through command line channels can easily be replaced with `?`.
-If step 8 finds the body text has become `?`, garbled text, or abnormal escaping, stop rendering, directly re-edit the `manifest.json` file itself and verify again, do not continue generating the report with corrupted content.
+## 先确认 project_path
 
-## Confirm project_path First
+开始工作前必须先确认用户提供了 `project_path`。
 
-You must confirm the user has provided `project_path` before starting work.
+如果没有提供：
 
-If not provided:
+- 先向用户提问索取 `project_path`
+- 在拿到路径前，不要假设默认目录，不要跨目录搜索素材
 
-- First ask the user for `project_path`
-- Before getting the path, do not assume default directories, do not search across directories for materials
+如果用户给了路径：
 
-If the user provides a path:
+- 只读取该路径下的文件
+- 不从兄弟目录、父目录或其他项目目录补抓图片和数据
+- 如果发现路径内素材不足，只能报告不足并提问，不得改为读取其他目录
 
-- Only read files under that path
-- Do not fetch images and data from sibling directories, parent directories, or other project directories
-- If the path materials are insufficient, only report the insufficiency and ask questions, do not change to read other directories
+## 什么时候必须提问
 
-## When Questions Must Be Asked
+以下信息如果项目路径内无法确认，必须先向用户提问，再继续生成完整报告：
 
-The following information, if cannot be confirmed within the project path, must be asked to the user first before continuing to generate a complete report:
+- 是否存在分组；如果文件名前缀已经明显出现 `control`、`model`、`sham`、`vehicle` 这类标签，可以先按候选分组处理
+- 各组标签的含义，例如 `Y`、`con`、`k` 这类不透明缩写分别代表什么
+- 哪个组是对照组，或者是否根本没有对照组
+- 实验范式、实验场景或任务类型
+- 报告用途：内部汇报、实验记录、论文草稿、图表整理等
+- 是否允许做解释性结论，还是只做结果整理
+- 如果有多个结果目录，哪个是这次报告的主结果
 
-- Whether there are groupings; if file name prefixes already clearly show labels like `control`, `model`, `sham`, `vehicle`, they can be treated as candidate groupings first
-- Meaning of each group label, e.g., what do opaque abbreviations like `Y`, `con`, `k` represent
-- Which group is the control group, or if there is no control group at all
-- Experimental paradigm, experimental scenario, or task type
-- Report purpose: internal reporting, experimental records, manuscript draft, figure organization, etc.
-- Whether explanatory conclusions are allowed, or only result organization
-- If there are multiple result directories, which is the main result for this report
+在未确认这些关键项前：
 
-Before confirming these key items:
+- 可以完成材料盘点和基于当前证据的结果描述
+- 可以填写不依赖背景解释的 section body
+- 不要输出带强结论的完整报告
+- 不要把含义不明的缩写自动解释成实验组含义；仅对 `control`、`model` 等明显标签做候选分组判断
 
-- Material inventory and result description based on current evidence can be completed
-- Section bodies that do not depend on background explanation can be filled in
-- Do not output a complete report with strong conclusions
-- Do not automatically interpret unclear abbreviations as experimental group meanings; only make candidate grouping judgments for obvious labels like `control`, `model`
+## manifest.json 合同
 
-## manifest.json Contract
-
-`manifest.json` must contain at least these top-level fields:
+`manifest.json` 至少包含这些顶层字段：
 
 - `project_path`
 - `project_name`
+- `report_language`
 - `report_title`
 - `report_goal`
 - `scan`
@@ -125,97 +127,103 @@ Before confirming these key items:
 - `galleries`
 - `section_bodies`
 
-Where `section_bodies` is the only location for body text filling. Structure:
+其中 `section_bodies` 是唯一的正文回填位置。结构如下：
 
 ```json
 {
   "overview_body": {
     "section_id": "overview",
-    "title": "Project Overview",
-    "purpose": "Provide a brief overview at the project level.",
-    "write_when": "Usually filled in; if even the basic project purpose cannot be confirmed, outline as result organization.",
+    "title": "项目概述",
+    "purpose": "给出项目层面的简短概览。",
+    "write_when": "通常填写；若连项目基本用途都无法确认，就按结果整理来概述。",
     "source_fields": ["facts.overview", "report_mode", "facts.unconfirmed_items"],
     "rules": [
-      "Explain project name, report purpose, experimental paradigm or its absence.",
-      "Overview can cover core figure types or analysis scope."
+      "说明项目名、报告用途、实验范式或其缺失状态。",
+      "概述可以覆盖的核心图类或分析范围。"
     ],
     "body": ""
   }
 }
 ```
 
-The agent only needs to change `body`. Do not change the meaning of `section_id`, `title`, `purpose`, `write_when`, `source_fields`, `rules`.
-If batch modifying multiple bodies is needed, also directly edit this UTF-8 `manifest.json` file itself, not assembling a shell command containing the body text to overwrite it.
-After writing, must re-read this `manifest.json` from disk to confirm each filled `body` can display as normal UTF-8 text; only after confirming the body text is correct in the file can the rendering step proceed.
+其中：
 
-## What to Write for Each Body
+- `report_language` 只允许取 `zh-CN` 或 `en-US`
+- `report_language` 决定最终渲染时使用中文还是英文框架、章节标题和 meta 标签
+- `report_title` 应与 `report_language` 保持一致
+
+agent 至少需要改 `report_language`、`report_title` 和各个 `body`。不要改 `section_id`、`title`、`purpose`、`write_when`、`source_fields`、`rules` 的含义。
+如果需要批量修改多个 body，也应直接编辑这个 UTF-8 `manifest.json` 文件本身，而不是拼装一个包含正文的 shell 命令去覆写它。
+写完后必须再次从磁盘读取这个 `manifest.json`，确认每个已填写的 `body` 都能以正常 UTF-8 文本显示；只有确认文件内正文正确，才能进入渲染步骤。
+
+## 每个 body 要写什么
 
 ### `project_summary_body`
 
-- Purpose: Compress project path, material scope, current mode, and key gaps into a short section
-- Required content: Scan scope, core materials, most suitable writing approach, most critical gaps
-- Should not include: File-by-file lists, materials outside the path, long disclaimers
+- 作用：把项目路径、素材范围、当前模式和关键缺口压缩成一个短节
+- 必写内容：扫描范围、核心素材、当前最适合的写法、最关键的缺口
+- 不该写：文件逐条清单、路径外素材、长篇免责声明
 
 ### `overview_body`
 
-- Purpose: Provide high-level overview at the project level and first point out the most obvious result characteristics
-- Required content: Project name, experimental paradigm, current report purpose, what this experiment typically evaluates and basic workflow, 1-2 most notable conclusions from current data
-- Should not write: Turn the entire section into method description
+- 作用：给出项目层面的高层概述，并先点出当前最明显的结果特征
+- 必写内容：项目名、实验范式、当前报告用途、该实验通常评估什么和基础流程、当前数据最值得注意的 1 到 2 个结论
+- 不该写：把整节写成方法说明
 
 ### `sample_check_body`
 
-- Purpose: Verify samples and groupings
-- Required content: Sample count, sample IDs, candidate group labels, whether group names are confirmed, control group status, items to be confirmed
-- Should not write: Force interpretation of unclear abbreviations
-- Additional requirement: If file name prefixes already clearly show labels like `control`, `model`, `sham`, `vehicle`, they can be directly treated as candidate groupings
+- 作用：核对样本和分组
+- 必写内容：样本数量、样本 ID、候选组标签、组名是否已确认、对照组状态、待确认项
+- 不该写：对含义不明的缩写强行解释
+- 额外要求：如果文件名前缀已经明显出现 `control`、`model`、`sham`、`vehicle` 这类标签，可以直接当作候选分组写出
 
 ### `raw_trajectory_body`
 
-- Purpose: When only raw skeleton or trajectory data exists, provide simple result summary based on coordinate distribution and path length
-- Required content: Which raw trajectory files were used, most obvious activity areas or principal axis distribution, intuitive differences in movement range or path length
-- Should not write: Hard map horizontal/vertical axes to confirmed open arm/closed arm without device mapping
-- Enable by default: As long as raw trajectory summary can be extracted from the project, whether single-sample or multi-sample, it should be filled in
+- 作用：在只有原始骨架或轨迹数据时，基于坐标分布和路径长度做简单结果总结
+- 必写内容：用了哪些原始轨迹文件、最明显的行动区域或主轴分布、运动范围或路径长度上的直观差异
+- 不该写：没有装置映射时硬把纵横主轴写成已确认的开放臂/闭合臂
+- 启用习惯：只要项目里能直接提炼出原始轨迹摘要，不管是单样本还是多样本，都应填写
 
 ### `heatmap_body`
 
-- Purpose: Summarize spatial distribution or movement patterns shown in heatmaps, trajectory plots, atlas, time-series plots
-- Required content: Which figures were referenced, main phenomena observed on the figures
-- Should not write: Statistical significance or mechanistic conclusions
+- 作用：总结热图、轨迹图、atlas、时序图展示的空间分布或运动模式
+- 必写内容：引用了哪些图、图上观察到的主要现象
+- 不该写：统计显著性或机制性结论
 
 ### `radar_body`
 
-- Purpose: Summarize multi-parameter profiles in radar plots
-- Required content: What the figure represents, profile relative highs and lows, main difference points
-- Should not write: Unconfirmed indicator meanings, unconfirmed inter-group comparisons
+- 作用：总结雷达图中的多指标轮廓
+- 必写内容：图的对象、轮廓相对高低、主要差异点
+- 不该写：未经确认的指标含义、未经确认的组间比较
 
 ### `stats_body`
 
-- Purpose: Summarize comparison results supported by statistical tables or statistical figures
-- Required content: Which statistical tables/figures were referenced, and comparison results that can be supported by these materials
-- Should not write: Significance conclusions when there are no statistical tables
-- Additional requirement: Even if formal grouping definitions are incomplete, if group names are very obvious, raw difference directions can be summarized, but do not write mechanistic conclusions
+- 作用：总结统计表或统计图支持的比较结果
+- 必写内容：依据了哪些统计表/图，以及可被这些材料支持的比较结果
+- 不该写：没有统计表时的显著性结论
+- 额外要求：即使正式分组定义不完整，只要组名非常明显，也可以总结原始差异方向，但不要写成机制性结论
 
 ### `cluster_body`
 
-- Purpose: Describe the pattern structure presented in cluster plots
-- Required content: Clustering targets, relative proximity or separation trends
-- Should not write: Turn visual separation into statistical significance
+- 作用：描述聚类图呈现的模式结构
+- 必写内容：聚类对象、相对接近或分离的趋势
+- 不该写：把视觉分离写成统计显著
 
 ### `single_subject_body`
 
-- Purpose: Summarize core results for a single individual or single record in single-sample mode
-- Required content: Total duration, effective detection duration, distance, core indicators like area residence/entry; if only raw skeleton data exists, also write main activity areas based on trajectory distribution
-- Should not write: Group-level patterns
+- 作用：单样本模式下总结单个个体或单条记录的核心结果
+- 必写内容：总时长、有效检测时长、距离、区域停留/进入等核心指标；如果只有原始骨架数据，也要结合轨迹分布写出主要行动区域
+- 不该写：群体规律
 
 ### `integrated_interpretation_body`
 
-- Purpose: Integrate multiple result sources across figure types
-- Required content: Which figure types or statistical sources were integrated, which are facts and which are interpretations based on current experimental paradigm
-- Should not write: Unapproved mechanistic or causal summaries
+- 作用：跨图类整合多个结果来源
+- 必写内容：整合了哪些图类或统计来源，哪些是事实、哪些是结合当前实验范式做出的解释
+- 不该写：未获允许的机制性、因果性总结
 
-## Report Modes
+## 报告模式
 
-Prioritize selecting the most appropriate one from the following modes:
+优先在以下模式中选择最贴近的一种：
 
 - `single-subject`
 - `multi-sample-no-groups`
@@ -225,46 +233,47 @@ Prioritize selecting the most appropriate one from the following modes:
 - `figure-only-summary`
 - `data-inventory-only`
 
-If multiple modes could all apply, prioritize the one that best matches the existing evidence; if there are still key ambiguities, confirm with the user.
+如果多个模式都可能成立，优先选与现有证据最匹配的模式；若仍有关键歧义，再向用户确认。
 
-## Reference Navigation
+## 参考资料导航
 
-Read the following files as needed based on task phase, do not load all at once:
+根据任务阶段按需读取以下文件，不要一次性加载全部：
 
-- When needing to determine what material types are in the current directory: read `references/input-types.md`
-- When needing to determine which items must be confirmed with the user: read `references/metadata-schema.md`
-- When needing to determine what sections exist for this report and body responsibilities: read `references/report-sections.md`
-- When needing to select report mode and sections based on materials: read `references/section-selection-rules.md`
-- When needing to constrain interpretation scope and avoid out-of-bounds conclusions: read `references/interpretation-guardrails.md`
-- If `facts.overview.experiment_type` or other project materials explicitly point to a specific animal behavior paradigm, read the corresponding file before writing `overview_body`, `raw_trajectory_body`, `heatmap_body`, `stats_body`, `single_subject_body`, `integrated_interpretation_body`:
-  - `TCST`: `references/experiment-types/tcst.md`
-  - `OFT`: `references/experiment-types/oft.md`
-  - `TST`: `references/experiment-types/tst.md`
-  - `EPM`: `references/experiment-types/epm.md`
-  - `FST`: `references/experiment-types/fst.md`
-  - `NOR`: `references/experiment-types/nor.md`
-- When needing to view display templates: read `assets/report_template_cn.md` and related `assets/section_templates/*.md`
+- 需要判断当前目录包含哪些材料类型时：读取 `references/input-types.md`
+- 需要判断哪些项必须向用户确认时：读取 `references/metadata-schema.md`
+- 需要确定本次有哪些章节以及 body 的职责时：读取 `references/report-sections.md`
+- 需要根据材料选择报告模式和章节时：读取 `references/section-selection-rules.md`
+- 需要约束解释口径、避免越界结论时：读取 `references/interpretation-guardrails.md`
+- 如果 `facts.overview.experiment_type` 或其他项目材料明确指向特定动物行为学范式，在写 `overview_body`、`raw_trajectory_body`、`heatmap_body`、`stats_body`、`single_subject_body`、`integrated_interpretation_body` 前读取对应文件：
+  - `TCST`：`references/experiment-types/tcst.md`
+  - `OFT`：`references/experiment-types/oft.md`
+  - `TST`：`references/experiment-types/tst.md`
+  - `EPM`：`references/experiment-types/epm.md`
+  - `FST`：`references/experiment-types/fst.md`
+  - `NOR`：`references/experiment-types/nor.md`
+- 需要查看展示模板时：按 `report_language` 读取 `assets/report_template_cn.md` 或 `assets/report_template_en.md`，以及相关 `assets/section_templates/*.md`
 
-## Expression Requirements
+## 表达要求
 
-- The default language of body should match the current user's conversation language; write in Chinese if the user communicates in Chinese, write in English if the user communicates in English; if the user explicitly specifies the report language, prioritize the user's specification.
-- When terms first appear, prioritize using "Chinese (English)" format, especially for statistical methods, figure types, ethology metrics, and experimental paradigm names; subsequent text can keep one writing style as long as it doesn't cause ambiguity.
-- File names, group labels, column names, and original metric names that come from project files can retain original English, do not forcibly translate and then rewrite the original values.
-- Prioritize giving the most direct and informative summary based on current data, do not avoid obvious result characteristics just because of lacking complete background.
-- If limitations need to be stated, concentrate them in `project_summary_body`, `overview_body`, or `integrated_interpretation_body` briefly once, do not repeat disclaimers in every section.
-- When the experimental paradigm is already clear, concise conclusions can be made about area preference, exploration direction, activity pattern, or coping style by combining with the paradigm's readout meaning.
-- First explain which files and figures are based on, then write interpretations
-- Separate "observed facts" from "inferences based on context"
-- When figures or tables are missing, skip the corresponding body and keep empty string
-- When there are no groupings, do not write inter-group comparisons
-- When there are no statistical tables, do not write significance conclusions
-- When there are only figures without reliable table support, summarize the most obvious image patterns, but do not write as statistical significance or mechanistic conclusions
-- Do not render prompt text, writing instructions, or reasoning rules into the final HTML
+- agent 在写正文前先决定 `report_language`：默认跟随当前用户对话语言；用户用中文交流就设为 `zh-CN`，用户用英文交流就设为 `en-US`；如果用户明确指定报告语言，优先服从用户指定。
+- `report_title` 和所有 body 的语言必须与 `report_language` 一致。
+- 术语首次出现时，优先使用“中文（English）”格式，尤其是统计方法、图类名称、行为学指标和实验范式名称；后文可在不引起歧义的前提下保持一种写法。
+- 文件名、组标签、列名、原始指标名如果本身来自项目文件，可保留原始英文，不要强行翻译后再改写原值。
+- 优先给出基于当前数据最直接、最有信息量的总结，不要因为缺少完整背景就回避明显的结果特征。
+- 如果需要交代限制，把限制集中放在 `project_summary_body`、`overview_body` 或 `integrated_interpretation_body` 里简短提一次，不要在每一节重复写免责声明。
+- 当实验范式已经明确时，可以结合对应范式的 readout 含义，对区域偏好、探索方向、活动模式或应对方式做简洁结论。
+- 先说明依据了哪些文件和图，再写解释
+- 把“观察到的事实”和“基于上下文的推断”分开写
+- 缺失图或表时，跳过对应 body，保留空字符串即可
+- 没有分组时，不得写组间比较
+- 没有统计表时，不得写显著性结论
+- 只有图、没有可靠表格支撑时，也要把最明显的图像模式总结出来，但不要写成统计显著或机制性结论
+- 不把提示性文字、写作说明、推理规则渲染进最终 HTML
 
-## Quality Constraints
+## 质量约束
 
-- Do not read materials outside `project_path`
-- Do not fabricate group meanings, sample sizes, experimental backgrounds, statistical methods, or result conclusions
-- Do not directly write clustering, heatmaps, or visual separations as significant differences
-- Do not exaggerate single-sample phenomena into group-level patterns
-- If the user doesn't provide report purpose, ask first; if the answer cannot be obtained temporarily, write as "result organization" first
+- 不要跨出 `project_path` 读取素材
+- 不要编造组别含义、样本量、实验背景、统计方法或结果结论
+- 不要把聚类、热图或可视化分离直接写成显著差异
+- 不要把单样本现象夸大为组间规律
+- 如果用户没有给出报告用途，先询问；若暂时拿不到答案，就先按“结果整理”来写

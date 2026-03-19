@@ -1,52 +1,51 @@
-# Input Types
+﻿# Input Types
 
-Read this file when determining "what materials are available in the project path for generating reports".
+在需要判断项目路径内“有哪些材料可以用于生成报告”时读取本文件。
 
-## Common Input Types
+## 常见输入类型
 
-### Raw or Semi-Raw Data
+### 原始或半原始数据
 
-- `.h5`: Common for skeleton, trajectory, keypoints, or intermediate results.
-- `.csv` / `.xlsx`: Common for behavioral summary tables, event tables, significance test results.
-- `txt` / `yaml` / `json`: Common for parameter orders, group name descriptions, configuration files.
+- `.h5`：常见于骨架、轨迹、关键点或中间结果。
+- `.csv` / `.xlsx`：常见于行为统计表、summary 表、事件表、显著性检验结果。
+- `txt` / `yaml` / `json`：常见于参数顺序、组名说明、配置文件。
 
-These files are typically used to determine:
+这些文件通常用于判断：
 
-- Whether there is single-sample or multi-sample data.
-- Whether group labels exist.
-- Whether there are quantifiable tables that can support figure interpretation.
+- 是否有单样本还是多样本。
+- 是否存在分组标签。
+- 是否有可量化表格可支持图表解释。
 
-### Image or Document Results
+### 图像或文档结果
 
-- Heatmaps, trajectory plots: spatial distribution, activity paths, velocity distributions.
-- Radar plots: multi-parameter profiles, group mean comparisons, single-sample overviews.
-- Violin plots / box plots: parameter distributions and inter-group differences.
-- Cluster plots / clustermap: sample or parameter pattern structures.
+- 热图、轨迹图：空间分布、活动路径、速度分布。
+- 雷达图：多参数轮廓、组均值对比、单样本概览。
+- 小提琴图 / 箱线图：参数分布和组间差异。
+- 聚类图 / clustermap：样本或参数模式结构。
+这些文件通常用于：
 
-These files are typically used for:
+- 生成图示说明。
+- 组织结果章节。
+- 决定哪些图进入正文、哪些图适合附录。
 
-- Generating figure captions.
-- Organizing result sections.
-- Deciding which figures go into the main text and which are suitable for appendices.
+## 路径内扫描时优先判断的问题
 
-## Priority Questions When Scanning Within Path
+1. 有没有可以识别样本的文件名或表格列。
+2. 有没有组标签，但不要自动解释标签含义。
+3. 有没有统计结果表，如 `stats_overall.csv`、`stats_pairwise.csv`。
+4. 有没有能代表整体模式的图，例如 group means radar、clustermap。
+5. 有没有同目录说明文本、实验备注或用户在对话里补充的背景信息。
 
-1. Are there file names or table columns that can identify samples.
-2. Are there group labels, but do not automatically interpret label meanings.
-3. Are there statistical result tables like `stats_overall.csv`, `stats_pairwise.csv`.
-4. Are there figures representing overall patterns, such as group means radar, clustermap.
-5. Are there same-directory description texts, experimental notes, or background information supplemented by the user in conversation.
+## 材料不完整时的处理原则
 
-## Handling Principles When Materials Are Incomplete
+- 只有图，没有表：可做图示整理和保守描述，不做强统计解释。
+- 有表，没有图：可生成文字型结果摘要，但图像展示受限。
+- 有多个图类，但没有背景：先做材料盘点，并向用户提问。
+- 只有单个样本：优先切换到 `single-subject` 模式。
 
-- Only figures, no tables: Can do figure organization and conservative descriptions, do not make strong statistical interpretations.
-- Have tables, no figures: Can generate text-based result summaries, but image display is limited.
-- Have multiple figure types but no background: First do material inventory and ask the user questions.
-- Only single sample: Prioritize switching to `single-subject` mode.
+## 输出给上层流程的最小判断项
 
-## Minimum Judgment Items to Output to Upper Flow
-
-At least judge and organize these boolean or summary fields:
+至少判断并整理这些布尔或摘要字段：
 
 - `has_skeleton_data`
 - `has_behavior_summary`

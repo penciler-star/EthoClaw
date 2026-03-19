@@ -1,4 +1,4 @@
-## Heatmap and Trajectory Results
+## {{ heatmap_title }}
 
 {{ heatmap_body }}
 

@@ -1,4 +1,4 @@
-## Radar Plot Results
+## {{ radar_title }}
 
 {{ radar_body }}
 
