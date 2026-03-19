@@ -43,7 +43,7 @@ OBVIOUS_GROUP_LABELS = {
     "het",
     "tg",
 }
-SAMPLE_SUFFIX_PATTERNS = [
+SAMPLE_SUFFIX_PATTERNS =[
     r"_pose$",
     r"_region_dict$",
     r"_stat$",
@@ -63,38 +63,38 @@ IMAGE_LINE_RE = re.compile(r"^!\[(.*?)\]\((.*?)\)$")
 LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 CODE_RE = re.compile(r"`([^`]+)`")
 
-SECTION_SPECS = [
+SECTION_SPECS =[
     {
         "id": "project_summary",
-        "title": "项目概况与素材",
+        "title": "Project Summary and Materials",
         "section_key": "project_summary_section",
         "body_key": "project_summary_body",
         "template": "project-summary.md",
     },
     {
         "id": "overview",
-        "title": "项目概述",
+        "title": "Project Overview",
         "section_key": "overview_section",
         "body_key": "overview_body",
         "template": "overview.md",
     },
     {
         "id": "sample_check",
-        "title": "样本与分组核对",
+        "title": "Sample and Group Check",
         "section_key": "sample_check_section",
         "body_key": "sample_check_body",
         "template": "sample-check.md",
     },
     {
         "id": "raw_trajectory",
-        "title": "原始轨迹摘要",
+        "title": "Raw Trajectory Summary",
         "section_key": "raw_trajectory_section",
         "body_key": "raw_trajectory_body",
         "template": "raw-trajectory.md",
     },
     {
         "id": "heatmap",
-        "title": "热图与轨迹结果",
+        "title": "Heatmap and Trajectory Results",
         "section_key": "heatmap_section",
         "body_key": "heatmap_body",
         "template": "heatmap-section.md",
@@ -103,7 +103,7 @@ SECTION_SPECS = [
     },
     {
         "id": "radar",
-        "title": "雷达图结果",
+        "title": "Radar Chart Results",
         "section_key": "radar_section",
         "body_key": "radar_body",
         "template": "radar-section.md",
@@ -112,7 +112,7 @@ SECTION_SPECS = [
     },
     {
         "id": "stats",
-        "title": "统计与汇总图结果",
+        "title": "Statistics and Summary Chart Results",
         "section_key": "stats_section",
         "body_key": "stats_body",
         "template": "stats-section.md",
@@ -121,7 +121,7 @@ SECTION_SPECS = [
     },
     {
         "id": "cluster",
-        "title": "聚类结果",
+        "title": "Clustering Results",
         "section_key": "cluster_section",
         "body_key": "cluster_body",
         "template": "cluster-section.md",
@@ -130,14 +130,14 @@ SECTION_SPECS = [
     },
     {
         "id": "single_subject",
-        "title": "单样本结果概览",
+        "title": "Single Subject Results Overview",
         "section_key": "single_subject_section",
         "body_key": "single_subject_body",
         "template": "single-subject-section.md",
     },
     {
         "id": "integrated_interpretation",
-        "title": "综合整理",
+        "title": "Integrated Interpretation",
         "section_key": "integrated_interpretation_section",
         "body_key": "integrated_interpretation_body",
         "template": "integrated-interpretation.md",
@@ -146,9 +146,9 @@ SECTION_SPECS = [
 
 SECTION_GUIDANCE = {
     "project_summary_body": {
-        "purpose": "把项目路径、核心素材、当前可分析范围和报告模式压缩成一个短节，避免报告开头堆太多元信息。",
-        "write_when": "始终填写。",
-        "source_fields": [
+        "purpose": "Compress the project path, core materials, current analyzable scope, and report mode into a short section to avoid piling up too much meta-information at the beginning of the report.",
+        "write_when": "Always fill in.",
+        "source_fields":[
             "project_path",
             "facts.project_path_confirmation",
             "facts.input_completeness",
@@ -156,104 +156,104 @@ SECTION_GUIDANCE = {
             "report_mode",
             "report_mode_reason",
         ],
-        "rules": [
-            "控制在 3 到 5 句话内，优先让用户快速知道用了什么、缺什么、当前能写到哪一步。",
-            "只点名最关键的素材目录或文件类型，不要展开成大清单。",
-            "可以直接提到明显的样本数量、明显的分组前缀和当前最值得继续分析的素材。",
+        "rules":[
+            "Keep it within 3 to 5 sentences, prioritizing letting the user quickly know what was used, what is missing, and how far the current analysis can go.",
+            "Only name the most critical material directories or file types, do not expand into a large list.",
+            "Directly mention obvious sample counts, obvious group prefixes, and the most worthy materials for further analysis.",
         ],
     },
     "overview_body": {
-        "purpose": "给出项目层面的简短概览，补一句实验目的和基础流程，并先点出当前数据最显眼的结果特征。",
-        "write_when": "通常填写；即使背景不完整，也要先概括当前数据的主要信号。",
+        "purpose": "Provide a brief project-level overview, add a sentence about the experimental purpose and basic process, and point out the most prominent result features of the current data first.",
+        "write_when": "Usually fill in; even if the background is incomplete, first summarize the main signals of the current data.",
         "source_fields": ["facts.overview", "report_mode", "facts.unconfirmed_items"],
-        "rules": [
-            "说明项目名、实验范式和当前报告用途；实验范式可来自项目名推断。",
-            "如果实验范式已知，用 1 到 2 句话补充该实验通常评估什么、基本流程是什么。",
-            "先给出 1 到 2 个最值得注意的结果摘要，再补充当前材料支持哪些分析。",
-            "限制信息只在必要时顺带提一句，不要让整节变成方法说明。",
+        "rules":[
+            "Explain the project name, experimental paradigm, and current report purpose; the experimental paradigm can be inferred from the project name.",
+            "If the experimental paradigm is known, use 1 to 2 sentences to add what the experiment usually evaluates and what the basic process is.",
+            "First give 1 to 2 of the most noteworthy result summaries, then add what analyses the current materials support.",
+            "Limit information to being mentioned only when necessary, do not let the entire section become a method description.",
         ],
     },
     "sample_check_body": {
-        "purpose": "核对样本数量、样本标识和分组信息，并在分组很明显时直接写出候选组别。",
-        "write_when": "始终填写。",
-        "source_fields": ["facts.sample_check", "facts.group_inference", "scan.detected"],
-        "rules": [
-            "先写样本总数和样本 ID 范围。",
-            "如果文件名前缀里出现 control、model、sham、vehicle 这类明显分组，可以直接作为候选组别写出。",
-            "对于明显标签，允许把 control 视为候选对照组；只有遇到含义不明确的缩写时才保留待确认。",
+        "purpose": "Check sample counts, sample IDs, and group information, and directly write out candidate groups when grouping is very obvious.",
+        "write_when": "Always fill in.",
+        "source_fields":["facts.sample_check", "facts.group_inference", "scan.detected"],
+        "rules":[
+            "First write the total sample count and sample ID range.",
+            "If obvious groupings like control, model, sham, vehicle appear in the file name prefixes, they can be directly written out as candidate groups.",
+            "For obvious labels, it is allowed to treat control as a candidate control group; only keep it as 'to be confirmed' when encountering ambiguous abbreviations.",
         ],
     },
     "raw_trajectory_body": {
-        "purpose": "在只有原始骨架或轨迹数据时，基于坐标分布和路径长度给出简单的行为区域与活动模式摘要。",
-        "write_when": "仅在 manifest 提供 raw trajectory summary 时填写。",
-        "source_fields": ["facts.raw_trajectory_summary", "facts.group_inference", "facts.overview"],
-        "rules": [
-            "先写用了哪些原始轨迹文件或坐标来源，再写最明显的活动区域和运动范围特征。",
-            "多样本项目优先比较组间或样本间最直观的差异，例如活动范围、主轴分布、路径长度。",
-            "实验范式已知时可以直接使用该范式常见 readout 语言；如果装置朝向不明，就描述纵向/横向主轴或中心区域，不强行命名开放臂与闭合臂。",
+        "purpose": "When only raw skeleton or trajectory data is available, provide a simple summary of behavioral regions and activity patterns based on coordinate distribution and path length.",
+        "write_when": "Fill in only when the manifest provides a raw trajectory summary.",
+        "source_fields":["facts.raw_trajectory_summary", "facts.group_inference", "facts.overview"],
+        "rules":[
+            "First write which raw trajectory files or coordinate sources were used, then write the most obvious activity region and movement range features.",
+            "Multi-sample projects prioritize comparing the most intuitive differences between groups or samples, such as activity range, principal axis distribution, and path length.",
+            "When the experimental paradigm is known, the common readout language of that paradigm can be used directly; if the apparatus orientation is unknown, describe the longitudinal/transverse principal axis or center region, and do not force naming open and closed arms.",
         ],
     },
     "heatmap_body": {
-        "purpose": "描述热图、轨迹图、atlas 或时序图展示的空间分布与行为模式。",
-        "write_when": "仅在 manifest 含有 heatmap 图库时填写。",
-        "source_fields": ["galleries.heatmap", "scan.figure_files", "facts.overview"],
-        "rules": [
-            "先点名使用了哪些图，再描述观察到的分布或轨迹特征。",
-            "优先总结最直观、最明显的空间分布或轨迹特征。",
-            "实验范式已知时，可以直接结合区域含义写出简洁总结。",
+        "purpose": "Describe the spatial distribution and behavioral patterns shown in heatmaps, trajectory maps, atlases, or time series graphs.",
+        "write_when": "Fill in only when the manifest contains a heatmap gallery.",
+        "source_fields":["galleries.heatmap", "scan.figure_files", "facts.overview"],
+        "rules":[
+            "First name which graphs were used, then describe the observed distribution or trajectory features.",
+            "Prioritize summarizing the most intuitive and obvious spatial distribution or trajectory features.",
+            "When the experimental paradigm is known, directly combine regional meanings to write a concise summary.",
         ],
     },
     "radar_body": {
-        "purpose": "概述雷达图所反映的多指标轮廓。",
-        "write_when": "仅在 manifest 含有 radar 图库时填写。",
+        "purpose": "Summarize the multi-indicator profiles reflected in the radar charts.",
+        "write_when": "Fill in only when the manifest contains a radar gallery.",
         "source_fields": ["galleries.radar", "scan.figure_files", "facts.sample_check"],
-        "rules": [
-            "说明图中比较的是单样本还是多组轮廓。",
-            "优先概括最突出的高低特征和轮廓差异。",
-            "没有可靠分组时，不写正式组间比较；但可以正常总结单样本或候选标签层面的模式。",
+        "rules":[
+            "Specify whether the chart compares single samples or multi-group profiles.",
+            "Prioritize summarizing the most prominent high/low features and profile differences.",
+            "When there is no reliable grouping, do not write formal inter-group comparisons; but patterns at the single sample or candidate label level can be normally summarized.",
         ],
     },
     "stats_body": {
-        "purpose": "总结具有统计表或明确统计图支持的比较结果；单样本项目也可以写数值摘要。",
-        "write_when": "在 manifest 含有 stats 图库时填写；单样本项目写统计摘要，多样本项目在依据充分时写比较结果。",
-        "source_fields": ["galleries.stats", "scan.data_files", "facts.sample_check"],
-        "rules": [
-            "先写统计依据来自哪些表或图，再写结果。",
-            "没有统计表时不要写显著性结论。",
-            "单样本项目可以直接总结最主要的数值特征、区域偏好或行为趋势。",
-            "组别含义未完全确认时，不写正式机制性比较，但可以基于明显组名总结原始差异方向。",
+        "purpose": "Summarize comparison results supported by statistical tables or explicit statistical charts; single-sample projects can also write numerical summaries.",
+        "write_when": "Fill in when the manifest contains a stats gallery; single-sample projects write statistical summaries, and multi-sample projects write comparison results when there is sufficient basis.",
+        "source_fields":["galleries.stats", "scan.data_files", "facts.sample_check"],
+        "rules":[
+            "First write which tables or charts the statistical basis comes from, then write the results.",
+            "Do not write significance conclusions when there are no statistical tables.",
+            "Single-sample projects can directly summarize the main numerical features, regional preferences, or behavioral trends.",
+            "When group meanings are not fully confirmed, do not write formal mechanistic comparisons, but original difference directions can be summarized based on obvious group names.",
         ],
     },
     "cluster_body": {
-        "purpose": "描述聚类图中呈现的样本或指标结构。",
-        "write_when": "仅在 manifest 含有 cluster 图库时填写。",
-        "source_fields": ["galleries.cluster", "scan.figure_files", "facts.sample_check"],
-        "rules": [
-            "说明聚类对象是样本还是指标。",
-            "只描述结构接近性或分离趋势。",
-            "不要把聚类分离直接写成统计显著差异。",
+        "purpose": "Describe the sample or indicator structure presented in the clustering charts.",
+        "write_when": "Fill in only when the manifest contains a cluster gallery.",
+        "source_fields":["galleries.cluster", "scan.figure_files", "facts.sample_check"],
+        "rules":[
+            "Specify whether the clustering object is samples or indicators.",
+            "Only describe structural proximity or separation trends.",
+            "Do not write clustering separation directly as statistically significant differences.",
         ],
     },
     "single_subject_body": {
-        "purpose": "在单样本模式下总结单个个体或单条记录的核心结果。",
-        "write_when": "仅在 report_mode 为 single-subject 时填写。",
-        "source_fields": ["facts.single_subject_stats", "facts.raw_trajectory_summary", "scan.figure_files", "galleries.heatmap"],
-        "rules": [
-            "优先覆盖总时长、有效检测时长、总距离、区域停留和进入情况。",
-            "如果只有原始骨架数据，也要基于轨迹分布写出该样本最突出的行动区域或运动模式。",
-            "先给出一句最主要的单样本总结，再展开关键指标。",
-            "不要把单样本现象写成群体规律，但应明确写出该样本最突出的行为特征。",
+        "purpose": "In single-sample mode, summarize the core results of a single individual or single record.",
+        "write_when": "Fill in only when report_mode is single-subject.",
+        "source_fields":["facts.single_subject_stats", "facts.raw_trajectory_summary", "scan.figure_files", "galleries.heatmap"],
+        "rules":[
+            "Prioritize covering total duration, effective detection duration, total distance, and regional stays and entries.",
+            "If there is only raw skeleton data, also write out the most prominent activity region or movement pattern of this sample based on the trajectory distribution.",
+            "First give a main single-sample summary sentence, then expand on key indicators.",
+            "Do not write single-sample phenomena as population laws, but clearly write out the most prominent behavioral features of this sample.",
         ],
     },
     "integrated_interpretation_body": {
-        "purpose": "跨图类整合多个结果来源，形成直接而清楚的综合总结。",
-        "write_when": "仅在至少两类证据来源同时存在时填写。",
-        "source_fields": ["galleries", "facts.overview", "facts.raw_trajectory_summary", "facts.unconfirmed_items", "report_mode"],
-        "rules": [
-            "明确综合了哪些图类、统计或原始轨迹来源。",
-            "先写一段直接的综合结论，再补充支持它的图和数据。",
-            "把观察事实和解释分开写，但不要把整节写成免责声明。",
-            "未获授权时，不写机制性或因果性结论。",
+        "purpose": "Integrate multiple result sources across chart types to form a direct and clear comprehensive summary.",
+        "write_when": "Fill in only when at least two types of evidence sources exist simultaneously.",
+        "source_fields":["galleries", "facts.overview", "facts.raw_trajectory_summary", "facts.unconfirmed_items", "report_mode"],
+        "rules":[
+            "Clarify which chart types, statistics, or raw trajectory sources are integrated.",
+            "First write a direct comprehensive conclusion, then supplement with the charts and data supporting it.",
+            "Separate observed facts from explanations, but do not write the entire section as a disclaimer.",
+            "Do not write mechanistic or causal conclusions when not authorized.",
         ],
     },
 }
@@ -302,19 +302,19 @@ def classify_file(path: Path) -> tuple[str, str]:
     if ext in {".csv", ".tsv", ".xlsx", ".xls"}:
         if any(token in name for token in ["pose", "skeleton", "keypoint"]) or "skeleton" in parent_text:
             return "data", "skeleton_data"
-        if any(token in name for token in ["region_dict", "behavior", "summary"]):
+        if any(token in name for token in["region_dict", "behavior", "summary"]):
             return "data", "behavior_summary"
         if any(token in name for token in ["stats", "stat", "pairwise", "overall", "kruskal"]):
             return "data", "stats_table"
         return "data", "table"
     if ext in IMAGE_EXTENSIONS:
-        if any(token in name for token in ["clustermap", "cluster", "dendrogram"]):
+        if any(token in name for token in["clustermap", "cluster", "dendrogram"]):
             return "figure", "cluster"
         if "radar" in name:
             return "figure", "radar"
         if any(token in name for token in ["heatmap", "trajectory"]):
             return "figure", "heatmap"
-        if any(token in name for token in ["violin", "boxplot", "statistics_analysis_combined", "statistics"]):
+        if any(token in name for token in["violin", "boxplot", "statistics_analysis_combined", "statistics"]):
             return "figure", "stats_figure"
         if "timeseries" in name:
             return "figure", "timeseries"
@@ -339,7 +339,7 @@ def infer_experiment_type(project_path: Path, stats_payload: dict[str, Any] | No
         if upper in KNOWN_EXPERIMENT_TYPES:
             return upper
 
-    candidates = [project_path.name, str(project_path)]
+    candidates =[project_path.name, str(project_path)]
     pattern_map = {name: re.compile(rf"(?<![A-Za-z]){name}(?![A-Za-z])", re.IGNORECASE) for name in KNOWN_EXPERIMENT_TYPES}
     for candidate in candidates:
         for name, pattern in pattern_map.items():
@@ -381,7 +381,7 @@ def infer_obvious_groups(sample_ids: list[str]) -> dict[str, Any]:
         "status": "unknown",
         "method": "none",
         "has_groups": None,
-        "labels": [],
+        "labels":[],
         "display_mapping": {},
         "group_counts": {},
         "sample_to_group": {},
@@ -390,7 +390,7 @@ def infer_obvious_groups(sample_ids: list[str]) -> dict[str, Any]:
 
 
 def detect_track_columns(fieldnames: list[str]) -> tuple[str, str, str] | None:
-    candidates = [
+    candidates =[
         ("back_x", "back_y", "back"),
         ("nose_x", "nose_y", "nose"),
         ("tail_x", "tail_y", "tail"),
@@ -478,14 +478,14 @@ def build_raw_trajectory_summary(
     point_label = track_summaries[0]["point_label"]
     total_frames = sum(int(item["frame_count"]) for item in track_summaries)
     group_counts = dict(group_info.get("group_counts") or {})
-    highlights = [
-        f"共读取 {len(track_summaries)} 个原始轨迹文件，坐标锚点为 {point_label}，累计约 {total_frames} 帧。"
+    highlights =[
+        f"Read {len(track_summaries)} raw trajectory files in total, with coordinate anchor at {point_label}, accumulating approximately {total_frames} frames."
     ]
 
     samples_by_group: dict[str, list[dict[str, Any]]] = {}
     for summary in track_summaries:
         group_name = summary.get("group") or "all"
-        samples_by_group.setdefault(group_name, []).append(summary)
+        samples_by_group.setdefault(group_name,[]).append(summary)
 
     per_group_metrics: dict[str, Any] = {}
     for group_name, rows in samples_by_group.items():
@@ -534,7 +534,7 @@ def build_raw_trajectory_summary(
                 continue
             per_group_metrics[group_name]["epm_axis_ratios"] = {
                 key: statistics.fmean(row[key] for row in epm_rows)
-                for key in ["center", "vertical_axis", "horizontal_axis", "corner"]
+                for key in["center", "vertical_axis", "horizontal_axis", "corner"]
             }
 
         overall_vertical = statistics.fmean(
@@ -544,16 +544,16 @@ def build_raw_trajectory_summary(
             item["epm_axis_ratios"]["horizontal_axis"] for item in track_summaries if "epm_axis_ratios" in item
         )
         highlights.append(
-            f"从坐标主轴粗分看，轨迹整体更集中在穿过中心的纵向主轴（平均占比 {overall_vertical:.1%}），横向主轴占比约 {overall_horizontal:.1%}。"
+            f"From a rough division of the coordinate principal axes, the trajectory as a whole is more concentrated on the longitudinal principal axis passing through the center (average proportion {overall_vertical:.1%}), while the transverse principal axis proportion is about {overall_horizontal:.1%}."
         )
 
         if "control" in per_group_metrics and "model" in per_group_metrics:
             control_metrics = per_group_metrics["control"]
             model_metrics = per_group_metrics["model"]
             highlights.append(
-                "按文件名前缀划分时，control 组的横向活动范围更大，"
-                f"平均横向跨度约 {control_metrics['mean_x_span']:.1f} 像素，"
-                f"高于 model 组的 {model_metrics['mean_x_span']:.1f} 像素。"
+                "When divided by file name prefixes, the control group has a larger transverse activity range, "
+                f"with an average transverse span of about {control_metrics['mean_x_span']:.1f} pixels, "
+                f"which is higher than the {model_metrics['mean_x_span']:.1f} pixels of the model group."
             )
 
     return {
@@ -581,13 +581,13 @@ def build_raw_trajectory_summary(
 def extract_group_labels_from_csv(path: Path, limit: int = 1000) -> list[str]:
     labels: set[str] = set()
     if path.suffix.lower() not in {".csv", ".tsv"}:
-        return []
+        return[]
     delimiter = "\t" if path.suffix.lower() == ".tsv" else ","
     try:
         with path.open("r", encoding="utf-8", newline="") as handle:
             reader = csv.DictReader(handle, delimiter=delimiter)
             if not reader.fieldnames or "group" not in reader.fieldnames:
-                return []
+                return[]
             for index, row in enumerate(reader):
                 if index >= limit:
                     break
@@ -595,7 +595,7 @@ def extract_group_labels_from_csv(path: Path, limit: int = 1000) -> list[str]:
                 if value:
                     labels.add(value)
     except Exception:
-        return []
+        return[]
     return sorted(labels)
 
 
@@ -627,14 +627,14 @@ def inline_markdown(text: str) -> str:
 def markdown_to_html(markdown_text: str, image_src_transform: Callable[[str], str] | None = None) -> str:
     lines = markdown_text.splitlines()
     parts: list[str] = []
-    paragraph: list[str] = []
-    list_items: list[str] = []
+    paragraph: list[str] =[]
+    list_items: list[str] =[]
 
     def flush_paragraph() -> None:
         nonlocal paragraph
         if paragraph:
             parts.append(f"<p>{inline_markdown(' '.join(paragraph))}</p>")
-            paragraph = []
+            paragraph =[]
 
     def flush_list() -> None:
         nonlocal list_items
@@ -643,7 +643,7 @@ def markdown_to_html(markdown_text: str, image_src_transform: Callable[[str], st
             for item in list_items:
                 parts.append(f"<li>{inline_markdown(item)}</li>")
             parts.append("</ul>")
-            list_items = []
+            list_items =[]
 
     for raw_line in lines:
         line = raw_line.rstrip()
@@ -692,7 +692,7 @@ def markdown_to_html(markdown_text: str, image_src_transform: Callable[[str], st
 
 
 def build_gallery(paths: list[str], project_path: Path) -> str:
-    entries: list[str] = []
+    entries: list[str] =[]
     for rel_path in paths:
         abs_path = (project_path / rel_path).resolve()
         entries.append(f"![{Path(rel_path).name}]({abs_path.as_uri()})")
@@ -766,16 +766,16 @@ def build_embedded_image_transform() -> Callable[[str], str]:
 
 
 def scan_project(project_path: Path) -> dict[str, Any]:
-    files = [
+    files =[
         path
         for path in project_path.rglob("*")
         if path.is_file()
         and not any(part.startswith(prefix) for part in path.parts for prefix in IGNORED_OUTPUT_DIR_PREFIXES)
         and path.name not in IGNORED_FILE_NAMES
     ]
-    data_files: list[dict[str, str]] = []
+    data_files: list[dict[str, str]] =[]
     figure_files: list[dict[str, str]] = []
-    metadata_files: list[str] = []
+    metadata_files: list[str] =[]
     other_files: list[str] = []
     sample_ids: set[str] = set()
     group_labels: set[str] = set()
@@ -849,23 +849,23 @@ def determine_report_mode(
     has_groups = group_info.get("has_groups") is True
 
     if detected["sample_count_detected"] <= 1 and not has_groups:
-        return "single-subject", "当前仅检测到一个样本，且没有可靠分组信息。"
+        return "single-subject", "Currently only one sample is detected, and there is no reliable grouping information."
     if has_groups and (
         detected["has_stats_tables"]
         or detected["has_stats_figures"]
         or detected["has_radar"]
         or detected["has_cluster_figure"]
     ):
-        return "grouped-comparison", "已确认分组信息，且存在支持组间整理的图表或统计结果。"
+        return "grouped-comparison", "Grouping information has been confirmed, and there are charts or statistical results supporting inter-group collation."
     if has_groups and raw_summary:
-        return "grouped-raw-summary", "存在明显分组，同时可直接从原始骨架轨迹提炼组间活动差异。"
+        return "grouped-raw-summary", "There is obvious grouping, and inter-group activity differences can be directly extracted from the raw skeleton trajectories."
     if detected["sample_count_detected"] > 1 and not has_groups:
-        return "multi-sample-no-groups", "检测到多个样本，但没有可靠分组说明。"
-    if any(detected[key] for key in ["has_heatmaps", "has_radar", "has_stats_figures", "has_cluster_figure"]):
-        return "figure-only-summary", "当前更适合基于现有图像结果做描述性整理。"
+        return "multi-sample-no-groups", "Multiple samples were detected, but there is no reliable grouping description."
+    if any(detected[key] for key in["has_heatmaps", "has_radar", "has_stats_figures", "has_cluster_figure"]):
+        return "figure-only-summary", "Currently it is more suitable to do descriptive collation based on existing image results."
     if raw_summary:
-        return "raw-trajectory-summary", "当前主要可依据原始骨架轨迹对活动区域和运动范围做基础总结。"
-    return "data-inventory-only", "素材不足以支撑结果解读，当前只能做材料盘点。"
+        return "raw-trajectory-summary", "Currently, a basic summary of activity regions and movement ranges can be mainly based on the raw skeleton trajectories."
+    return "data-inventory-only", "The materials are insufficient to support result interpretation, currently only material inventory can be done."
 
 
 def build_unconfirmed_items(
@@ -875,33 +875,33 @@ def build_unconfirmed_items(
     group_info: dict[str, Any],
 ) -> list[str]:
     detected = scan["detected"]
-    items: list[str] = []
+    items: list[str] =[]
 
-    items.append("报告用途未确认，当前按结果整理口径撰写。")
+    items.append("The report purpose is unconfirmed; currently written from the perspective of results summary.")
     if not experiment_type:
         inferred = stats_payload.get("analysis_type") if stats_payload else None
         if inferred:
-            items.append(f"实验范式未明确，当前只能暂按 {inferred} 理解。")
+            items.append(f"The experimental paradigm is unclear; currently tentatively understood as {inferred}.")
         else:
-            items.append("实验范式未确认。")
+            items.append("The experimental paradigm is unconfirmed.")
     if group_info.get("status") == "unknown":
-        items.append("是否存在分组尚未确认。")
+        items.append("Whether grouping exists is unconfirmed.")
     if group_info.get("status") == "inferred":
-        items.append("当前分组来自文件名前缀推断；如有正式分组定义，可进一步补充。")
+        items.append("Current grouping is inferred from file name prefixes; if there is a formal grouping definition, it can be further supplemented.")
     elif detected["group_labels_detected"]:
-        items.append("检测到候选组标签，但组别含义尚未确认。")
+        items.append("Candidate group labels have been detected, but the group meanings are unconfirmed.")
     if group_info.get("has_groups") and not group_info.get("control_group"):
-        items.append("存在分组，但对照组尚未确认。")
-    items.append("是否允许写解释性结论尚未确认。")
+        items.append("Grouping exists, but the control group is unconfirmed.")
+    items.append("Whether it is allowed to write explanatory conclusions is unconfirmed.")
     if stats_payload and stats_payload.get("Total Distance (pixels)"):
-        items.append("总距离当前以像素表示，尚未确认是否能换算为实际长度。")
+        items.append("The total distance is currently expressed in pixels, and it is unconfirmed whether it can be converted to actual length.")
     return items
 
 
 def summarize_region_stats(stats_payload: dict[str, Any]) -> tuple[list[str], list[str]]:
     region_stats = stats_payload.get("statistics") or {}
     percent_map = stats_payload.get("percent(%)") or {}
-    ordered: list[tuple[str, float, int, str]] = []
+    ordered: list[tuple[str, float, int, str]] =[]
 
     for region, payload in region_stats.items():
         if not isinstance(payload, dict):
@@ -912,11 +912,11 @@ def summarize_region_stats(stats_payload: dict[str, Any]) -> tuple[list[str], li
         ordered.append((region, stay_time, enter_count, percent))
 
     ordered.sort(key=lambda item: item[1], reverse=True)
-    region_lines = [
-        f"{region}：停留 {stay_time:g} 秒，进入 {enter_count} 次，占比 {percent or '未提供'}"
+    region_lines =[
+        f"{region}: stayed {stay_time:g} seconds, entered {enter_count} times, proportion {percent or 'not provided'}"
         for region, stay_time, enter_count, percent in ordered
     ]
-    zero_regions = [region for region, stay_time, enter_count, _ in ordered if stay_time == 0 and enter_count == 0]
+    zero_regions =[region for region, stay_time, enter_count, _ in ordered if stay_time == 0 and enter_count == 0]
     return region_lines, zero_regions
 
 
@@ -986,18 +986,18 @@ def build_manifest(project_path: Path) -> dict[str, Any]:
             "files_scanned": scan_payload["files_scanned"],
             "key_inputs_preview": (
                 [item["path"] for item in scan_payload["data_files"][:3]]
-                + [item["path"] for item in scan_payload["figure_files"][:3]]
+                +[item["path"] for item in scan_payload["figure_files"][:3]]
                 + scan_payload["metadata_files"][:2]
             ),
         },
         "input_completeness": {
             "checks": [
-                {"label": "骨架或轨迹数据", "available": detected["has_skeleton_data"]},
-                {"label": "行为或 summary 表", "available": detected["has_behavior_summary"]},
-                {"label": "统计表", "available": detected["has_stats_tables"]},
-                {"label": "热图或轨迹图", "available": detected["has_heatmaps"]},
-                {"label": "雷达图", "available": detected["has_radar"]},
-                {"label": "聚类图", "available": detected["has_cluster_figure"]},
+                {"label": "Skeleton or trajectory data", "available": detected["has_skeleton_data"]},
+                {"label": "Behavior or summary table", "available": detected["has_behavior_summary"]},
+                {"label": "Statistics table", "available": detected["has_stats_tables"]},
+                {"label": "Heatmap or trajectory map", "available": detected["has_heatmaps"]},
+                {"label": "Radar chart", "available": detected["has_radar"]},
+                {"label": "Cluster chart", "available": detected["has_cluster_figure"]},
             ]
         },
         "overview": {
@@ -1046,7 +1046,7 @@ def build_manifest(project_path: Path) -> dict[str, Any]:
         "manifest_version": 2,
         "project_path": str(project_path),
         "project_name": scan_payload["project_name"],
-        "report_title": f"{scan_payload['project_name']} 分析报告",
+        "report_title": f"{scan_payload['project_name']} Analysis Report",
         "report_goal": "results-summary",
         "scan": scan_payload,
         "report_mode": report_mode,
@@ -1100,7 +1100,7 @@ def assemble_render_context(manifest: dict[str, Any]) -> dict[str, Any]:
 
 def render_report_markdown(manifest: dict[str, Any]) -> str:
     context = assemble_render_context(manifest)
-    return render_template(read_text(ASSETS_DIR / "report_template_cn.md"), context).strip() + "\n"
+    return render_template(read_text(ASSETS_DIR / "report_template_en.md"), context).strip() + "\n"
 
 
 def render_report_html(manifest: dict[str, Any], markdown_text: str | None = None) -> str:
@@ -1118,4 +1118,4 @@ def render_report_html(manifest: dict[str, Any], markdown_text: str | None = Non
         "report_goal": manifest.get("report_goal") or "results-summary",
         "body_html": markdown_to_html(markdown_body, image_src_transform=image_src_transform),
     }
-    return render_template(read_text(ASSETS_DIR / "report_template_cn.html"), html_context)
+    return render_template(read_text(ASSETS_DIR / "report_template_en.html"), html_context)
