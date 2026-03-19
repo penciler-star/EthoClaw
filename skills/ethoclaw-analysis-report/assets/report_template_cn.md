@@ -1,21 +1,21 @@
-﻿# {{ report_title }}
+﻿# {{ 报告标题 }}
 
-{{ project_summary_section }}
+{{ 报告摘要小节 }}
 
-{{ overview_section }}
+{{ 报告概览小节 }}
 
-{{ sample_check_section }}
+{{ 样本检查小节 }}
 
-{{ raw_trajectory_section }}
+{{ 原始轨迹小节 }}
 
-{{ heatmap_section }}
+{{ 热图小节 }}
 
-{{ radar_section }}
+{{ 雷达图小节 }}
 
-{{ stats_section }}
+{{ 统计小节 }}
 
-{{ cluster_section }}
+{{ 聚类分析小节 }}
 
-{{ single_subject_section }}
+{{ 单个体分析小节 }}
 
-{{ integrated_interpretation_section }}
+{{ 整合解释小节 }}

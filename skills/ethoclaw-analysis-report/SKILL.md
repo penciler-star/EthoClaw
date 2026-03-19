@@ -243,7 +243,7 @@ Read the following files as needed based on task phase, do not load all at once:
   - `EPM`: `references/experiment-types/epm.md`
   - `FST`: `references/experiment-types/fst.md`
   - `NOR`: `references/experiment-types/nor.md`
-- When needing to view display templates: read `assets/report_template_cn.md` and related `assets/section_templates/*.md`
+- When needing to view display templates: if the user communicates in Chinese, read `assets/report_template_cn.md` and related `assets/section_templates/*.md`; If the user communicates in English, read `assets/report_template_en.md` and related `assets/section_templates/*.md`
 
 ## Expression Requirements
 
