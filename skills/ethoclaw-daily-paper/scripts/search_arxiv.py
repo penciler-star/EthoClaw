@@ -101,7 +101,7 @@ def main():
     parser.add_argument("--query", help="arXiv search query")
     parser.add_argument("--query-file", help="Simple YAML config file")
     parser.add_argument("--days", type=int, default=3)
-    parser.add_argument("--max-results", type=int, default=50)
+    parser.add_argument("--max-results", type=int, default=15)
     parser.add_argument("--output", help="Write JSON to this file")
     args = parser.parse_args()
 
