@@ -134,6 +134,7 @@ EthoClaw is built upon the excellent work of the open-source community.
 We would like to express our special thanks to the following projects for their critical support:
 
 [OpenClaw](https://github.com/openclaw/openclaw): A powerful and open-source AI agent assistant running on personal devices.
+
 [DeepLabCut](https://github.com/DeepLabCut/DeepLabCut): A widely-used deep learning-based pose estimation tool without manual annotation.
 
 These projects embody the true power of open-source collaboration, and we are delighted to continue building on these foundations.
