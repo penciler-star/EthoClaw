@@ -1,25 +1,25 @@
 # Section Selection Rules
 
-Read this file when dynamically selecting report mode and `section_bodies` based on project materials.
+在需要根据项目材料动态选择报告模式和 `section_bodies` 时读取本文件。
 
-## Report Mode Determination
+## 报告模式判定
 
 ### `single-subject`
 
-Applicable conditions:
+适用条件：
 
-- Only one sample detected
-- No formal groupings to compare
-- Focus is on summarizing single trajectory, single image result, or single statistical metric
+- 只检测到一个样本
+- 没有可比较的正式分组
+- 重点是总结单体轨迹、单体图像结果或单体统计指标
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
 - `sample_check_body`
 - `single_subject_body`
 
-Supplement based on materials:
+按材料补充：
 
 - `raw_trajectory_body`
 - `heatmap_body`
@@ -29,19 +29,19 @@ Supplement based on materials:
 
 ### `multi-sample-no-groups`
 
-Applicable conditions:
+适用条件：
 
-- Multiple samples detected
-- No clear groupings
-- Or only ambiguous abbreviation labels appear
+- 检测到多个样本
+- 没有明确分组
+- 或只出现了含义不明的缩写标签
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
 - `sample_check_body`
 
-Supplement based on materials:
+按材料补充：
 
 - `raw_trajectory_body`
 - `heatmap_body`
@@ -49,46 +49,46 @@ Supplement based on materials:
 - `cluster_body`
 - `integrated_interpretation_body`
 
-Do not write formal inter-group conclusions.
+不要写正式组间结论。
 
 ### `grouped-raw-summary`
 
-Applicable conditions:
+适用条件：
 
-- Multiple samples detected
-- Clear groupings already appear in file name prefixes or configuration, e.g., `control` / `model`
-- Currently no formal statistical tables or result figures, but can directly make basic summaries from raw skeleton trajectories
+- 检测到多个样本
+- 文件名前缀或配置里已经出现明显分组，例如 `control` / `model`
+- 当前还没有正式统计表或结果图，但可以直接从原始骨架轨迹做基础总结
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
 - `sample_check_body`
 - `raw_trajectory_body`
 
-Supplement based on materials:
+按材料补充：
 
 - `heatmap_body`
 - `radar_body`
 - `integrated_interpretation_body`
 
-Allowed to directly write difference directions on raw trajectories, such as larger activity range, principal axis distribution more biased toward one side, but do not write as significance or mechanistic conclusions.
+允许直接写出原始轨迹上的差异方向，例如活动范围更大、主轴分布更偏向某一侧，但不要写成显著性或机制性结论。
 
 ### `grouped-comparison`
 
-Applicable conditions:
+适用条件：
 
-- Clear groupings exist
-- Group meanings are confirmed, or file name prefixes are clear enough to support basic comparisons
-- At least some inter-group comparison figures, statistical tables, or other high-level results exist
+- 存在明确分组
+- 组名含义已确认，或文件名前缀已明显到足以支持基础比较
+- 至少有部分组间比较图、统计表或其他高层结果
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
 - `sample_check_body`
 
-Supplement based on materials:
+按材料补充：
 
 - `raw_trajectory_body`
 - `heatmap_body`
@@ -99,13 +99,13 @@ Supplement based on materials:
 
 ### `raw-trajectory-summary`
 
-Applicable conditions:
+适用条件：
 
-- Main available materials are raw skeleton or trajectory data
-- Not enough high-level result figures or statistical tables
-- But still can extract basic behavioral summaries from coordinate distributions and path lengths
+- 主要可用材料是原始骨架或轨迹数据
+- 没有足够的高层结果图或统计表
+- 但仍可从坐标分布和路径长度提炼出基础行为摘要
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
@@ -114,18 +114,18 @@ Enabled by default:
 
 ### `figure-only-summary`
 
-Applicable conditions:
+适用条件：
 
-- Main inputs are image results
-- Lacking reliable tables or metadata support
+- 主要输入是图像结果
+- 缺少可靠表格或元数据支持
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
 - `sample_check_body`
 
-Supplement based on materials:
+按材料补充：
 
 - `heatmap_body`
 - `radar_body`
@@ -134,36 +134,36 @@ Supplement based on materials:
 
 ### `data-inventory-only`
 
-Applicable conditions:
+适用条件：
 
-- Missing key background
-- Materials under `project_path` are very scattered
-- Cannot extract reliable result-level information
+- 缺少关键背景
+- `project_path` 下素材非常零散
+- 无法提炼出可靠的结果层信息
 
-Enabled by default:
+默认启用：
 
 - `project_summary_body`
 - `overview_body`
 - `sample_check_body`
 
-Do not enable bodies that depend on figure interpretation.
+不要启用依赖图表解释的 body。
 
-## Body Enabling Conditions
+## body 的启用条件
 
-- `project_summary_body`: Always enabled
-- `overview_body`: Always enabled
-- `sample_check_body`: Always enabled
-- `raw_trajectory_body`: Exists trajectory coordinates that can be directly read; enabled for both single-sample and multi-sample projects
-- `heatmap_body`: At least one heatmap, trajectory plot, atlas, or time-series plot exists
-- `radar_body`: Radar plot exists
-- `stats_body`: Statistical figure or statistical table exists
-- `cluster_body`: Cluster plot exists
-- `single_subject_body`: Current mode is `single-subject`
-- `integrated_interpretation_body`: At least two different evidence sources exist simultaneously, e.g., raw trajectory + image results, or two types of image results
+- `project_summary_body`：始终启用
+- `overview_body`：始终启用
+- `sample_check_body`：始终启用
+- `raw_trajectory_body`：存在可直接读取的轨迹坐标；单样本和多样本项目都启用
+- `heatmap_body`：至少存在一张热图、轨迹图、atlas 或时序图
+- `radar_body`：存在雷达图
+- `stats_body`：存在统计图或统计表
+- `cluster_body`：存在聚类图
+- `single_subject_body`：当前模式为 `single-subject`
+- `integrated_interpretation_body`：至少两个不同证据来源同时存在，例如原始轨迹 + 图像结果，或两类图像结果
 
-## Usage Boundaries
+## 使用边界
 
-- If file name prefixes are already obvious, labels like `control`, `model`, `sham`, `vehicle` can be directly used as candidate groupings
-- If labels are opaque abbreviations like `Y`, `K`, `A1`, still confirm with the user first
-- Leave `stats_body` empty when no statistical basis exists
-- `raw_trajectory_body` should prioritize writing intuitive features on coordinate distributions and activity ranges, not degrade to material inventory
+- 如果文件名前缀已经很明显，可以把 `control`、`model`、`sham`、`vehicle` 这类标签直接当作候选分组
+- 如果标签像 `Y`、`K`、`A1` 这种不透明缩写，仍然先向用户确认
+- `stats_body` 没有统计依据时留空
+- `raw_trajectory_body` 应优先写出坐标分布和活动范围上的直观特征，不要退化成素材清单

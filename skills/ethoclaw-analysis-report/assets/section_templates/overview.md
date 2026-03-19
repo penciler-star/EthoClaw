@@ -1,3 +1,3 @@
-## Project Overview
+## {{ overview_title }}
 
 {{ overview_body }}

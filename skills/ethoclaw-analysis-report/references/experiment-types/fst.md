@@ -1,37 +1,37 @@
 # FST
 
-`FST` stands for Forced Swim Test.
+`FST` 指强迫游泳测试（Forced Swim Test）。
 
-## What It Primarily Evaluates
+## 主要评估什么
 
-- Behavioral responses to inescapable water environment stress
-- Commonly used for antidepressant-like efficacy screening
+- 对不可逃避水环境应激的行为反应
+- 常用于抗抑郁样药效筛查
 
-## Common Experimental Procedure
+## 常见实验流程
 
-- Place the animal in a water tank or cylindrical container from which it cannot escape
-- Record swimming, struggling, and immobility within a fixed duration
-- Some protocols include pre-test and test session
+- 将动物放入无法逃出的水缸或圆柱容器
+- 在固定时长内记录游泳、挣扎和静止
+- 部分方案包含预试验（pre-test）和正式测试（test session）
 
-## Common Readouts
+## 常见 readouts
 
-- Immobility time
-- Latency to immobility
-- Swimming time
-- Climbing / struggling time
+- 静止时间（immobility time）
+- 静止潜伏期（latency to immobility）
+- 游泳时间（swimming time）
+- 攀爬/挣扎时间（climbing / struggling time）
 
-## How to Summarize in Reports
+## 写报告时优先怎么总结
 
-- Directly summarize the main change direction of immobility time, swimming time, or struggling time
-- If behavioral typing is clear, can directly write "increased passive coping / increased active coping"
-- Single-sample projects can directly summarize the main coping style
+- 直接总结静止时间、游泳时间或挣扎时间的主要变化方向
+- 如果行为分型明确，可以直接写“被动应对增加 / 主动应对增加”
+- 单样本项目可以直接概括最主要的应对方式
 
-## Recommended Summary Style
+## 推荐总结方式
 
-- "Increased immobility time, showing more obvious passive coping."
-- "More swimming and struggling time, overall showing more active stress coping."
+- “静止时间增加，表现出更明显的被动应对（passive coping）。”
+- “游泳和挣扎时间较多，整体上表现为更主动的应激应对。”
 
-## Do Not Overstep
+## 不要越界
 
-- Do not write FST alone as sufficient evidence for "enhanced/reduced depression-like behavior"
-- Do not ignore protocol differences, such as whether there is a pre-test
+- 不要把 FST 单独写成“抑郁样行为增强/减弱”的充分证据
+- 不要忽略 protocol 差异，例如是否有 pre-test

@@ -1,52 +1,52 @@
 # EPM
 
-`EPM` stands for Elevated Plus Maze.
+`EPM` 指高架十字迷宫（Elevated Plus Maze）。
 
-## What It Primarily Evaluates
+## 主要评估什么
 
-- Open-arm exploration
-- Closed-arm preference
-- Time in center and transitions between arms
-- In some projects, also looks at the balance between exploration and avoidance combined with total activity
+- 开放臂探索（open-arm exploration）
+- 闭合臂偏好（closed-arm preference）
+- 中心区停留与臂间转换
+- 在部分项目里，也会结合总活动量一起看探索与回避的平衡
 
-## Common Experimental Procedure
+## 常见实验流程
 
-- Apparatus usually consists of two open arms and two closed arms
-- Animal starts exploring from the center
-- Record time in and entries to open arms, closed arms, and center within fixed duration
+- 装置通常由两个开放臂（open arms）和两个闭合臂（closed arms）组成
+- 动物从中心区开始探索
+- 在固定时长内记录开放臂、闭合臂和中心区的停留与进入
 
-## Common Readouts
+## 常见 readouts
 
-- Time in open arms
-- Open arm entries
-- Time in closed arms
-- Time in center
-- Total arm entries
-- Total distance
+- 开放臂停留时间（time in open arms）
+- 开放臂进入次数（open arm entries）
+- 闭合臂停留时间（time in closed arms）
+- 中心区停留时间（time in center）
+- 总进入次数（total arm entries）
+- 总路径长度（total distance）
 
-## How to Write When Only Raw Skeleton Data Exists
+## 只有原始骨架数据时怎么写
 
-- First look at where trajectories are mainly concentrated, rather than saying "only have materials, cannot summarize"
-- If device orientation is not clearly labeled, prioritize writing distribution in "longitudinal axis / transverse axis / center", do not force naming open arms and closed arms
-- If grouping prefixes like `control`, `model` are already obvious, can directly compare which group has larger lateral spread, which group is more concentrated near center or axis
-- Can directly write "larger / more concentrated activity range", "more / fewer center transitions", "more biased toward certain axis activity"
+- 先看轨迹主要集中在哪些行动区域，而不是停在“只有素材、不能总结”
+- 如果装置朝向没有明确标注，优先写“纵向主轴 / 横向主轴 / 中心区”的分布，不强行命名开放臂和闭合臂
+- 如果 `control`、`model` 这类分组前缀已经很明显，可以直接比较哪组横向展开更大、哪组更集中在中心或主轴附近
+- 可以直接写“活动范围更大 / 更集中”“中心往返更多 / 更少”“更偏向某条主轴活动”
 
-## How to Summarize in Reports
+## 写报告时优先怎么总结
 
-- When formal area indicators exist, first summarize whether open-arm exploration increases or decreases, then see if total entries or total distance change synchronously
-- When only raw trajectories exist, first summarize which type of area activities are mainly concentrated in, then write whether activity range contracts or expands
-- In multi-sample projects, if differences between `control` and `model` are already intuitive, can directly write which group is more dispersed, which is more concentrated
-- Single-sample projects can directly summarize trajectory features like "mainly active near center and certain axis", "limited lateral spread"
+- 有正式区域指标时，先总结开放臂探索是增加还是减少，再看总进入次数或总距离是否同步变化
+- 只有原始轨迹时，先总结活动主要集中在哪一类区域，再写活动范围是否收缩或展开
+- 多样本项目里，如果 `control` 和 `model` 的差异已经很直观，可以直接写出哪组更分散、哪组更集中
+- 单样本项目可以直接总结“主要在中心和某条主轴附近活动”“横向展开有限”这类轨迹特征
 
-## Recommended Summary Style
+## 推荐总结方式
 
-- "Trajectories mainly concentrated on the longitudinal axis passing through center, with relatively limited lateral spread."
-- "`control` group has larger lateral activity range, `model` group trajectories more concentrated near center and axis areas."
-- "Overall sample has larger activity range, with frequent transitions between center and arm sections."
-- "If combined with formal area statistics, open-arm exploration is reduced, overall more biased toward closed areas."
+- “轨迹主要集中在穿过中心的纵向主轴，横向展开相对有限。”
+- “`control` 组的横向活动范围更大，`model` 组轨迹更集中在中心附近和主轴区域。”
+- “样本整体活动范围较大，中心区与臂段之间往返较频繁。”
+- “如果结合正式区域统计，开放臂探索偏少，整体更偏向闭合区域活动。”
 
-## Do Not Overstep
+## 不要越界
 
-- Do not directly write reduced open-arm exploration as clinical anxiety diagnosis
-- Do not ignore motor ability confounds from decreased total entries or total activity
-- Only have axis distribution, no device mapping: do not force longitudinal and transverse axes as confirmed open/closed arms
+- 不要把开放臂减少直接写成临床式焦虑诊断
+- 不要忽略总进入次数或总活动量下降带来的运动能力混杂
+- 只有主轴分布、没有装置映射时，不要硬把纵向主轴和横向主轴写成已确认的开放臂/闭合臂

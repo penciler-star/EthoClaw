@@ -63,38 +63,88 @@ IMAGE_LINE_RE = re.compile(r"^!\[(.*?)\]\((.*?)\)$")
 LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 CODE_RE = re.compile(r"`([^`]+)`")
 
+DEFAULT_REPORT_LANGUAGE = "zh-CN"
+SUPPORTED_REPORT_LANGUAGES = {"zh-CN", "en-US"}
+LANGUAGE_TEMPLATE_SUFFIX = {
+    "zh-CN": "cn",
+    "en-US": "en",
+}
+UI_STRINGS = {
+    "zh-CN": {
+        "html_lang": "zh-CN",
+        "project_path_label": "项目路径",
+        "report_mode_label": "报告模式",
+        "report_goal_label": "报告用途",
+        "default_report_title_suffix": "分析报告",
+    },
+    "en-US": {
+        "html_lang": "en",
+        "project_path_label": "Project Path",
+        "report_mode_label": "Report Mode",
+        "report_goal_label": "Report Goal",
+        "default_report_title_suffix": "Analysis Report",
+    },
+}
+REPORT_MODE_LABELS = {
+    "single-subject": {"zh-CN": "单样本", "en-US": "Single Subject"},
+    "multi-sample-no-groups": {"zh-CN": "多样本未分组", "en-US": "Multi-sample, No Groups"},
+    "grouped-raw-summary": {"zh-CN": "分组原始轨迹摘要", "en-US": "Grouped Raw Summary"},
+    "grouped-comparison": {"zh-CN": "分组比较", "en-US": "Grouped Comparison"},
+    "raw-trajectory-summary": {"zh-CN": "原始轨迹摘要", "en-US": "Raw Trajectory Summary"},
+    "figure-only-summary": {"zh-CN": "图像结果整理", "en-US": "Figure-only Summary"},
+    "data-inventory-only": {"zh-CN": "素材盘点", "en-US": "Data Inventory Only"},
+}
+REPORT_GOAL_LABELS = {
+    "results-summary": {"zh-CN": "结果整理", "en-US": "Results Summary"},
+}
+
 SECTION_SPECS = [
     {
         "id": "project_summary",
-        "title": "项目概况与素材",
+        "titles": {
+            "zh-CN": "项目概况与素材",
+            "en-US": "Project Summary and Materials",
+        },
         "section_key": "project_summary_section",
         "body_key": "project_summary_body",
         "template": "project-summary.md",
     },
     {
         "id": "overview",
-        "title": "项目概述",
+        "titles": {
+            "zh-CN": "项目概述",
+            "en-US": "Project Overview",
+        },
         "section_key": "overview_section",
         "body_key": "overview_body",
         "template": "overview.md",
     },
     {
         "id": "sample_check",
-        "title": "样本与分组核对",
+        "titles": {
+            "zh-CN": "样本与分组核对",
+            "en-US": "Sample and Group Verification",
+        },
         "section_key": "sample_check_section",
         "body_key": "sample_check_body",
         "template": "sample-check.md",
     },
     {
         "id": "raw_trajectory",
-        "title": "原始轨迹摘要",
+        "titles": {
+            "zh-CN": "原始轨迹摘要",
+            "en-US": "Raw Trajectory Summary",
+        },
         "section_key": "raw_trajectory_section",
         "body_key": "raw_trajectory_body",
         "template": "raw-trajectory.md",
     },
     {
         "id": "heatmap",
-        "title": "热图与轨迹结果",
+        "titles": {
+            "zh-CN": "热图与轨迹结果",
+            "en-US": "Heatmap and Trajectory Findings",
+        },
         "section_key": "heatmap_section",
         "body_key": "heatmap_body",
         "template": "heatmap-section.md",
@@ -103,7 +153,10 @@ SECTION_SPECS = [
     },
     {
         "id": "radar",
-        "title": "雷达图结果",
+        "titles": {
+            "zh-CN": "雷达图结果",
+            "en-US": "Radar Profile Findings",
+        },
         "section_key": "radar_section",
         "body_key": "radar_body",
         "template": "radar-section.md",
@@ -112,7 +165,10 @@ SECTION_SPECS = [
     },
     {
         "id": "stats",
-        "title": "统计与汇总图结果",
+        "titles": {
+            "zh-CN": "统计与汇总图结果",
+            "en-US": "Statistical and Summary Figure Findings",
+        },
         "section_key": "stats_section",
         "body_key": "stats_body",
         "template": "stats-section.md",
@@ -121,7 +177,10 @@ SECTION_SPECS = [
     },
     {
         "id": "cluster",
-        "title": "聚类结果",
+        "titles": {
+            "zh-CN": "聚类结果",
+            "en-US": "Clustering Findings",
+        },
         "section_key": "cluster_section",
         "body_key": "cluster_body",
         "template": "cluster-section.md",
@@ -130,14 +189,20 @@ SECTION_SPECS = [
     },
     {
         "id": "single_subject",
-        "title": "单样本结果概览",
+        "titles": {
+            "zh-CN": "单样本结果概览",
+            "en-US": "Single-Subject Profile",
+        },
         "section_key": "single_subject_section",
         "body_key": "single_subject_body",
         "template": "single-subject-section.md",
     },
     {
         "id": "integrated_interpretation",
-        "title": "综合整理",
+        "titles": {
+            "zh-CN": "综合整理",
+            "en-US": "Integrated Interpretation",
+        },
         "section_key": "integrated_interpretation_section",
         "body_key": "integrated_interpretation_body",
         "template": "integrated-interpretation.md",
@@ -282,6 +347,45 @@ def load_json(path: Path) -> Any:
 def save_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def normalize_report_language(language: str | None) -> str:
+    candidate = str(language or "").strip()
+    if candidate in SUPPORTED_REPORT_LANGUAGES:
+        return candidate
+    return DEFAULT_REPORT_LANGUAGE
+
+
+def get_ui_strings(report_language: str) -> dict[str, str]:
+    return UI_STRINGS[normalize_report_language(report_language)]
+
+
+def localize_section_title(spec: dict[str, Any], report_language: str) -> str:
+    titles = spec.get("titles") or {}
+    normalized_language = normalize_report_language(report_language)
+    return titles.get(normalized_language) or titles.get(DEFAULT_REPORT_LANGUAGE) or spec["id"]
+
+
+def localize_report_mode(report_mode: str, report_language: str) -> str:
+    labels = REPORT_MODE_LABELS.get(report_mode) or {}
+    normalized_language = normalize_report_language(report_language)
+    return labels.get(normalized_language) or labels.get(DEFAULT_REPORT_LANGUAGE) or report_mode
+
+
+def localize_report_goal(report_goal: str, report_language: str) -> str:
+    labels = REPORT_GOAL_LABELS.get(report_goal) or {}
+    normalized_language = normalize_report_language(report_language)
+    return labels.get(normalized_language) or labels.get(DEFAULT_REPORT_LANGUAGE) or report_goal
+
+
+def build_default_report_title(project_name: str, report_language: str) -> str:
+    strings = get_ui_strings(report_language)
+    return f"{project_name} {strings['default_report_title_suffix']}"
+
+
+def get_report_template_path(kind: str, report_language: str) -> Path:
+    suffix = LANGUAGE_TEMPLATE_SUFFIX[normalize_report_language(report_language)]
+    return ASSETS_DIR / f"report_template_{suffix}.{kind}"
 
 
 def relative_posix(path: Path, root: Path) -> str:
@@ -948,13 +1052,13 @@ def select_section_specs(
     return [spec for spec in SECTION_SPECS if spec["id"] in enabled_ids]
 
 
-def build_section_bodies(specs: list[dict[str, str]]) -> dict[str, Any]:
+def build_section_bodies(specs: list[dict[str, Any]], report_language: str = DEFAULT_REPORT_LANGUAGE) -> dict[str, Any]:
     section_bodies: dict[str, Any] = {}
     for spec in specs:
         guidance = SECTION_GUIDANCE[spec["body_key"]]
         section_bodies[spec["body_key"]] = {
             "section_id": spec["id"],
-            "title": spec["title"],
+            "title": localize_section_title(spec, report_language),
             "purpose": guidance["purpose"],
             "write_when": guidance["write_when"],
             "source_fields": guidance["source_fields"],
@@ -1042,18 +1146,21 @@ def build_manifest(project_path: Path) -> dict[str, Any]:
 
     section_specs = select_section_specs(report_mode, galleries, raw_summary)
 
+    report_language = DEFAULT_REPORT_LANGUAGE
+
     return {
-        "manifest_version": 2,
+        "manifest_version": 3,
         "project_path": str(project_path),
         "project_name": scan_payload["project_name"],
-        "report_title": f"{scan_payload['project_name']} 分析报告",
+        "report_language": report_language,
+        "report_title": build_default_report_title(scan_payload["project_name"], report_language),
         "report_goal": "results-summary",
         "scan": scan_payload,
         "report_mode": report_mode,
         "report_mode_reason": report_mode_reason,
         "facts": facts,
         "galleries": galleries,
-        "section_bodies": build_section_bodies(section_specs),
+        "section_bodies": build_section_bodies(section_specs, report_language),
     }
 
 
@@ -1070,13 +1177,28 @@ def assemble_render_context(manifest: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(section_bodies, dict):
         raise ValueError("manifest.section_bodies must be an object.")
 
+    report_language = normalize_report_language(manifest.get("report_language"))
     galleries = manifest["galleries"]
     project_path = Path(manifest["project_path"])
+    report_title = str(manifest.get("report_title") or "").strip() or build_default_report_title(
+        manifest["project_name"],
+        report_language,
+    )
+    ui_strings = get_ui_strings(report_language)
+    report_goal = manifest.get("report_goal") or "results-summary"
+    report_mode = manifest["report_mode"]
     context: dict[str, Any] = {
-        "report_title": manifest["report_title"],
+        "report_title": report_title,
+        "report_language": report_language,
+        "html_lang": ui_strings["html_lang"],
         "project_path": manifest["project_path"],
-        "report_mode": manifest["report_mode"],
-        "report_goal": manifest.get("report_goal") or "results-summary",
+        "project_path_label": ui_strings["project_path_label"],
+        "report_mode_label": ui_strings["report_mode_label"],
+        "report_goal_label": ui_strings["report_goal_label"],
+        "report_mode": report_mode,
+        "report_mode_display": localize_report_mode(report_mode, report_language),
+        "report_goal": report_goal,
+        "report_goal_display": localize_report_goal(report_goal, report_language),
         "heatmap_gallery": build_gallery(galleries["heatmap"], project_path),
         "radar_gallery": build_gallery(galleries["radar"], project_path),
         "stats_gallery": build_gallery(galleries["stats"], project_path),
@@ -1087,6 +1209,7 @@ def assemble_render_context(manifest: dict[str, Any]) -> dict[str, Any]:
         entry = section_bodies.get(spec["body_key"])
         body_text = extract_body_text(entry)
         context[spec["body_key"]] = body_text
+        context[f"{spec['id']}_title"] = localize_section_title(spec, report_language)
 
         gallery_key = spec.get("gallery_key")
         if gallery_key:
@@ -1100,22 +1223,22 @@ def assemble_render_context(manifest: dict[str, Any]) -> dict[str, Any]:
 
 def render_report_markdown(manifest: dict[str, Any]) -> str:
     context = assemble_render_context(manifest)
-    return render_template(read_text(ASSETS_DIR / "report_template_cn.md"), context).strip() + "\n"
+    template_path = get_report_template_path("md", context["report_language"])
+    return render_template(read_text(template_path), context).strip() + "\n"
 
 
 def render_report_html(manifest: dict[str, Any], markdown_text: str | None = None) -> str:
+    render_context = assemble_render_context(manifest)
     markdown_body = markdown_text or render_report_markdown(manifest)
-    title_line = f"# {manifest['report_title']}"
+    title_line = f"# {render_context['report_title']}"
     if markdown_body.startswith(title_line):
         markdown_body = markdown_body[len(title_line):].lstrip()
 
     image_src_transform = build_embedded_image_transform()
 
     html_context = {
-        "report_title": manifest["report_title"],
-        "project_path": manifest["project_path"],
-        "report_mode": manifest["report_mode"],
-        "report_goal": manifest.get("report_goal") or "results-summary",
+        **render_context,
         "body_html": markdown_to_html(markdown_body, image_src_transform=image_src_transform),
     }
-    return render_template(read_text(ASSETS_DIR / "report_template_cn.html"), html_context)
+    template_path = get_report_template_path("html", html_context["report_language"])
+    return render_template(read_text(template_path), html_context)
