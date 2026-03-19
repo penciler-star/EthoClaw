@@ -1,4 +1,4 @@
-## {{ cluster_title }}
+## Clustering Results
 
 {{ cluster_body }}
 

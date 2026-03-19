@@ -1,57 +1,57 @@
 # Metadata Schema
 
-需要判断“哪些信息必须向用户确认”时读取本文件。
+Read this file when determining "what information must be confirmed with the user".
 
-## 关键元数据
+## Key Metadata
 
-以下信息如果无法从项目目录、文件名、图表标题或用户对话中确认，就应先向用户提问：
+The following information, if cannot be confirmed from the project directory, file names, figure titles, or user conversation, should first be asked to the user:
 
-- `project_name`：项目名或报告标题
-- `report_goal`：报告用途，例如结果整理、内部汇报、论文草稿
-- `experiment_type`：实验范式或任务类型
-- `has_groups`：是否存在分组
-- `group_mapping`：组标签分别代表什么
-- `control_group`：如果存在对照组，哪一组是对照组
-- `allow_interpretive_conclusion`：是否允许写解释性结论
+- `project_name`: Project name or report title
+- `report_goal`: Report purpose, e.g., result organization, internal reporting, manuscript draft
+- `experiment_type`: Experimental paradigm or task type
+- `has_groups`: Whether groupings exist
+- `group_mapping`: What each group label represents
+- `control_group`: If there is a control group, which group is the control
+- `allow_interpretive_conclusion`: Whether interpretive conclusions are allowed
 
-## 建议补充的信息
+## Recommended Supplementary Information
 
 - `species`
-- `sample_definition`：一条记录对应个体、session、trial 还是其他单位
-- `preferred_language`：如果已确认，agent 应将其落实为 `manifest.report_language`（`zh-CN` 或 `en-US`）
+- `sample_definition`: Whether one record corresponds to individual, session, trial, or other unit
+- `preferred_language`
 - `priority_figures`
 - `main_result_dirs`
 - `notes`
 
-## 这些信息从哪里来
+## Where This Information Comes From
 
-元数据来源只有三类：
+There are only three sources of metadata:
 
-- 项目目录内已有的说明文本、结果文件和图表标题
-- 文件名、目录名和样本命名方式中可以直接推断的信息
-- 用户在对话中补充的实验背景和写作要求
+- Existing description texts, result files, and figure titles within the project directory
+- Information that can be directly inferred from file names, directory names, and sample naming conventions
+- Experimental background and writing requirements supplemented by the user in conversation
 
-## 提问规则
+## Questioning Rules
 
-- 缺少 `project_path`：先问路径，不做其他工作
-- 组名是 `control`、`model`、`sham`、`vehicle` 这类明显标签时，可先作为候选分组使用
-- 组名是 `Y`、`con`、`k` 这类含义不透明的缩写时，先问组别含义
-- 需要写正式组间比较，但没有 `control_group`：先问对照组
-- 用户要求写解释性结论，但 `allow_interpretive_conclusion` 不明确：先问是否允许
+- Missing `project_path`: Ask for the path first, do not do other work
+- When group names are obvious labels like `control`, `model`, `sham`, `vehicle`, they can be used as candidate groupings first
+- When group names are opaque abbreviations like `Y`, `con`, `k`, ask for group meaning first
+- Need to write formal inter-group comparisons but no `control_group`: Ask for control group first
+- User requests interpretive conclusions but `allow_interpretive_conclusion` is unclear: Ask if allowed
 
-## 未确认时允许写什么
+## What Can Be Written When Unconfirmed
 
-即使元数据不完整，也允许先输出：
+Even if metadata is incomplete, the following are allowed to be output first:
 
-- 项目与素材概况
-- 样本和候选分组核对
-- 原始轨迹摘要
-- 图像和统计结果的直接总结
+- Project and material overview
+- Sample and candidate grouping verification
+- Raw trajectory summary
+- Direct summary of image and statistical results
 
-不要因为少量背景缺失就回避明显的数据特征；只是在确实缺少关键信息时，不把不透明缩写硬解释成正式实验组定义。
+Do not avoid obvious data characteristics just because of a small amount of missing background; only when key information is truly missing, do not hard-interpret opaque abbreviations as formal experimental group definitions.
 
-## 与 manifest 的关系
+## Relationship with Manifest
 
-- `build_report_manifest.py` 会把未确认项汇总到 `facts.unconfirmed_items`
-- agent 在填写 `project_summary_body`、`overview_body`、`sample_check_body` 时，可简短带出仍待确认的关键点
-- 所有正文都直接回填到 `manifest.json`，不再创建额外的配置或 section 文件
+- `build_report_manifest.py` will aggregate unconfirmed items into `facts.unconfirmed_items`
+- When agents fill in `project_summary_body`, `overview_body`, `sample_check_body`, they can briefly mention key points that still need confirmation
+- All body text is directly filled back into `manifest.json`, no additional configuration or section files are created

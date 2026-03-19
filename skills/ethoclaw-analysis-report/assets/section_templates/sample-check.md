@@ -1,3 +1,3 @@
-## {{ sample_check_title }}
+## Sample and Group Verification
 
 {{ sample_check_body }}
