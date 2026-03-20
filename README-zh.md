@@ -1,4 +1,4 @@
-<div align=center><img src="docs/EthoClaw.png" width="450" /></div>
+<div align=center><img src="docs/ethoclaw_logo.png" width="500" /></div>
 
 <p align="center">
   <a href="README.md">English</a>
