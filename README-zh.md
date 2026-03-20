@@ -66,7 +66,7 @@
 
 本项目有两种食用方式：
 
-**1. 如果您已经安装了OpenClaw，可以直接将EthoClaw中skill下带有`ethoclaw-`前缀的文件夹拖入OpenClaw的SKILL文件夹下**
+**1. 如果您已经安装了OpenClaw，可以直接将EthoClaw中skill下带有`ethoclaw-`前缀的文件夹拖入OpenClaw的skills文件夹下**
 
 **2. 如果您还没有安装OpenClaw，也可以直接按照以下步骤安装EthoClaw：**
 
