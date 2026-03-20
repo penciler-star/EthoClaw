@@ -123,11 +123,15 @@ pip install --pre deeplabcut
 
 ```
 # You can specify the specific skill you want to use to achieve the desired function, and get the result, for example:
+
 Please use the ethoclaw-pose_estimation skill to estimate the pose of the video in /home/xx/Analysis_Project/0_videos/video.mp4, and save the result to /home/xx/Analysis_Project/1_2Dskeletons/ folder.
 or
 Please use the ethoclaw-trajectory-velocity-heatmap-generate skill to generate the velocity heatmap of the results in /home/xx/Analysis_Project/1_2Dskeletons/, and save the result to /home/xx/Analysis_Project/2_results folder.
+
 # And, you can state your request directly without specifying a skill, for example:
+
 Please estimate the pose of the video in /home/xx/Analysis_Project/0_videos/video.mp4, and save the result to /home/xx/Analysis_Project/1_2Dskeletons/ folder.
+
 ```
 
 ### Recommended Project Structure
