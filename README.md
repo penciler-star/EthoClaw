@@ -66,7 +66,7 @@ This project is built on OpenClaw, and its configuration and installation method
 
 This project has two ways to use:
 
-**1. If you already have OpenClaw installed, you can directly drag the folders with the prefix `ethoclaw-` in the skill folder of EthoClaw into the SKILL folder of OpenClaw.**
+**1. If you already have OpenClaw installed, you can directly drag the folders with the prefix `ethoclaw-` in the skill folder of EthoClaw into the `skill` folder of OpenClaw.**
 
 **2. If you haven't installed OpenClaw yet, you can follow the steps below to install EthoClaw:**
 
