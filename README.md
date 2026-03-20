@@ -169,4 +169,4 @@ These projects embody the true power of open-source collaboration, and we are de
 
 ## Feedback
 
-If you encounter any issues or have suggestions while using this project, please provide feedback through Issues.
+If you encounter any issues or have suggestions while using this project, please provide feedback through [Issues](https://github.com/penciler-star/EthoClaw/issues).
