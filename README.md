@@ -35,7 +35,7 @@
   1. Generate speed heatmaps and trajectory heatmaps based on tracking data;
   <div align=center><img src="docs/headmap_demo.png" width="500" /></div>
 
-  2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data; automatically typeset experiment flow charts and analysis diagrams;
+  2. Support violin plots, cluster plots, radar charts, etc. for multiple groups of data;
   <div align=center><img src="docs/violin_demo.png" width="500" /></div>
   <div align=center><img src="docs/clustermap_demo1.png" width="500" /></div>
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
