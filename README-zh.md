@@ -35,7 +35,7 @@
   1. 基于追踪数据生成速度热图、轨迹热图；
   <div align=center><img src="docs/heatmap_demo.png" width="500" /></div>
 
-  2. 支持多组数据的小提琴图、聚类图、雷达图等；自动排版实验流程图和分析图；
+  2. 支持多组数据的小提琴图、聚类图、雷达图等；
   <div align=center><img src="docs/violin_demo.png" width="500" /></div>
   <div align=center><img src="docs/clustermap_demo1.png" width="500" /></div>
   <div align=center><img src="docs/radar_demo.png" width="500" /></div>
