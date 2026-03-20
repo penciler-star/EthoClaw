@@ -20,7 +20,7 @@
 ## Highlighted Features
 
 - **Animal Center Detection:**
-  1. Based on image processing methods, automatically locate experimental targets (such as animals, environmental elements, etc.).
+  1. Based on image processing methods, automatically locate animal.
   <div align=center><img src="docs/animal_grounding_demo.png" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
