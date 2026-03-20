@@ -19,7 +19,7 @@
 
 ## 已支持的功能
 
-- **动物目标定位**：1.基于图像处理方法，自动定位实验目标（如动物、环境元素等）。
+- **动物目标定位**：1.基于图像处理方法，自动定位动物位置。
   <div align=center><img src="docs/animal_grounding_demo.png" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
