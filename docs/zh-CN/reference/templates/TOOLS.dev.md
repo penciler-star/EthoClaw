@@ -2,7 +2,7 @@
 read_when:
   - 使用开发 gateway 模板
   - 更新默认开发智能体身份
-summary: 开发智能体工具备注（C-3PO）
+summary: 开发智能体工具备注（EthoClaw）
 x-i18n:
   generated_at: "2026-02-01T21:37:41Z"
   model: claude-opus-4-5

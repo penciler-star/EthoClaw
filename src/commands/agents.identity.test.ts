@@ -150,7 +150,7 @@ describe("agents set-identity command", () => {
   it("reads identity from an explicit IDENTITY.md path", async () => {
     const { workspace } = await createIdentityWorkspace();
     const identityPath = await writeIdentityFile(workspace, [
-      "- **Name:** C-3PO",
+      "- **Name:** EthoClaw",
       "- **Creature:** Flustered Protocol Droid",
       "- **Emoji:** 🤖",
       "- **Avatar:** avatars/c3po.png",
@@ -165,7 +165,7 @@ describe("agents set-identity command", () => {
     await agentsSetIdentityCommand({ agent: "main", identityFile: identityPath }, runtime);
 
     expect(getWrittenMainIdentity()).toEqual({
-      name: "C-3PO",
+      name: "EthoClaw",
       theme: "Flustered Protocol Droid",
       emoji: "🤖",
       avatar: "avatars/c3po.png",
