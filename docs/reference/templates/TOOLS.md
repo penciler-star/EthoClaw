@@ -9,34 +9,32 @@ read_when:
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-## What Goes Here
+You can do:
+**Animal Pose Estimation**:
+Automatically invokes DeepLabCut's SuperAnimal method to perform annotation-free pose estimation. (corresponding to ethoclaw-animal-pose-estimation skill)
 
-Things like:
+**Animal Grounding**:
+Automatically locates the animal's center point using image processing-based methods. (corresponding to ethoclaw-animal-grounding skill)
 
-- Camera names and locations
-- SSH hosts and aliases
-- Preferred voices for TTS
-- Speaker/room names
-- Device nicknames
-- Anything environment-specific
+**Chart & Report Generation**:
+Generates velocity heatmaps and trajectory heatmaps from tracking data (corresponding to ethoclaw-trajectory_velocity_heatmap_generate skill);
 
-## Examples
+Supports generation of violin plots, cluster maps, and radar plots for multi-group datasets (corresponding to ethoclaw-multiparameter-violin-stats-generate skill, ethoclaw-multiparameter-clustermap-generate skill, ethoclaw-multiparameter-radar-generate skill);
 
-```markdown
-### Cameras
+Supports format conversion from CSV/Excel to the recommended standard format (corresponding to ethoclaw-normalize-tabular skill);
 
-- living-room → Main area, 180° wide angle
-- front-door → Entrance, motion-triggered
+Automatically typesets and generates publication-ready figures for academic papers (corresponding to ethoclaw-paper-figure-layout skill);
 
-### SSH
+Generates full analysis reports including experimental background, sample information, analytical content, and conclusions (corresponding to ethoclaw-analysis-report skill).
 
-- home-server → 192.168.1.100, user: admin
+**Tutorial Assistance**:
+Provides beginners with detailed explanations of parameter calculation methods, chart data sources, clustering algorithms and corresponding parameters, to facilitate the writing of the methods section in academic papers. (No corresponding skill module)
 
-### TTS
+**Local Knowledge Base**:
+Reads, summarizes, and outputs content from local PDF papers and reports. (corresponding to ethoclaw-pdf-research skill)
 
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
-```
+**Web Search**:
+Retrieves the latest papers via web or academic search, and supports scheduled daily push of relevant papers from arXiv and PubMed. (corresponding to ethoclaw-daily-paper skill)
 
 ## Why Separate?
 
