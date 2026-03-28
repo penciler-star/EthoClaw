@@ -24,13 +24,11 @@
 - **动物目标定位**：
   1. 基于图像处理方法，自动定位动物位置。
   <div align=center><img src="docs/animal_grounding_demo.png" width="500" /></div>
-  <div align=center><img src="docs/animal_grounding_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_grounding_demo_EPM.gif" width="500" /></div>
 
 - **动物姿态估计**：
   1. 接入开源的深度学习姿态估计模型/项目，自动估计实验目标的姿态（如头部、背部、尾部等）。例如，目前已接入了[SuperAnimal](https://github.com/AdaptiveMotorControlLab/modelzoo-figures)。
   <div align=center><img src="docs/animal_pose_estimation_demo.png" width="500" /></div>
-  <div align=center><img src="docs/animal_pose_estimation_demo_OFT.gif" width="500" /></div>
   <div align=center><img src="docs/animal_pose_estimation_demo_EPM.gif" width="500" /></div>
 
 - **图表/报告生成**：
