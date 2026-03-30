@@ -9,7 +9,7 @@
 
 **EthoClaw** 是基于 OpenClaw 构建的 Ethology 领域开源项目，核心聚焦于行为学领域实用技能的落地实现。针对行为学分析中预处理、数据转换、格式匹配、环境配置等繁琐流程，EthoClaw 不仅能帮助研究人员自动完成这些操作，还可实现网络信息检索、分析报告与结果图生成、本地文献解读、自动化目标定位、自动姿态估计等功能，从而让研究人员更专注于解决科学问题，大幅提升科研效率。此外，我们针对OpenClaw进行了性能优化，可改善我们的使用体验。
 
-我们的预印版文章也已经同步上线，链接为：[EthoClaw: An Integrated AI Workflow Platform for Automated Analysis in Neuroethology](https://www.biorxiv.org/content/10.64898/2026.03.25.714141v1)
+我们的预印版文章也已经同步上线，链接为：[EthoClaw: An Integrated AI Workflow Platform for Automated Analysis in Neuroethology](https://doi.org/10.64898/2026.03.25.714141)
 
 ## 已支持物种
 
